@@ -282,7 +282,7 @@
         }
         #csvTable th {
             background-color: #e9ecef;
-            cursor: pointer;
+            /* cursor: pointer; */ /* Borttagen: Ingen sorteringsfunktion vid klick på rubriker */
         }
         
         /* Färgkoder för resultat */
@@ -842,6 +842,7 @@
             }
         }
 
+        // Sorteringsfunktionen finns kvar men anropas inte från rubrikerna
         function sortTable(columnIndex) {
             const table = document.getElementById('csvTable');
             const tbody = table.querySelector('tbody');
@@ -899,17 +900,18 @@
                 const th = document.createElement('th');
                 const translatedHeader = translationMap[headerCell] || headerCell;
                 th.textContent = translatedHeader;
-                th.onclick = () => sortTable(index);
+                // th.onclick = () => sortTable(index); // BORTTAGEN sorteringsfunktion
                 if (translatedHeader.startsWith("Hål ")) {
                     th.addEventListener('mouseover', (e) => showTooltip(e, headerCell, courseName));
                     th.addEventListener('mouseout', hideTooltip);
+                    th.addEventListener('click', (e) => toggleTooltip(e, headerCell, courseName)); // NY: För mobil/touch-enheter
                 }
                 tr.appendChild(th);
             });
 
             const pdgaHeader = document.createElement('th');
             pdgaHeader.textContent = 'PDGA';
-            pdgaHeader.onclick = () => sortTable(data.header.length); 
+            // pdgaHeader.onclick = () => sortTable(data.header.length); // BORTTAGEN sorteringsfunktion
             tr.appendChild(pdgaHeader);
             headerRowElement.appendChild(tr);
             table.appendChild(headerRowElement);
@@ -941,13 +943,6 @@
                 }
 
                 const playerRow = document.createElement('tr');
-                // Hela blocket för att highlighta spelarens rad har tagits bort enligt användarens önskemål.
-                /*
-                if (isPlayer) {
-                    playerRow.style.backgroundColor = '#e6f7ff'; 
-                    playerRow.style.fontWeight = 'bold';
-                }
-                */
 
                 cells.forEach((cell, index) => {
                     const td = document.createElement('td');
@@ -1734,11 +1729,14 @@
                 +/-: ${diff}
             `;
             
-            // NY OCH FÖRBÄTTRAD POSITIONERING: Positionera under det hovrade elementet (<th>)
-            const thRect = e.target.getBoundingClientRect();
+            // NY positionering: Sätt display block FÖRST för att mäta höjden
+            tooltip.style.display = 'block'; 
 
-            // Initial position: 5px nedanför det hovrade elementet, justerat med scrollposition
-            let top = thRect.bottom + window.scrollY + 5; 
+            const thRect = e.target.getBoundingClientRect();
+            const tooltipHeight = tooltip.offsetHeight; // Nu får vi rätt höjd
+
+            // Position: 5px OVANFÖR det hovrade elementet, justerat med scrollposition
+            let top = thRect.top + window.scrollY - tooltipHeight - 5; 
             let left = thRect.left + window.scrollX;
             
             // Justera om den går utanför högerkanten av skärmen
@@ -1753,11 +1751,30 @@
             
             tooltip.style.top = `${top}px`;
             tooltip.style.left = `${left}px`;
-            tooltip.style.display = 'block';
+            
+            // Lägg till data-attribut för att veta vilket hål som visas vid klick/toggle
+            tooltip.dataset.hole = holeName; 
         }
 
         function hideTooltip() {
-            document.getElementById('holeTooltip').style.display = 'none';
+            const tooltip = document.getElementById('holeTooltip');
+            tooltip.style.display = 'none';
+            tooltip.removeAttribute('data-hole');
+        }
+        
+        // NY FUNKTION FÖR MOBIL (Klick/Tryck)
+        function toggleTooltip(e, holeName, courseName) {
+            // Förhindra att klick/tryck eventuellt propageras till andra element
+            e.stopPropagation(); 
+            const tooltip = document.getElementById('holeTooltip');
+            
+            // Om samma tooltip redan visas, dölj den
+            if (tooltip.style.display === 'block' && tooltip.dataset.hole === holeName) {
+                hideTooltip();
+            } else {
+                // Annars, visa/uppdatera tooltippen (och showTooltip hanterar positioneringen)
+                showTooltip(e, holeName, courseName);
+            }
         }
 
 
