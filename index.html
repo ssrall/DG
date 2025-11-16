@@ -941,10 +941,13 @@
                 }
 
                 const playerRow = document.createElement('tr');
+                // Hela blocket för att highlighta spelarens rad har tagits bort enligt användarens önskemål.
+                /*
                 if (isPlayer) {
                     playerRow.style.backgroundColor = '#e6f7ff'; 
                     playerRow.style.fontWeight = 'bold';
                 }
+                */
 
                 cells.forEach((cell, index) => {
                     const td = document.createElement('td');
@@ -1731,21 +1734,23 @@
                 +/-: ${diff}
             `;
             
-            // Positionering av tooltip
-            const tableRect = document.getElementById('csvTable').getBoundingClientRect();
-            
-            let top = e.clientY + 15;
-            let left = e.clientX + 15;
-            
-            // Justera om den går utanför högerkanten
-            if (left + tooltip.offsetWidth > window.innerWidth) {
-                left = e.clientX - tooltip.offsetWidth - 15;
-            }
-            // Justera om den går utanför nederkanten
-            if (top + tooltip.offsetHeight > window.innerHeight) {
-                top = e.clientY - tooltip.offsetHeight - 15;
-            }
+            // NY OCH FÖRBÄTTRAD POSITIONERING: Positionera under det hovrade elementet (<th>)
+            const thRect = e.target.getBoundingClientRect();
 
+            // Initial position: 5px nedanför det hovrade elementet, justerat med scrollposition
+            let top = thRect.bottom + window.scrollY + 5; 
+            let left = thRect.left + window.scrollX;
+            
+            // Justera om den går utanför högerkanten av skärmen
+            if (left + tooltip.offsetWidth > window.innerWidth + window.scrollX) {
+                // Placera den till vänster om hovrat element så att den håller sig inom skärmen
+                left = thRect.right - tooltip.offsetWidth + window.scrollX;
+                // Säkerställ att den inte går utanför vänsterkanten
+                if (left < window.scrollX) {
+                     left = window.scrollX; 
+                }
+            }
+            
             tooltip.style.top = `${top}px`;
             tooltip.style.left = `${left}px`;
             tooltip.style.display = 'block';
