@@ -1,0 +1,21 @@
+{
+  "name": "Discgolf Statistik",
+  "short_name": "DG Stats",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#1f8383",
+  "description": "Personlig statistik och sammanfattningar för dina UDisc-rundor.",
+  "icons": [
+    {
+      "src": "discgolf-icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "discgolf-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
