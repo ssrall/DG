@@ -386,37 +386,39 @@
             </div>
 
             <div class="top-container">
-                <div class="top-box" id="savedResultsContainer">
-                    <h2>Sparade resultat</h2>
-                    <select id="savedResults" onchange="handleResultSelection()">
-                        <option value="" disabled selected>Välj ett sparat resultat</option>
-                    </select>
-                    <div class="button-group">
-                        <button class="delete-button" onclick="deleteSelectedResult()">Ta bort valt resultat permanent</button>
-                        <button onclick="hideAll()">Dölj visat resultat</button>
-                    </div>
-                </div>
-                
-                <div class="top-box" id="fileInputContainer">
-                    <h2>Ladda upp resultat</h2>
-                    <input type="file" id="csvFile" accept=".csv">
-                    <button onclick="readCSV()">Läs CSV</button>
-                    <p id="message"></p>
-                    <button id="saveButton" style="display: none;" onclick="saveResult()">Spara resultat</button>
-                    <button id="downloadButton" style="display: none;" onclick="downloadResult()">Ladda ner resultat</button>
-                </div>
+            
+            <div class="top-box" id="fileInputContainer">
+                <h2>Ladda upp resultat (CSV-fil)</h2> 
+                <input type="file" id="csvFile" accept=".csv">
+                <button onclick="readCSV()">Läs CSV</button>
+                <p id="message"></p>
+                <button id="saveButton" style="display: none;" onclick="saveResult()">Spara resultat</button>
+                <button id="downloadButton" style="display: none;" onclick="downloadResult()">Ladda ner resultat</button>
+            </div>
 
-                <div class="top-box" id="compareContainer">
-                    <h2>Visa runda</h2>
-                    <select id="compareSelect" onchange="handleCompareSelection()">
-                        <option value="" disabled selected>Välj en runda att visa</option>
-                    </select>
-                    <div class="button-group">
-                        <button onclick="showRoundStats()">Visa statistik</button>
-                        <button onclick="hideAll()">Dölj statistik</button>
-                    </div>
+            <div class="top-box" id="savedResultsContainer">
+                <h2>Sparade resultat</h2>
+                <select id="savedResults" onchange="handleResultSelection()">
+                    <option value="" disabled selected>Välj ett sparat resultat</option>
+                </select>
+                <div class="button-group">
+                    <button class="delete-button" onclick="deleteSelectedResult()">Ta bort valt resultat permanent</button>
+                    <button onclick="hideAll()">Dölj visat resultat</button>
                 </div>
             </div>
+            
+            <div class="top-box" id="compareContainer">
+                <h2>Visa runda</h2>
+                <select id="compareSelect" onchange="handleCompareSelection()">
+                    <option value="" disabled selected>Välj en runda att visa</option>
+                </select>
+                <div class="button-group">
+                    <button onclick="showRoundStats()">Visa statistik</button>
+                    <button onclick="hideAll()">Dölj statistik</button>
+                </div>
+                <div id="comparisonResult"></div>
+            </div>
+        </div>
 
             <div id="dynamicCourseStats" class="top-container" style="display: none;">
                 <div class="top-box" id="holeAnalysisContainer">
