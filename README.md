@@ -30,4 +30,4 @@ Appen är byggd med rena webbteknologier och kräver ingen server-side-kod:
 
 ## ✍️ Licens
 
-Detta projekt är tillgängligt under **MIT License**. Se filen [LICENSE](LICENSE) för mer information.
+Detta projekt är tillgängligt under **Creative Commons BY-ND 4.0*. Se filen [LICENSE](LICENSE) för mer information.
