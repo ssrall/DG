@@ -291,6 +291,7 @@
         .cell-darkest-red { background-color: #dc3545; color: white; } 
         .cell-green { background-color: #d4edda; } 
         .cell-dark-green { background-color: #28a745; color: white; } 
+        /* 💡 Ljusblå för metadata-kolumner på spelarens rad */
         .cell-blue { background-color: #cce5ff; } 
         
         /* Färgkoder för rankning i stats */
@@ -768,7 +769,7 @@
             };
 
             const oldPB = savedSummaries[courseName] ? parseFloat(savedSummaries[courseName].personalBestTotal) : Infinity;
-            
+
             if (savedSummaries[courseName]) {
                 const oldSummary = savedSummaries[courseName];
                 const oldCount = parseInt(oldSummary.count) || 0;
@@ -893,6 +894,20 @@
             table.innerHTML = '';
             const courseName = data.players[0][1]; 
 
+            // NYTT: Sortera spelarraderna baserat på Total (index 5)
+            // Lägst Total ska komma först (bäst resultat)
+            const sortedPlayers = [...data.players].sort((a, b) => {
+                const totalA = parseFloat(a[5]);
+                const totalB = parseFloat(b[5]);
+
+                // Hantera icke-numeriska eller saknade värden (skickas till slutet)
+                const valA = isNaN(totalA) ? Infinity : totalA;
+                const valB = isNaN(totalB) ? Infinity : totalB;
+
+                return valA - valB;
+            });
+
+
             // Header
             const headerRowElement = document.createElement('thead');
             const tr = document.createElement('tr');
@@ -936,7 +951,7 @@
             let playerCount = 0;
             let myPdga = 'N/A'; 
 
-            data.players.forEach(cells => {
+            sortedPlayers.forEach(cells => {
                 const isPlayer = cells[0] === playerName;
                 if (isPlayer) {
                     playerCount++;
@@ -948,9 +963,15 @@
                     const td = document.createElement('td');
                     td.textContent = cell;
 
+                    // 💡 NY LOGIK: Ljusblå highlight för metadata-kolumnerna (index 0-4) på spelarens rad
+                    if (isPlayer && index >= 0 && index <= 4) {
+                        td.className = 'cell-blue';
+                    }
+
                     if (isPlayer && index >= 8) {
                         const score = parseFloat(cell);
                         const par = parseFloat(data.par[index]);
+                        // Här kommer hålresultaten (index 8 och framåt), som ska färgkodas
                         td.className = getCellColorClass(score, par);
                         if (!isNaN(score)) {
                             totalsForAverage[index] += score;
@@ -1149,7 +1170,7 @@
                 updateSummaryRow(playerName, aceCount, currentCsvData.players, currentCsvData.header);
                 calculateAndDisplayTopPlayers();
                 precalculateHoleStats(); // Viktigt: Uppdatera hålstatistiken
-                updateScrollingText();
+                updateScrollingText(); // <-- Denna har åtgärdats!
 
                 showMessage("Resultatet har sparats och sammanfattningen har uppdaterats.", false);
 
@@ -1546,7 +1567,10 @@
             localStorage.setItem('holeStats', JSON.stringify(holeStats));
         }
 
-        // NY FUNKTION
+        /**
+         * UPPDATERAD FUNKTION
+         * Visar nu endast hål som är strikt över eller under par (dvs. diff !== 0).
+         */
         function calculateCourseHoleAnalysis(courseName) {
             const analysisContainer = document.getElementById('holeAnalysisContent');
             analysisContainer.innerHTML = '';
@@ -1561,11 +1585,12 @@
             let worstHoles = [];
             let bestDiff = Infinity;
             let worstDiff = -Infinity;
+            let foundData = false; // Flagga för att se om vi hittat någon håldata
 
             const parRow = savedResults.find(r => r.data.players[0][1] === courseName)?.data.par || [];
             const headerRow = savedResults.find(r => r.data.players[0][1] === courseName)?.data.header || [];
 
-
+            // 1. Beräkna bästa/sämsta diff och populera listorna
             for (const holeName in stats) {
                 const holeIndex = headerRow.findIndex(h => h === holeName);
                 if(holeIndex === -1) continue;
@@ -1574,6 +1599,7 @@
                 const { totalScore, roundsPlayed } = stats[holeName];
 
                 if (roundsPlayed === 0 || isNaN(par)) continue;
+                foundData = true;
 
                 const averageScore = totalScore / roundsPlayed;
                 const diffToPar = averageScore - par;
@@ -1586,7 +1612,7 @@
                     par: par
                 };
 
-                // Hitta bästa/sämsta hål
+                // Hitta bästa/sämsta hål (inkluderar nu diff=0 vid initial sökning)
                 if (diffToPar < bestDiff) {
                     bestDiff = diffToPar;
                     bestHoles = [analysis];
@@ -1601,25 +1627,42 @@
                     worstHoles.push(analysis);
                 }
             }
-
-            // Filtrera ut de hål som är neutrala (diff=0) om det finns bättre/sämre
-            const bestList = bestHoles.filter(h => parseFloat(h.diff) <= bestDiff);
-            const worstList = worstHoles.filter(h => parseFloat(h.diff) >= worstDiff);
-
-            if (bestList.length > 0) {
-                analysisContainer.innerHTML += `<li><strong>Bästa (${bestList.length > 1 ? 'Delad' : 'Medel'}):</strong></li>`;
-                bestList.forEach(h => {
-                    analysisContainer.innerHTML += `<li class="best-hole">${h.name} (Par ${h.par}): ${h.avgScore} (${h.diff})</li>`;
-                });
-            } else {
-                analysisContainer.innerHTML += `<li>Ingen positiv statistik.</li>`;
+            
+            if (!foundData) {
+                 analysisContainer.innerHTML = '<li>Ingen hålstatistik sparad för denna bana.</li>';
+                 return;
             }
 
-            if (worstList.length > 0 && parseFloat(worstList[0].diff) > 0) {
-                analysisContainer.innerHTML += `<li><strong>Sämsta (${worstList.length > 1 ? 'Delad' : 'Medel'}):</strong></li>`;
-                worstList.forEach(h => {
-                    analysisContainer.innerHTML += `<li class="worst-hole">${h.name} (Par ${h.par}): +${h.avgScore} (+${h.diff})</li>`;
+            // Filtrera ut de hål som matchar min/max-diffen
+            const finalBestList = bestHoles.filter(h => parseFloat(h.diff) === bestDiff);
+            const finalWorstList = worstHoles.filter(h => parseFloat(h.diff) === worstDiff);
+            
+            let bestDisplayed = false;
+            let worstDisplayed = false;
+
+            // 2. Visa BÄSTA hål: Endast om bestDiff är strikt negativ (< 0)
+            if (finalBestList.length > 0 && bestDiff < 0) {
+                analysisContainer.innerHTML += `<li><strong>Bästa (${finalBestList.length > 1 ? 'Delad' : 'Medel'}):</strong></li>`;
+                finalBestList.forEach(h => {
+                    analysisContainer.innerHTML += `<li class="best-hole">${h.name} (Par ${h.par}): ${h.avgScore} (${h.diff})</li>`;
                 });
+                bestDisplayed = true;
+            } 
+
+            // 3. Visa SÄMSTA hål: Endast om worstDiff är strikt positiv (> 0)
+            if (finalWorstList.length > 0 && worstDiff > 0) {
+                analysisContainer.innerHTML += `<li><strong>Sämsta (${finalWorstList.length > 1 ? 'Delad' : 'Medel'}):</strong></li>`;
+                finalWorstList.forEach(h => {
+                    // Lägg till '+' framför diff om den är positiv
+                    const diffText = parseFloat(h.diff) > 0 ? `+${h.diff}` : h.diff;
+                    analysisContainer.innerHTML += `<li class="worst-hole">${h.name} (Par ${h.par}): ${h.avgScore} (${diffText})</li>`;
+                });
+                worstDisplayed = true;
+            }
+            
+            // 4. Visa fallback-meddelande om inget bästa/sämsta visades
+            if (!bestDisplayed && !worstDisplayed) {
+                analysisContainer.innerHTML = '<li>Inget resultat som avviker från Par (0.00).</li>';
             }
         }
 
@@ -1778,12 +1821,16 @@
         }
 
 
+        /**
+         * ÅTGÄRDAD FUNKTION: Bytte ut den DOM-uppdaterande while-loopen mot en beräkning
+         * för att undvika att låsa UI-tråden (frysningen).
+         */
         function updateScrollingText() {
             const scrollingTextElement = document.getElementById('scrollingText');
-            scrollingTextElement.innerHTML = '';
-            scrollingTextElement.className = 'scrolling-text';
+            scrollingTextElement.className = 'scrolling-text'; 
+            scrollingTextElement.textContent = ''; // Rensa innehållet
 
-            let scrollingContent = '';
+            let baseContent = '';
             const courses = Object.keys(savedSummaries).sort();
             
             if (courses.length === 0) {
@@ -1794,24 +1841,47 @@
 
             courses.forEach(course => {
                 const summary = savedSummaries[course];
-                scrollingContent += `🏆 ${course}: PB (+/-) ${summary.personalBestPlusMinus} | Medel PDGA ${summary.pdga} | Medel UDisc ${summary.roundRating} | Spelade rundor: ${summary.count} | `;
+                baseContent += `🏆 ${course}: PB (+/-) ${summary.personalBestPlusMinus} | Medel PDGA ${summary.pdga} | Medel UDisc ${summary.roundRating} | Spelade rundor: ${summary.count} | `;
             });
 
-            scrollingContent += ' '; // Lägg till ett mellanslag i slutet för snyggare loop
+            baseContent += ' '; // Avslutande mellanslag
 
-            let repeatedContent = scrollingContent;
+            // Steg 1: Sätt bas-innehållet i DOM för att kunna mäta dess bredd
+            scrollingTextElement.textContent = baseContent; 
             
-            // Säkerställ att texten är tillräckligt lång för att rulla
-            scrollingTextElement.textContent = repeatedContent; 
-            
+            // Steg 2: Använd setTimeout för att vänta tills browsern har renderat och mätt bredden.
             setTimeout(() => {
-                while (scrollingTextElement.scrollWidth < document.getElementById('scrollingContainer').clientWidth * 2) {
-                    repeatedContent += " | " + scrollingContent.slice(0, -2);
-                    scrollingTextElement.innerHTML = repeatedContent;
-                }
-                scrollingTextElement.className = 'scrolling-text'; 
+                const container = document.getElementById('scrollingContainer');
+                if (!container) return;
+                const containerWidth = container.clientWidth;
                 
-                // Beräknar animationstiden baserat på textlängd
+                const singleContentWidth = scrollingTextElement.scrollWidth;
+
+                let finalContent = baseContent;
+
+                if (singleContentWidth > 0) {
+                    const targetWidth = containerWidth * 2;
+                    // Beräkna hur många fulla repetitioner som behövs för att fylla ut
+                    const fullRepeatsNeeded = Math.ceil(targetWidth / singleContentWidth);
+                    
+                    // Bygg den slutliga strängen i minnet
+                    for (let i = 0; i < fullRepeatsNeeded + 1; i++) { // Lägg till +1 som buffert
+                        // Lägg till en separator och sedan själva innehållet
+                        finalContent += " | " + baseContent.slice(0, -1); 
+                    }
+                } else {
+                    // Fallback om bredden inte kunde mätas (t.ex. om behållaren är gömd)
+                    // Upprepa en fast antal gånger för att vara säker på att den rullar.
+                    for (let i = 0; i < 10; i++) {
+                        finalContent += " | " + baseContent.slice(0, -1);
+                    }
+                }
+                
+                // Steg 3: Sista, enda, DOM-uppdateringen med den kompletta strängen
+                scrollingTextElement.textContent = finalContent;
+                
+                // Återställ klass och beräkna animationstiden baserat på den nya, faktiska bredden
+                scrollingTextElement.className = 'scrolling-text'; 
                 const contentWidth = scrollingTextElement.scrollWidth;
                 const duration = (contentWidth / 80) + 5;
                 scrollingTextElement.style.animationDuration = `${duration}s`;
