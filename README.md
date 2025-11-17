@@ -31,3 +31,18 @@ Appen är byggd med rena webbteknologier och kräver ingen server-side-kod:
 ## ✍️ Licens
 
 Detta projekt är tillgängligt under **Creative Commons BY-ND 4.0*. Se filen [LICENSE](LICENSE) för mer information.
+
+Information om datalagring och integritet (GDPR)
+
+
+"Denna applikation behandlar dina data enligt följande principer, i enlighet med GDPR (Dataskyddsförordningen):
+
+Ingen extern lagring: Alla resultat, spelarnamn och statistiska data (inklusive UDisc-rating) som läses in från din CSV-fil lagras uteslutande lokalt i din webbläsares minne (localStorage). Inga uppgifter skickas, överförs eller sparas på någon extern server, databas eller molntjänst.
+
+Personuppgifter: De uppgifter som behandlas är de som finns i din inlästa CSV-fil (t.ex. spelarnamn och ratingar), vilka räknas som personuppgifter.
+
+Ändamål: Syftet med behandlingen är att erbjuda dig personlig statistik och en förbättrad översikt över dina och dina medspelares rundor.
+
+Radering: Om du raderar data från din webbläsare eller rensar din webbläsares lokala lagring, kommer all sparad information från denna applikation att raderas permanent.
+
+Genom att använda applikationen godkänner du att din webbläsare lagrar dessa uppgifter lokalt för det angivna ändamålet."
