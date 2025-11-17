@@ -818,16 +818,16 @@
                 });
             });
 
-            const avgTotal = totalPlayerRounds > 0 ? Math.round(sumTotal / totalPlayerRounds) : 'N/A';
-            const avgPlusMinus = totalPlayerRounds > 0 ? (sumPlusMinus / totalPlayerRounds).toFixed(1) : 'N/A';
-            const avgRating = roundsWithRating > 0 ? Math.round(sumRating / roundsWithRating) : 'N/A';
+            const avgTotal = totalPlayerRounds > 0 ? (sumTotal / totalPlayerRounds).toFixed(2) : 'N/A'; // FIX 1
+const avgPlusMinus = totalPlayerRounds > 0 ? (sumPlusMinus / totalPlayerRounds).toFixed(2) : 'N/A'; // FIX 2
+const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(2) : 'N/A'; // FIX 3
 
-            return {
-                avgTotal: avgTotal,
-                avgPlusMinus: avgPlusMinus,
-                avgRating: avgRating
-            };
-        }
+return {
+    avgTotal: avgTotal,
+    avgPlusMinus: avgPlusMinus,
+    avgRating: avgRating
+};
+}
 
         /**
          * HÄMTAR GLOBAL MEDEL-RADEN FÖR ALLA RUNDOR PÅ EN SPECIFIK BANA (ERSÄTTER getAverageAllRoundsRow).
@@ -853,12 +853,12 @@
                 
                 // Använder de globala medelvärdena för Total, +/- och Rating
                 else if (index === 5) { // Total
-                    return globalAverages.avgTotal; 
-                } else if (index === 6) { // +/-
-                    return globalAverages.avgPlusMinus; 
-                } else if (index === 7) { // UdiscRating
-                    return globalAverages.avgRating; 
-                } 
+                    return globalAverages.avgTotal.toFixed(2); // FIX: 2 decimaler
+                } else if (index === 6) { // +/-
+                    return globalAverages.avgPlusMinus.toFixed(2); // FIX: 2 decimaler
+                } else if (index === 7) { // UdiscRating
+                    return globalAverages.avgRating.toFixed(2); // FIX: 2 decimaler
+                } 
                 
                 // Hål (Hämtas korrekt från globala holeStats)
                 else if (index >= holeStartIndex) { 
@@ -1201,10 +1201,10 @@
                 });
             });
 
-            // Beräkna medelvärdena
-            const avgTotal = totalPlayerRounds > 0 ? Math.round(sumTotal / totalPlayerRounds) : 'N/A';
-            const avgPlusMinus = totalPlayerRounds > 0 ? (sumPlusMinus / totalPlayerRounds).toFixed(1) : 'N/A';
-            const avgRating = roundsWithRating > 0 ? Math.round(sumRating / roundsWithRating) : 'N/A';
+            // Beräkna medelvärdena och formatera till 2 decimaler
+const avgTotal = totalPlayerRounds > 0 ? (sumTotal / totalPlayerRounds).toFixed(2) : 'N/A';
+const avgPlusMinus = totalPlayerRounds > 0 ? (sumPlusMinus / totalPlayerRounds).toFixed(2) : 'N/A';
+const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(2) : 'N/A';
             
             // --- 2. BYGG RADEN (ARRAYEN) MED HJÄLP AV BÅDE GLOBAL DATA OCH HOLESTATS ---
             
