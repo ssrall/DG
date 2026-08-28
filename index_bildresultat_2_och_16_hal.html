@@ -1,0 +1,3050 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="discgolf-icon-180.png"> 
+    <title id="pageTitle"></title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        /* ------------------------------ BAS & TYPOGRAFI ------------------------------ */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa; /* Lätt grå bakgrund */
+            color: #333;
+        }
+        h1 {
+            color: #1f8383; /* Mörk turkos accentfärg */
+            margin: 20px 0 30px;
+            font-size: 2em;
+            text-transform: uppercase;
+            font-weight: 300;
+            letter-spacing: 1px;
+            position: static; 
+            padding-right: 0;
+        }
+        h2 {
+            color: #333;
+            font-size: 1.2em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            margin-top: 0;
+        }
+        
+        /* ------------------------------ KORT OCH CONTAINERS ------------------------------ */
+        /* Huvudcontainer för allt innehåll */
+        #mainContent {
+            display: block !important; 
+            padding: 20px;
+            max-width: 1600px; 
+            margin: 0 auto;
+        }
+        
+        /* ------------------------------ TOPPDASBOARD - CSS GRID ------------------------------ */
+        /* Wrapper för de övre elementen: Rating, Top 5, Bästa Resultat och Knappboxar */
+        .top-grid-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Två kolumner för Stats */
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Generell kort-stil för de övre boxarna */
+        #topPlayersContainer, #scrollingContainer, #overallRatingContainer, #holeProgressionChartContainer {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: left;
+            position: static !important; 
+            width: 100% !important;
+            margin: 0 !important;
+            border: none;
+        }
+
+        /* 1. PDGA Rating Card (Full bredd) */
+        #overallRatingContainer {
+            grid-column: 1 / span 2; 
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #1f8383;
+            padding: 15px 20px;
+        }
+        
+        /* 2. Top 5 Card (Vänster) */
+        #topPlayersContainer {
+            grid-column: 1 / 2; /* Vänster kolumn */
+        }
+        #topPlayersList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #topPlayersList li {
+            padding: 5px 0;
+            border-bottom: 1px dotted #eee;
+        }
+        #topPlayersList li:last-child {
+            border-bottom: none;
+        }
+        .win-arrow { color: #28a745; font-weight: bold; }
+        .loss-arrow { color: #dc3545; font-weight: bold; }
+        .tie-arrow { color: #ffc107; font-weight: bold; }
+
+        /* 3. Bästa Resultat Card (Höger) */
+        #scrollingContainer {
+            grid-column: 2 / 3; /* Höger kolumn */
+            position: static !important; 
+            overflow: hidden; 
+            white-space: normal; 
+            height: auto; 
+            padding-top: 20px; 
+        }
+        #scrollingContainer h2 {
+            position: static; 
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            border-bottom: 2px solid #eee; 
+        }
+
+        /* Styling för den STATISKA texten */
+        .static-best, .scrolling-text-temp {
+            display: block; 
+            white-space: normal; 
+            padding-top: 5px;
+            line-height: 1.5;
+            animation: none !important; 
+        }
+        
+        /* Styling för static best result list */
+        #scrollingText ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            white-space: normal; 
+        }
+        #scrollingText ul li {
+            font-size: 0.9em;
+            display: block; 
+            padding: 5px 0;
+            border-right: none; 
+            border-bottom: 1px dotted #eee; 
+            line-height: 1.5;
+        }
+        #scrollingText ul li:last-child {
+            border-bottom: none; 
+        }
+
+        .better-result { color: #28a745; font-weight: bold; }
+        .worse-result { color: #dc3545; font-weight: bold; }
+        
+        /* NYTT: Hål Progress Chart Container */
+        #holeProgressionChartContainer {
+            grid-column: 1 / span 2; /* Tar full bredd */
+            padding-bottom: 40px;
+            min-height: 270px; /* Lade till min-height för att fixera containern */
+        }
+        #holeProgressionChart {
+            height: 250px; /* Sänkt till 250px */
+            max-height: 250px; /* Lade till max-height för att vara extra säker */
+            width: 100%;
+        }
+
+        /* Knappboxar - Flyttas till full bredd under stats-korten */
+        .top-container {
+            grid-column: 1 / span 2; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px;
+            margin-top: 0;
+        }
+        
+        .top-box {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            border: none; 
+            margin: 0;
+            width: 100%;
+            max-width: none;
+            box-sizing: border-box;
+        }
+        
+        /* NY STYLING FÖR DE NYA DYNAMISKA STATS KORTEN */
+        #dynamicCourseStats {
+            grid-column: 1 / span 2; 
+            margin-top: 20px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        #dynamicCourseStats .top-box {
+            min-height: 200px; 
+            text-align: left;
+        }
+        #holeAnalysisContent, #courseHeadToHeadList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #holeAnalysisContent li, #courseHeadToHeadList li {
+            padding: 5px 0;
+            border-bottom: 1px dotted #eee;
+            font-size: 0.9em;
+        }
+        .best-hole { color: #28a745; font-weight: bold; }
+        .worst-hole { color: #dc3545; font-weight: bold; }
+
+        
+        /* ------------------------------ RUNDSTATISTIK & JÄMFÖRELSE ------------------------------ */
+        #comparisonResult {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0 30px 0;
+            text-align: left;
+        }
+        #comparisonResult .player-card {
+            border: none;
+            padding: 15px;
+            margin: 0;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            background-color: #ffffff;
+        }
+        
+        /* ------------------------------ SAMMANFATTNING ------------------------------ */
+        .summary-wrapper {
+            margin-top: 30px;
+            text-align: center; 
+        }
+        #courseSelect {
+            max-width: 300px; 
+            margin: 10px auto; 
+            display: block; 
+        }
+        .summary-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding-top: 10px;
+            max-width: 100%; 
+            margin: 0 auto;
+        }
+        .summary {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 0;
+            max-width: 450px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: none;
+            box-sizing: border-box;
+            text-align: left;
+            justify-self: center; 
+        }
+
+        /* ------------------------------ KNAPPAR & INPUT ------------------------------ */
+        button {
+            padding: 10px 15px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 4px;
+            background-color: #1f8383; 
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+        button:hover { background-color: #145959; }
+        .delete-button { background-color: #dc3545; }
+        .delete-button:hover { background-color: #c82333; }
+        .button-group {
+            display: flex;
+            flex-direction: column; 
+            gap: 5px;
+            margin-top: 10px;
+        }
+        select, input[type="file"], textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        
+        /* ------------------------------ TABELL ------------------------------ */
+        #csvTable {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 1500px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+        #csvTable th, #csvTable td {
+            border: 1px solid #eee;
+            padding: 12px 8px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        #csvTable td:nth-child(1), #csvTable th:nth-child(1) { 
+            white-space: normal; 
+        }
+        #csvTable th {
+            background-color: #e9ecef;
+            cursor: pointer;
+        }
+        
+        /* Färgkoder för resultat */
+        .cell-red { background-color: #f8d7da; } 
+        .cell-dark-red { background-color: #f5c6cb; color: #721c24; } 
+        .cell-darkest-red { background-color: #dc3545; color: white; } 
+        .cell-green { background-color: #d4edda; } 
+        .cell-dark-green { background-color: #28a745; color: white; } 
+        .cell-blue { background-color: #cce5ff; } 
+
+        /* Färg för spelarens icke-hål celler */
+        .player-highlight-cell {
+            background-color: #e6f7ff !important; /* Lätt blå färg */
+        }
+        
+        /* Färgkod för "Medel (Alla rundor på denna bana)" */
+        .avg-all-round-row {
+            background-color: #e9ecef; /* Fix: Samma grå som 'Medel (Denna runda)' */
+            font-weight: bold;
+        }
+        
+        /* Färgkoder för rankning i stats */
+        .rank-1 { background-color: #d4edda; }
+        .rank-2 { background-color: #fff3cd; }
+        .rank-3 { background-color: #e2d9ff; }
+        .rank-4 { background-color: #f8d7da; }
+        .rank-last-dark { background-color: #dc3545; color: white; }
+
+        /* ------------------------------ ÖVRIGT ------------------------------ */
+        /* Startskärm */
+        #startPage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        
+        /* Tooltip */
+        #holeTooltip {
+            display: none;
+            position: fixed;
+            background-color: #333;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            z-index: 100;
+            pointer-events: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+
+        /* Responsive anpassning */
+        @media (max-width: 1600px) { 
+            /* När skärmen är smal, stapla allt vertikalt i en kolumn */
+            .top-grid-wrapper {
+                grid-template-columns: 1fr; 
+            }
+            #overallRatingContainer, #topPlayersContainer, #scrollingContainer, #holeProgressionChartContainer {
+                grid-column: 1 / 2;
+            }
+            /* Knappboxarna hanteras av sin interna grid-template-columns: repeat(auto-fit...) */
+            .top-container {
+                 grid-column: 1 / 2;
+            }
+            #dynamicCourseStats {
+                 grid-template-columns: 1fr;
+            }
+        }
+
+        /* ------------------------------ BILDRESULTAT / OCR ------------------------------ */
+        #imageResultPreview {
+            display: none;
+            max-width: 100%;
+            max-height: 520px;
+            margin: 12px auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            object-fit: contain;
+            background: #111;
+        }
+        #ocrProgress {
+            display: none;
+            margin: 8px 0;
+            font-size: .9em;
+            color: #1f8383;
+            min-height: 20px;
+        }
+        #ocrText {
+            display: none;
+            width: 100%;
+            min-height: 180px;
+            box-sizing: border-box;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            padding: 10px;
+        }
+        .image-meta-panel {
+            display: none;
+            margin: 14px 0;
+            padding: 16px;
+            border: 1px solid #d9e2e8;
+            border-radius: 12px;
+            background: #f7fafc;
+            text-align: left;
+        }
+        .image-meta-panel h3 { margin: 0 0 6px; font-size: 1.05em; }
+        .image-meta-panel p { margin: 0 0 12px; color: #667085; font-size: .85em; line-height: 1.4; }
+        .image-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .image-meta-grid label { font-size: .8em; font-weight: 700; color: #475467; display: flex; flex-direction: column; gap: 5px; }
+        .image-meta-grid input {
+            width: 100%; box-sizing: border-box; padding: 9px 10px; border: 1px solid #cfd8df;
+            border-radius: 7px; background: white; font-size: .95em;
+        }
+        .image-rating-box {
+            margin-top: 12px; padding: 11px 12px; border-radius: 9px; background: #eef7f7;
+            font-size: .84em; line-height: 1.45; color: #345;
+        }
+        .image-rating-box strong { color: #1f6f6f; }
+        .image-meta-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+        @media (max-width: 650px) { .image-meta-grid { grid-template-columns: 1fr; } }
+        .image-result-info {
+            font-size: .85em;
+            color: #666;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .image-result-status {
+            font-size: .9em;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+        .image-test-note {
+            font-size: .78em;
+            color: #777;
+            margin-top: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="startPage">
+        <h2>Välkommen!</h2>
+        <p>Vänligen ange ditt Udisc-namn för att visa din statistik.</p>
+        <input type="text" id="playerNameInput" placeholder="Skriv ditt namn här">
+        <button onclick="setPlayerName()">Starta</button>
+    </div>
+
+    <div id="mainContent">
+        <h1><span id="playerTitle"></span> DiscGolf Resultat</h1>
+        
+        <div class="top-grid-wrapper">
+
+            <div id="overallRatingContainer">
+                <span id="overallRating"></span>
+            </div>
+
+            <div id="topPlayersContainer">
+                <h2>Dina Top 5 Motståndare (Totalt)</h2>
+                <ul id="topPlayersList"></ul>
+            </div>
+            
+            <div id="scrollingContainer">
+                <h2>Dina 5 bästa resultat</h2>
+                <span id="scrollingText" class="static-best"></span>
+            </div>
+            
+            <div id="holeProgressionChartContainer" class="top-box" style="grid-column: 1 / span 2; display: none;">
+                <h2>Rundanalys - Placeringsutveckling Hål för Hål</h2>
+                <canvas id="holeProgressionChart"></canvas>
+            </div>
+
+            <div class="top-container">
+            
+                <div class="top-box" id="fileInputContainer">
+                    <h2>Ladda upp resultat (CSV-fil)</h2> 
+                    <input type="file" id="csvFile" accept=".csv">
+                    <button onclick="readCSV()">Läs CSV</button>
+                    <p id="message"></p>
+                    <button id="saveButton" style="display: none;" onclick="saveResult()">Spara resultat</button>
+                    <button id="downloadButton" style="display: none;" onclick="downloadResult()">Ladda ner resultat</button>
+                </div>
+
+                <div class="top-box" id="imageInputContainer">
+                    <h2>Ladda upp resultat (Bild)</h2>
+                    <input type="file" id="resultImageFile" accept="image/png,image/jpeg,image/webp,image/jpg" onchange="previewResultImage()">
+                    <img id="imageResultPreview" alt="Förhandsvisning av resultatbild">
+                    <button type="button" onclick="readResultImage()">Läs resultat från bild</button>
+                    <div id="ocrProgress"></div>
+                    <p class="image-result-info">Ladda upp en skärmbild från UDisc. Appen läser resultatet med OCR och bygger ett vanligt resultatkort som kan sparas tillsammans med dina CSV-rundor.</p>
+                    <p class="image-test-note">Testlayout: UDisc-scorekort med 18 hål. Bana, layout och datum fyller du själv efter att bilden har lästs.</p>
+                    <textarea id="ocrText" placeholder="OCR-text visas här. Du kan korrigera texten innan resultatet skapas."></textarea>
+
+                    <div id="imageMetaPanel" class="image-meta-panel">
+                        <h3>Uppgifter för bildresultatet</h3>
+                        <p>Fyll i det som saknas. Dessa uppgifter sparas tillsammans med rundan och används av appens vanliga statistik.</p>
+                        <div class="image-meta-grid">
+                            <label>Bana
+                                <input id="imageCourseName" type="text" placeholder="T.ex. Hällby Discgolfbana">
+                            </label>
+                            <label>Layout
+                                <input id="imageLayoutName" type="text" placeholder="T.ex. Hällby 1 - 16">
+                            </label>
+                            <label>Startdatum
+                                <input id="imageStartDate" type="date">
+                            </label>
+                            <label>Slutdatum
+                                <input id="imageEndDate" type="date">
+                            </label>
+                        </div>
+                        <div id="imageRatingStatus" class="image-rating-box">
+                            <strong>UDisc Rating:</strong> Om rating saknas försöker appen hämta den från ett sparat resultat för samma spelare, samma bana och samma antal hål.
+                        </div>
+                        <div class="image-meta-actions">
+                            <button type="button" onclick="applyImageMetaAndRefresh()">Uppdatera resultat</button>
+                            <button type="button" onclick="findSavedRatingsForImage()">Hämta saknade UDisc Ratings</button>
+                        </div>
+                    </div>
+                    <button type="button" id="createImageResultButton" style="display:none;" onclick="createResultFromOCR()">Skapa resultat från bild</button>
+                    <button type="button" id="saveImageResultButton" style="display:none;" onclick="saveImageResult()">Spara bildresultat</button>
+                </div>
+
+                <div class="top-box" id="savedResultsContainer">
+                    <h2>Sparade resultat</h2>
+                    <select id="savedResults" onchange="handleResultSelection()"> 
+                        <option value="" disabled selected>Välj ett sparat resultat</option>
+                    </select>
+                    <div class="button-group">
+                        <button class="delete-button" onclick="deleteSelectedResult()">Ta bort valt resultat permanent</button>
+                        <button onclick="hideAll()">Dölj visat resultat</button>
+                    </div>
+                </div>
+                
+                <div class="top-box" id="compareContainer">
+                    <h2>Visa runda</h2>
+                    <select id="compareSelect" onchange="handleCompareSelection()"> 
+                        <option value="" disabled selected>Välj en runda att visa</option>
+                    </select>
+                    <div class="button-group">
+                        <button onclick="showRoundStats()">Visa statistik</button> 
+                        <button onclick="hideAll()">Dölj statistik</button>
+                    </div>
+                    <div id="comparisonResult"></div>
+                </div>
+            </div>
+
+            <div id="dynamicCourseStats" style="display: none;">
+                <div class="top-box" id="holeAnalysisContainer">
+                    <h2>Bästa/Sämsta Hål (På vald bana)</h2>
+                    <div id="holeAnalysisContent"></div>
+                </div>
+
+                <div class="top-box" id="headToHeadContainer">
+                    <h2>Head-to-Head på Bana</h2>
+                    <ul id="courseHeadToHeadList"></ul>
+                </div>
+            </div>
+        </div>
+        <div id="comparisonResult"></div>
+
+        <table id="csvTable"></table>
+        <div id="holeTooltip"></div>
+
+        <div class="summary-wrapper">
+            <h2>Sammanfattningar</h2>
+            <select id="courseSelect" onchange="filterSummariesByCourse()">
+                <option value="none" selected>Visa inga banor</option>
+                <option value="all">Visa alla banor</option>
+            </select>
+            <div class="summary-container" id="summaryContainer">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let savedResults = JSON.parse(localStorage.getItem('savedResults')) || [];
+        let savedSummaries = JSON.parse(localStorage.getItem('savedSummaries')) || {};
+        let fileHashes = JSON.parse(localStorage.getItem('fileHashes')) || {};
+        let playerName = localStorage.getItem('playerName');
+        let csvLoaded = false;
+        let currentCsvData = null;
+        let sortDirection = {};
+        let holeStats = JSON.parse(localStorage.getItem('holeStats')) || {};
+        
+        // NYTT: Global variabel för Chart.js instans
+        let myChartInstance = null;
+
+        // Bildresultat/OCR. CSV-logiken nedan är oförändrad.
+        let imageResultData = null;
+        let imageResultLoaded = false;
+        let imageResultSource = null;
+        let imageResultDataUrl = null;
+        let imageOcrWords = [];
+
+        const translationMap = {
+            "PlayerName": "Spelare",
+            "CourseName": "Bana",
+            "LayoutName": "Layout",
+            "StartDate": "Startdatum",
+            "EndDate": "Slutdatum",
+            "Total": "Totalt",
+            "+/-": "+/-",
+            "RoundRating": "UdiscRating",
+            "Hole1": "Hål 1", "Hole2": "Hål 2", "Hole3": "Hål 3", "Hole4": "Hål 4", "Hole5": "Hål 5",
+            "Hole6": "Hål 6", "Hole7": "Hål 7", "Hole8": "Hål 8", "Hole9": "Hål 9", "Hole10": "Hål 10",
+            "Hole11": "Hål 11", "Hole12": "Hål 12", "Hole13": "Hål 13", "Hole14": "Hål 14", "Hole15": "Hål 15",
+            "Hole16": "Hål 16", "Hole17": "Hål 17", "Hole18": "Hål 18",
+            // Lägg till fler vid behov
+        };
+
+        function showMessage(text, isError = false) {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = text;
+            messageElement.style.color = isError ? 'red' : 'green';
+        }
+
+        function calculateHash(text) {
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                const char = text.charCodeAt(i);
+                hash = (hash << 5) - hash + char;
+                hash |= 0;
+            }
+            return hash;
+        }
+
+        function getCellColorClass(result, par) {
+            if (isNaN(result) || isNaN(par)) {
+                return '';
+            }
+            const diff = result - par;
+            if (diff >= 3) return 'cell-darkest-red';
+            if (diff === 2) return 'cell-dark-red';
+            if (diff === 1) return 'cell-red';
+            if (diff === -1) return 'cell-green';
+            if (diff === -2 && result !== 1) return 'cell-dark-green';
+            if (result === 1) return 'cell-blue';
+            return '';
+        }
+        
+        function saveNotes(courseName) {
+            const notesTextarea = document.getElementById(`notes-${courseName}`);
+            const notes = notesTextarea.value;
+            if (savedSummaries[courseName]) {
+                savedSummaries[courseName].notes = notes;
+                localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
+                showMessage("Anteckningar har sparats.", false);
+            } else {
+                showMessage("Kunde inte spara anteckningar. Kursen finns inte i sammanfattningen.", true);
+            }
+        }
+        
+        function deleteSummary(courseName) {
+            if (confirm(`Är du säker på att du vill ta bort sammanfattningen för ${courseName}?`)) {
+                delete savedSummaries[courseName];
+                localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
+                displayStoredSummaries(document.getElementById('courseSelect').value);
+                updateCourseSelect();
+                showMessage("Sammanfattningen har tagits bort.", false);
+            }
+        }
+        
+        function getStDevRating(results) {
+            if (results.length === 0) return 'N/A';
+            const mean = results.reduce((a, b) => a + b) / results.length;
+            const squaredDiffs = results.map(value => (value - mean) ** 2);
+            const variance = squaredDiffs.reduce((a, b) => a + b) / results.length;
+            return Math.sqrt(variance).toFixed(2);
+        }
+
+        function displayStoredSummaries(filterCourse = null) {
+            const summaryContainer = document.getElementById('summaryContainer');
+            summaryContainer.innerHTML = '';
+
+            let sortedCourses = [];
+            
+            if (filterCourse === "all") {
+                sortedCourses = Object.keys(savedSummaries).sort();
+            } else if (filterCourse && filterCourse !== "none" && savedSummaries[filterCourse]) {
+                sortedCourses = [filterCourse];
+            } else {
+                return;
+            }
+
+            sortedCourses.forEach(course => {
+                const summary = savedSummaries[course];
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = 'summary';
+                summaryDiv.innerHTML = `
+                    <h3>${course}</h3>
+                    <p>Spelade rundor: ${summary.count}</p>
+                    <p>Antal Kast (medel): ${summary.total}</p>
+                    <p>+/- (medel): ${summary.plusMinus}</p>
+                    <p>Udisc Rating (medel): ${summary.roundRating}</p>
+                    <p>Rating Konsistens (STDEV): ${summary.stDevRating || 'N/A'}</p>
+                    <p>PDGA Rating: ${summary.pdga}</p>
+                    <p>Antal Ace: ${summary.aces}</p>
+                    <p>Antal Eagles: ${summary.eagles || 0}</p> 
+                    <p>Personbästa (Totalt): ${summary.personalBestTotal}</p>
+                    <p>Personbästa (+/-): ${summary.personalBestPlusMinus}</p>
+                    <div class="notes">
+                        <textarea id="notes-${course}" placeholder="Skriv dina anteckningar här...">${summary.notes || ''}</textarea>
+                        <button class="saveNotes" onclick="saveNotes('${course.replace(/'/g, "\\'")}')">Spara anteckningar</button>
+                    </div>
+                    <button class="delete-button" onclick="deleteSummary('${course.replace(/'/g, "\\'")}')">Ta bort</button>
+                `;
+                summaryContainer.appendChild(summaryDiv);
+            });
+        }
+        
+        function updateSavedResults() {
+            const select1 = document.getElementById('savedResults');
+            const select2 = document.getElementById('compareSelect');
+
+            savedResults.sort((a, b) => {
+                const dateA = a.data.players[0] ? a.data.players[0][3] : '';
+                const dateB = b.data.players[0] ? b.data.players[0][3] : '';
+                return dateB.localeCompare(dateA);
+            });
+
+            [select1, select2].forEach(select => {
+                select.innerHTML = '<option value="" disabled selected>Välj ett sparat resultat</option>';
+            });
+
+            savedResults.forEach((result, index) => {
+                const option1 = document.createElement('option');
+                option1.value = index;
+                option1.textContent = result.name;
+                select1.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = index;
+                option2.textContent = result.name;
+                select2.appendChild(option2);
+            });
+        }
+        
+        function updateCourseSelect() {
+            const courseSelect = document.getElementById('courseSelect');
+            courseSelect.innerHTML = '<option value="none" selected>Visa inga banor</option><option value="all">Visa alla banor</option>';
+            const courses = Object.keys(savedSummaries).sort();
+            courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                courseSelect.appendChild(option);
+            });
+        }
+        
+        function filterSummariesByCourse() {
+            const courseSelect = document.getElementById('courseSelect');
+            const selectedCourse = courseSelect.value;
+            displayStoredSummaries(selectedCourse);
+        }
+        
+        function recalculateSummaryForCourse(courseName) {
+            const resultsForCourse = savedResults.filter(r => r.data.players.length > 0 && r.data.players.some(p => p.length > 1 && p[1] === courseName));
+
+            if (resultsForCourse.length === 0) {
+                delete savedSummaries[courseName];
+                localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
+                displayStoredSummaries(document.getElementById('courseSelect').value);
+                updateCourseSelect();
+                return;
+            }
+
+            let totalSum = 0, plusMinusSum = 0, roundRatingSum = 0, pdgaSum = 0, count = 0, totalAceCount = 0, totalEagleCount = 0;
+            let personalBestTotal = Infinity, personalBestPlusMinus = Infinity;
+            let allRatings = []; 
+
+            resultsForCourse.forEach(result => {
+                const playersData = result.data.players;
+                const parRow = result.data.par;
+                
+                playersData.forEach(cells => {
+                    if (cells.length > 0 && cells[0] === playerName) {
+                        const total = parseFloat(cells[5]);
+                        const plusMinus = parseFloat(cells[6]);
+                        const roundRating = parseFloat(cells[7]);
+                        
+                        if (!isNaN(total)) {
+                            totalSum += total;
+                            if (total < personalBestTotal) {
+                                personalBestTotal = total;
+                            }
+                        }
+                        if (!isNaN(plusMinus)) {
+                            plusMinusSum += plusMinus;
+                            if (plusMinus < personalBestPlusMinus) {
+                                personalBestPlusMinus = plusMinus;
+                            }
+                        }
+                        if (!isNaN(roundRating)) {
+                            roundRatingSum += roundRating;
+                            allRatings.push(roundRating);
+                            const pdgaRow = (-0.0065 * (roundRating * roundRating)) + (4.8259 * roundRating) + 206.48;
+                            if (!isNaN(pdgaRow)) pdgaSum += pdgaRow;
+                            count++;
+                        }
+
+                        // Räkna Aces och Eagles
+                        const holeStartIndex = 8;
+                        for(let i = holeStartIndex; i < cells.length && i < parRow.length; i++) {
+                             const score = parseFloat(cells[i]);
+                             const par = parseFloat(parRow[i]);
+                             if (isNaN(score) || isNaN(par)) continue;
+                             const diff = score - par;
+
+                             if (score === 1 && par > 1) {
+                                 totalAceCount++;
+                             } else if (diff <= -2) {
+                                 totalEagleCount++;
+                             }
+                        }
+                    }
+                });
+            });
+
+            const currentNotes = savedSummaries[courseName] ? savedSummaries[courseName].notes : '';
+            
+            savedSummaries[courseName] = {
+                playerName: playerName,
+                total: count > 0 ? (totalSum / count).toFixed(2) : 'N/A',
+                plusMinus: count > 0 ? (plusMinusSum / count).toFixed(2) : 'N/A',
+                roundRating: count > 0 ? (roundRatingSum / count).toFixed(2) : 'N/A',
+                stDevRating: getStDevRating(allRatings),
+                pdga: count > 0 ? (pdgaSum / count).toFixed(2) : 'N/A',
+                count: count,
+                aces: totalAceCount,
+                eagles: totalEagleCount, 
+                personalBestTotal: personalBestTotal === Infinity ? 'N/A' : personalBestTotal,
+                personalBestPlusMinus: personalBestPlusMinus === Infinity ? 'N/A' : personalBestPlusMinus,
+                notes: currentNotes
+            };
+
+            localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
+            displayStoredSummaries(document.getElementById('courseSelect').value);
+            updateCourseSelect();
+        }
+
+        function updateSummaryRow(playerNameFilter, newRoundAceCount, newRoundEagleCount, playersData, header) {
+            let totalSum = 0, plusMinusSum = 0, roundRatingSum = 0, pdgaSum = 0, count = 0;
+            let courseName = '';
+            let personalBestTotal = Infinity, personalBestPlusMinus = Infinity;
+            let allRatings = [];
+
+            playersData.forEach(cells => {
+                if (cells.length > 0) {
+                    const playerName = cells[0];
+                    if (playerName === playerNameFilter) {
+                        courseName = cells[1];
+                        const total = parseFloat(cells[5]);
+                        const plusMinus = parseFloat(cells[6]);
+                        const roundRating = parseFloat(cells[7]);
+                        
+                        if (!isNaN(total)) {
+                            totalSum += total;
+                            if (total < personalBestTotal) {
+                                personalBestTotal = total;
+                            }
+                        }
+                        if (!isNaN(plusMinus)) {
+                            plusMinusSum += plusMinus;
+                            if (plusMinus < personalBestPlusMinus) {
+                                personalBestPlusMinus = plusMinus;
+                            }
+                        }
+                        if (!isNaN(roundRating)) {
+                            roundRatingSum += roundRating;
+                            allRatings.push(roundRating);
+                            const pdgaRow = (-0.0065 * (roundRating * roundRating)) + (4.8259 * roundRating) + 206.48;
+                            if (!isNaN(pdgaRow)) pdgaSum += pdgaRow;
+                            count++;
+                        }
+                    }
+                }
+            });
+	/**
+         * Beräknar övergripande medelvärden (Total, +/-, Rating) 
+         * för ALLA spelare i ALLA rundor på den angivna banan.
+         */
+        function calculateCourseOverallAverages(courseName) {
+            let sumTotal = 0;
+            let sumPlusMinus = 0;
+            let sumRating = 0;
+            let totalPlayerRounds = 0;
+            let roundsWithRating = 0;
+
+            const totalIndex = 5;
+            const plusMinusIndex = 6;
+            const ratingIndex = 7;
+            
+            savedResults.forEach(result => {
+                const roundCourseName = result.data.players[0] ? result.data.players[0][1] : null;
+                if (roundCourseName !== courseName) return; 
+
+                // Gå igenom ALLA spelare i den HÄR rundan (Globalt)
+                result.data.players.forEach(player => {
+                    const total = parseInt(player[totalIndex], 10);
+                    const plusMinus = parseInt(player[plusMinusIndex], 10);
+                    const rating = parseInt(player[ratingIndex], 10);
+                    
+                    if (!isNaN(total) && !isNaN(plusMinus)) {
+                        sumTotal += total;
+                        sumPlusMinus += plusMinus;
+                        totalPlayerRounds++; 
+                    }
+
+                    if (!isNaN(rating) && rating > 0) {
+                        sumRating += rating;
+                        roundsWithRating++;
+                    }
+                });
+            });
+
+            const avgTotal = totalPlayerRounds > 0 ? (sumTotal / totalPlayerRounds).toFixed(2) : 'N/A'; // FIX 1
+const avgPlusMinus = totalPlayerRounds > 0 ? (sumPlusMinus / totalPlayerRounds).toFixed(2) : 'N/A'; // FIX 2
+const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(2) : 'N/A'; // FIX 3
+
+return {
+    avgTotal: avgTotal,
+    avgPlusMinus: avgPlusMinus,
+    avgRating: avgRating
+};
+}
+
+        /**
+         * HÄMTAR GLOBAL MEDEL-RADEN FÖR ALLA RUNDOR PÅ EN SPECIFIK BANA (ERSÄTTER getAverageAllRoundsRow).
+         * Denna funktion beräknar den globala raden baserat på ALLA spelare.
+         */
+        function getGlobalAveragesRow(data, courseName) {
+            // Hämta de globala medelvärdena för Totalt, +/-, Rating
+            const globalAverages = calculateCourseOverallAverages(courseName);
+
+            // Hämtar headern
+            const header = data.header;
+            const holeRegex = /^(Hole|Hål)\d+$/; 
+            const holeStartIndex = header.findIndex(h => holeRegex.test(h)); 
+            
+            if (holeStartIndex === -1) {
+                return null;
+            }
+            
+            const avgRowData = header.map((headerCell, index) => {
+                if (index === 0) {
+                    return 'Medel (Alla rundor)'; // <-- Etiketten
+                } 
+                
+                // Använder de globala medelvärdena för Total, +/- och Rating
+                else if (index === 5) { // Total
+                    return globalAverages.avgTotal.toFixed(2); // FIX: 2 decimaler
+                } else if (index === 6) { // +/-
+                    return globalAverages.avgPlusMinus.toFixed(2); // FIX: 2 decimaler
+                } else if (index === 7) { // UdiscRating
+                    return globalAverages.avgRating.toFixed(2); // FIX: 2 decimaler
+                } 
+                
+                // Hål (Hämtas korrekt från globala holeStats)
+                else if (index >= holeStartIndex) { 
+                    const holeName = headerCell;
+                    // Måste kontrollera holeStats för att få hålmedelvärdena
+                    const stats = holeStats[courseName] ? holeStats[courseName][holeName] : null; 
+                    if (stats && stats.roundsPlayed > 0) {
+                        const avgScore = stats.totalScore / stats.roundsPlayed;
+                        return avgScore.toFixed(2);
+                    }
+                    return '';
+                } else {
+                    return '';
+                }
+            });
+            // Lägg till en tom cell för PDGA-kolumnen
+            avgRowData.push('');
+            return avgRowData;
+        }
+            // Hämta befintliga resultat för att beräkna den kombinerade standardavvikelsen
+            let existingRatings = [];
+            const resultsForCourse = savedResults.filter(r => r.data.players.length > 0 && r.data.players.some(p => p.length > 1 && p[1] === courseName));
+            resultsForCourse.forEach(result => {
+                result.data.players.forEach(cells => {
+                    if (cells.length > 0 && cells[0] === playerNameFilter) {
+                        const roundRating = parseFloat(cells[7]);
+                        if (!isNaN(roundRating)) {
+                            existingRatings.push(roundRating);
+                        }
+                    }
+                });
+            });
+            const combinedRatings = existingRatings;
+
+
+            const newSummary = {
+                playerName: playerNameFilter,
+                total: count > 0 ? (totalSum / count).toFixed(2) : 'N/A',
+                plusMinus: count > 0 ? (plusMinusSum / count).toFixed(2) : 'N/A',
+                roundRating: count > 0 ? (roundRatingSum / count).toFixed(2) : 'N/A',
+                stDevRating: getStDevRating(allRatings),
+                pdga: count > 0 ? (pdgaSum / count).toFixed(2) : 'N/A',
+                count: count,
+                aces: newRoundAceCount, 
+                eagles: newRoundEagleCount, 
+                personalBestTotal: personalBestTotal === Infinity ? 'N/A' : personalBestTotal,
+                personalBestPlusMinus: personalBestPlusMinus === Infinity ? 'N/A' : personalBestPlusMinus,
+                notes: ''
+            };
+
+            
+            if (savedSummaries[courseName]) {
+                const oldSummary = savedSummaries[courseName];
+                const oldCount = parseInt(oldSummary.count) || 0;
+                const newCount = newSummary.count || 0;
+                const totalCount = oldCount + newCount;
+                
+                function safeNum(val) {
+                    return !isNaN(parseFloat(val)) ? parseFloat(val) : 0;
+                }
+                const combinedTotal = (safeNum(oldSummary.total) * oldCount) + (safeNum(newSummary.total) * newCount);
+                const combinedPlusMinus = (safeNum(oldSummary.plusMinus) * oldCount) + (safeNum(newSummary.plusMinus) * newCount);
+                const combinedRoundRating = (safeNum(oldSummary.roundRating) * oldCount) + (safeNum(newSummary.roundRating) * newCount);
+                const combinedPdga = (safeNum(oldSummary.pdga) * oldCount) + (safeNum(newSummary.pdga) * newCount);
+                const existingPBTotal = safeNum(oldSummary.personalBestTotal);
+                const existingPBPlusMinus = safeNum(oldSummary.personalBestPlusMinus);
+                
+                savedSummaries[courseName] = {
+                    playerName: playerNameFilter,
+                    total: totalCount > 0 ? (combinedTotal / totalCount).toFixed(2) : 'N/A',
+                    plusMinus: totalCount > 0 ? (combinedPlusMinus / totalCount).toFixed(2) : 'N/A',
+                    roundRating: totalCount > 0 ? (combinedRoundRating / totalCount).toFixed(2) : 'N/A',
+                    stDevRating: getStDevRating(combinedRatings),
+                    pdga: totalCount > 0 ? (combinedPdga / totalCount).toFixed(2) : 'N/A',
+                    count: totalCount,
+                    aces: (parseInt(oldSummary.aces) || 0) + (newSummary.aces || 0),
+                    eagles: (parseInt(oldSummary.eagles) || 0) + (newSummary.eagles || 0),
+                    personalBestTotal: (existingPBTotal === 0 || existingPBTotal === Infinity) ? newSummary.personalBestTotal : Math.min(existingPBTotal, safeNum(newSummary.personalBestTotal)),
+                    personalBestPlusMinus: (existingPBPlusMinus === 0 || existingPBPlusMinus === Infinity) ? newSummary.personalBestPlusMinus : Math.min(existingPBPlusMinus, safeNum(newSummary.personalBestPlusMinus)),
+                    notes: oldSummary.notes
+                };
+            } else {
+                savedSummaries[courseName] = newSummary;
+            }
+
+            localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
+            displayStoredSummaries(document.getElementById('courseSelect').value);
+            updateCourseSelect();
+        }
+
+        /* ------------------------------ BILDRESULTAT / OCR ------------------------------ */
+        function previewResultImage() {
+            const input = document.getElementById('resultImageFile');
+            const preview = document.getElementById('imageResultPreview');
+            const ocrText = document.getElementById('ocrText');
+            const createButton = document.getElementById('createImageResultButton');
+            const saveButton = document.getElementById('saveImageResultButton');
+            const progress = document.getElementById('ocrProgress');
+            const file = input.files && input.files[0];
+
+            imageResultData = null;
+            imageResultLoaded = false;
+            imageResultSource = file ? file.name : null;
+            imageResultDataUrl = null;
+            ocrText.value = '';
+            ocrText.style.display = 'none';
+            createButton.style.display = 'none';
+            saveButton.style.display = 'none';
+            progress.style.display = 'none';
+            metaPanel.style.display = 'none';
+
+            if (!file) {
+                preview.removeAttribute('src');
+                preview.style.display = 'none';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imageResultDataUrl = e.target.result;
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function createOcrCanvas(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Begränsa storleken men behåll tillräcklig detalj för mobilbilder/skärmbilder.
+                    const scale = Math.min(2, 1800 / img.width);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.max(1, Math.round(img.width * scale));
+                    canvas.height = Math.max(1, Math.round(img.height * scale));
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const d = imageData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        // Luminans + kontrast. Detta gör vit text på mörk UDisc-bakgrund tydligare.
+                        const y = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                        const c = Math.max(0, Math.min(255, (y - 128) * 1.45 + 128));
+                        d[i] = d[i + 1] = d[i + 2] = c;
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                    resolve(canvas);
+                };
+                img.onerror = () => reject(new Error('Kunde inte öppna bilden.'));
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        async function readResultImage() {
+            const input = document.getElementById('resultImageFile');
+            const progress = document.getElementById('ocrProgress');
+            const ocrText = document.getElementById('ocrText');
+            const createButton = document.getElementById('createImageResultButton');
+            const saveButton = document.getElementById('saveImageResultButton');
+            const file = input.files && input.files[0];
+
+            if (!file) {
+                showMessage('Vänligen välj en resultatbild.', true);
+                return;
+            }
+            if (typeof Tesseract === 'undefined') {
+                showMessage('OCR-biblioteket kunde inte laddas. Kontrollera internetanslutningen och försök igen.', true);
+                return;
+            }
+
+            progress.style.display = 'block';
+            progress.textContent = 'Förbereder bilden...';
+            createButton.style.display = 'none';
+            saveButton.style.display = 'none';
+
+            try {
+                const canvas = await createOcrCanvas(file);
+                const worker = await Tesseract.createWorker('eng', 1, {
+                    logger: m => {
+                        if (m.status) {
+                            const pct = m.progress ? ` ${Math.round(m.progress * 100)}%` : '';
+                            progress.textContent = `Läser bild: ${m.status}${pct}`;
+                        }
+                    }
+                });
+
+                const result = await worker.recognize(canvas);
+                await worker.terminate();
+                const text = (result && result.data && result.data.text) ? result.data.text.trim() : '';
+                imageOcrWords = (result && result.data && Array.isArray(result.data.words)) ? result.data.words : [];
+
+                if (!text) throw new Error('Ingen text kunde hittas i bilden.');
+                ocrText.value = text;
+                ocrText.style.display = 'block';
+                createButton.style.display = 'inline-block';
+                progress.textContent = 'OCR klar. Kontrollera texten och klicka sedan på “Skapa resultat från bild”.';
+                showMessage('Bildresultatet har lästs. Kontrollera OCR-texten innan du skapar resultatet.', false);
+            } catch (error) {
+                console.error(error);
+                progress.textContent = 'Kunde inte läsa bilden.';
+                showMessage(`Fel vid OCR-läsning: ${error.message || error}`, true);
+            }
+        }
+
+        function normalizeOcrText(text) {
+            return text
+                .replace(/\u00a0/g, ' ')
+                .replace(/[|]/g, ' ')
+                .replace(/\r/g, '')
+                .split('\n')
+                .map(line => line.replace(/\s+/g, ' ').trim())
+                .filter(Boolean);
+        }
+
+        function parseScoreLine(line) {
+            const tokens = line.match(/\b\d{1,2}\b/g) || [];
+            return tokens.map(Number).filter(n => n >= 1 && n <= 20);
+        }
+
+        function cleanOcrName(text) {
+            return String(text || '')
+                .replace(/[^A-Za-zÅÄÖåäöÅÄÖéÉüÜ_ -]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function getOcrTableRows() {
+            if (!Array.isArray(imageOcrWords) || !imageOcrWords.length) return [];
+            const words = imageOcrWords
+                .filter(w => w && w.text && (!w.confidence || w.confidence >= 25))
+                .map(w => ({
+                    text: String(w.text).trim(),
+                    x: Number(w.bbox?.x0 ?? 0),
+                    y: Number(w.bbox?.y0 ?? 0),
+                    y2: Number(w.bbox?.y1 ?? w.bbox?.y0 ?? 0)
+                }))
+                .filter(w => w.text);
+
+            const rows = [];
+            words.sort((a,b) => a.y - b.y || a.x - b.x);
+            words.forEach(word => {
+                const centerY = (word.y + word.y2) / 2;
+                let row = rows.find(r => Math.abs(r.centerY - centerY) <= 14);
+                if (!row) {
+                    row = { centerY, words: [] };
+                    rows.push(row);
+                }
+                row.words.push(word);
+                row.centerY = row.words.reduce((sum,w) => sum + ((w.y+w.y2)/2), 0) / row.words.length;
+            });
+            return rows
+                .sort((a,b) => a.centerY - b.centerY)
+                .map(r => r.words.sort((a,b) => a.x-b.x).map(w=>w.text).join(' '));
+        }
+
+        function extractHoleCountAndPar(lines) { let par = []; // Hitta alla rader som börjar med "Par" for (const line of lines) { if (/^par\b/i.test(line)) { const values = parseScoreLine(line) .filter(n => n >= 2 && n <= 6); if (values.length > 0) { par.push(...values); } } } // UDisc kan ha: // 9 hål = en Par-rad // 16 hål = två Par-rader // 18 hål = två Par-rader if (par.length > 18) { par = par.slice(0, 18); } const holeCount = par.length; return { holeCount, par }; }
+
+        function extractGenericPlayerRows(text, holeCount) {
+            const textLines = normalizeOcrText(text);
+            const positionalRows = getOcrTableRows();
+            const sourceRows = positionalRows.length ? positionalRows : textLines;
+            const players = [];
+            const seen = new Set();
+
+            // Leta efter rader med en textetikett följd av minst holeCount numeriska värden.
+            sourceRows.forEach((line, index) => {
+                const parsed = parsePlayerRowFromText(line, holeCount);
+                if (parsed && !seen.has(parsed.name.toLowerCase())) {
+                    seen.add(parsed.name.toLowerCase());
+                    players.push(parsed);
+                    return;
+                }
+
+                // Om OCR delat upp en spelarrad över flera rader, slå ihop några närliggande rader.
+                for (let span = 2; span <= 4; span++) {
+                    const joined = sourceRows.slice(index, index + span).join(' ');
+                    const p = parsePlayerRowFromText(joined, holeCount);
+                    if (p && !seen.has(p.name.toLowerCase())) {
+                        seen.add(p.name.toLowerCase());
+                        players.push(p);
+                        break;
+                    }
+                }
+            });
+            return players;
+        }
+
+        function buildImageResultData(text) { const lines = normalizeOcrText(text); const { holeCount, par: detectedPar } = extractHoleCountAndPar(lines); if (!holeCount) { throw new Error( 'Kunde inte hitta Par-raden i bilden.' ); } const header = [ 'PlayerName', 'CourseName', 'LayoutName', 'StartDate', 'EndDate', 'Total', '+/-', 'RoundRating', ...Array.from( { length: holeCount }, (_, i) => `Hole${i + 1}` ) ]; // Hitta spelarna med den befintliga OCR-funktionen const generic = extractGenericPlayerRows(text, holeCount); if (generic.length === 0) { throw new Error( `Kunde inte hitta spelarnas resultat i bilden. ` + `Bilden verkar innehålla ${holeCount} hål.` ); } // Par-raden const par = [ 'Par', '', '', '', '', detectedPar.reduce((a, b) => a + b, 0), '', '', ...detectedPar ]; // Spelarrader const players = generic.map(p => { const holes = p.holes.slice(0, holeCount); const total = holes.reduce((a, b) => a + Number(b), 0); const parTotal = detectedPar.reduce((a, b) => a + Number(b), 0); const plusMinus = total - parTotal; return [ p.name, '', '', '', '', total, plusMinus >= 0 ? `+${plusMinus}` : String(plusMinus), p.rating || '', ...holes ]; }); const raw = JSON.stringify({ text, header, par, players, source: imageResultSource }); return { text, fileHash: calculateHash('IMAGE|' + raw), header, par, players, sourceType: 'image', sourceFileName: imageResultSource || 'resultatbild', imageDataUrl: imageResultDataUrl || '' }; }
+
+        function getImageMetaValues() {
+            return {
+                courseName: document.getElementById('imageCourseName').value.trim(),
+                layoutName: document.getElementById('imageLayoutName').value.trim(),
+                startDate: document.getElementById('imageStartDate').value,
+                endDate: document.getElementById('imageEndDate').value
+            };
+        }
+
+        function countHolesInResultData(data) {
+            if (!data || !Array.isArray(data.header)) return 0;
+            return data.header.filter(h => /^Hole\d+$/i.test(h)).length;
+        }
+
+        function findSavedRatingForPlayer(player, courseName, holeCount) {
+            if (!player || !courseName || !holeCount) return null;
+            // Gå bakifrån så att den senast sparade matchande rundan används.
+            for (let i = savedResults.length - 1; i >= 0; i--) {
+                const saved = savedResults[i];
+                const data = saved && saved.data;
+                if (!data || !Array.isArray(data.players) || !Array.isArray(data.header)) continue;
+                if (String(data.players[0]?.[1] || '').trim().toLowerCase() !== courseName.trim().toLowerCase()) continue;
+                if (countHolesInResultData(data) !== holeCount) continue;
+
+                const row = data.players.find(p => String(p[0] || '').trim().toLowerCase() === String(player).trim().toLowerCase());
+                if (!row) continue;
+                const ratingIndex = data.header.indexOf('RoundRating');
+                if (ratingIndex < 0) continue;
+                const rating = parseFloat(row[ratingIndex]);
+                if (!isNaN(rating)) return rating;
+            }
+            return null;
+        }
+
+        function fillMissingImageRatings(data) {
+            const courseName = data?.players?.[0]?.[1] || '';
+            const holeCount = countHolesInResultData(data);
+            const ratingIndex = data.header.indexOf('RoundRating');
+            if (!courseName || !holeCount || ratingIndex < 0) return [];
+
+            const filled = [];
+            data.players.forEach(row => {
+                const current = parseFloat(row[ratingIndex]);
+                if (!isNaN(current)) return;
+                const found = findSavedRatingForPlayer(row[0], courseName, holeCount);
+                if (found !== null) {
+                    row[ratingIndex] = String(found);
+                    filled.push(`${row[0]}: ${found}`);
+                }
+            });
+            return filled;
+        }
+
+        function updateImageRatingStatus(filled = []) {
+            const status = document.getElementById('imageRatingStatus');
+            if (!imageResultData) {
+                status.innerHTML = '<strong>UDisc Rating:</strong> Om rating saknas försöker appen hämta den från ett sparat resultat för samma spelare, samma bana och samma antal hål.';
+                return;
+            }
+            const ratingIndex = imageResultData.header.indexOf('RoundRating');
+            const missing = imageResultData.players.filter(p => isNaN(parseFloat(p[ratingIndex]))).map(p => p[0]);
+            const parts = [];
+            if (filled.length) parts.push(`<strong>Hämtade rating:</strong> ${filled.join(', ')}`);
+            if (missing.length) parts.push(`<strong>Saknas fortfarande:</strong> ${missing.join(', ')}`);
+            if (!parts.length) parts.push('<strong>UDisc Rating:</strong> Alla ratingvärden finns eller har kunnat hämtas från sparade matchande rundor.');
+            status.innerHTML = parts.join('<br>');
+        }
+
+        function applyImageMetaAndRefresh() {
+            if (!imageResultData) {
+                showMessage('Skapa först resultatet från bilden.', true);
+                return;
+            }
+            const meta = getImageMetaValues();
+            imageResultData.players.forEach(row => {
+                if (meta.courseName) row[1] = meta.courseName;
+                if (meta.layoutName) row[2] = meta.layoutName;
+                if (meta.startDate) row[3] = meta.startDate;
+                if (meta.endDate) row[4] = meta.endDate;
+            });
+            const filled = fillMissingImageRatings(imageResultData);
+            currentCsvData = imageResultData;
+            displayCSV(imageResultData);
+            updateImageRatingStatus(filled);
+            showMessage('Uppgifterna har uppdaterats. Kontrollera tabellen innan du sparar.', false);
+        }
+
+        function findSavedRatingsForImage() {
+            if (!imageResultData) {
+                showMessage('Skapa först resultatet från bilden.', true);
+                return;
+            }
+            const meta = getImageMetaValues();
+            if (meta.courseName) {
+                imageResultData.players.forEach(row => row[1] = meta.courseName);
+            }
+            const filled = fillMissingImageRatings(imageResultData);
+            currentCsvData = imageResultData;
+            displayCSV(imageResultData);
+            updateImageRatingStatus(filled);
+            if (filled.length) {
+                showMessage(`Hämtade ${filled.length} UDisc Rating från sparade rundor med samma bana och samma antal hål.`, false);
+            } else {
+                showMessage('Ingen matchande sparad UDisc Rating hittades. Kravet är samma spelare, samma bana och samma antal hål.', false);
+            }
+        }
+
+        function createResultFromOCR() {
+            const text = document.getElementById('ocrText').value.trim();
+            if (!text) {
+                showMessage('OCR-texten är tom.', true);
+                return;
+            }
+            try {
+                imageResultData = buildImageResultData(text);
+                const meta = getImageMetaValues();
+                if (meta.courseName) imageResultData.players.forEach(row => row[1] = meta.courseName);
+                if (meta.layoutName) imageResultData.players.forEach(row => row[2] = meta.layoutName);
+                if (meta.startDate) imageResultData.players.forEach(row => row[3] = meta.startDate);
+                if (meta.endDate) imageResultData.players.forEach(row => row[4] = meta.endDate);
+                const filled = fillMissingImageRatings(imageResultData);
+                currentCsvData = imageResultData;
+                displayCSV(imageResultData);
+                imageResultLoaded = true;
+                document.getElementById('imageMetaPanel').style.display = 'block';
+                document.getElementById('saveImageResultButton').style.display = 'inline-block';
+                updateImageRatingStatus(filled);
+                showMessage('Resultatet har skapats från bilden. Fyll i uppgifterna som saknas och kontrollera tabellen innan du sparar.', false);
+            } catch (error) {
+                console.error(error);
+                showMessage(`Kunde inte skapa resultatet från bilden: ${error.message}`, true);
+            }
+        }
+
+        function saveImageResult() {
+            if (!imageResultLoaded || !imageResultData) {
+                showMessage('Skapa först ett resultat från bilden.', true);
+                return;
+            }
+
+            const data = imageResultData;
+            const myScore = data.players.find(p => p[0] === playerName) || data.players[0];
+            if (!myScore) {
+                showMessage('Inga spelare hittades i bildresultatet.', true);
+                return;
+            }
+
+            const courseName = myScore[1] || 'Bildresultat';
+            const dateString = myScore[3] || new Date().toISOString().slice(0, 10);
+            const defaultName = `${courseName} - ${dateString} (Bild)`;
+            let resultName = defaultName;
+            let count = 1;
+            while (savedResults.some(r => r.name === resultName)) {
+                count++;
+                resultName = `${defaultName} (${count})`;
+            }
+
+            // Metadata/rating kan ha ändrats efter OCR, så hash ska spegla den slutliga rundan.
+            const finalRaw = JSON.stringify({ header: data.header, par: data.par, players: data.players, source: data.sourceFileName || '' });
+            data.fileHash = calculateHash('IMAGE|' + finalRaw);
+            const savedData = JSON.parse(JSON.stringify(data));
+            savedResults.push({
+                name: resultName,
+                data: savedData,
+                sourceType: 'image',
+                sourceFileName: data.sourceFileName
+            });
+
+            fileHashes[data.fileHash] = true;
+            localStorage.setItem('savedResults', JSON.stringify(savedResults));
+            localStorage.setItem('fileHashes', JSON.stringify(fileHashes));
+
+            // Bildresultat utan UDisc-rating för den egna spelaren ska ändå sparas.
+            // Befintlig sammanfattningslogik används när en rating faktiskt finns.
+            const myRating = parseFloat(myScore[7]);
+            if (!isNaN(myRating)) {
+                let aceCount = 0, eagleCount = 0;
+                const holeStartIndex = data.header.findIndex(h => h === 'Hole1');
+                for (let i = holeStartIndex; i < myScore.length && i < data.par.length; i++) {
+                    const score = parseFloat(myScore[i]);
+                    const parValue = parseFloat(data.par[i]);
+                    if (isNaN(score) || isNaN(parValue)) continue;
+                    const diff = score - parValue;
+                    if (score === 1 && parValue > 1) aceCount++;
+                    else if (diff <= -2) eagleCount++;
+                }
+                updateSummaryRow(playerName, aceCount, eagleCount, data.players, data.header);
+            }
+
+            updateSavedResults();
+            precalculateHoleStats();
+            calculateOverallPDGA();
+            calculateAndDisplayTopPlayers();
+            displayStaticBestResults();
+
+            document.getElementById('saveImageResultButton').style.display = 'none';
+            document.getElementById('imageMetaPanel').style.display = 'none';
+            imageResultLoaded = false;
+            imageResultData = null;
+            currentCsvData = null;
+            showMessage('Bildresultatet har sparats framgångsrikt.', false);
+        }
+
+        function readCSV() {
+            const file = document.getElementById('csvFile').files[0];
+            if (!file) {
+                showMessage("Vänligen välj en CSV-fil.", true);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    const fileHash = calculateHash(text);
+                    
+                    if (fileHashes[fileHash]) {
+                        showMessage("Filen har redan sparats.", true);
+                        return;
+                    }
+
+                    const lines = text.split('\n').filter(line => line.trim() !== '');
+                    if (lines.length < 3) {
+                        throw new Error("Filen verkar vara tom eller ogiltig.");
+                    }
+                    
+                    const headerRow = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                    const parRow = lines[1].split(',').map(p => p.trim().replace(/"/g, ''));
+                    const playersData = lines.slice(2).map(line => line.split(',').map(cell => cell.trim().replace(/"/g, '')));
+                    
+                    if (playersData.length === 0) {
+                        throw new Error("Inga giltiga spelarrader hittades i filen.");
+                    }
+                    
+                    const myScore = playersData.find(p => p[0] === playerName);
+                    if (!myScore) {
+                        throw new Error(`Kunde inte hitta spelaren "${playerName}" i det inlästa resultatet.`);
+                    }
+
+                    currentCsvData = { text, fileHash, header: headerRow, par: parRow, players: playersData };
+                    displayCSV(currentCsvData);
+                    csvLoaded = true;
+                    document.getElementById('saveButton').style.display = 'inline-block';
+                    document.getElementById('downloadButton').style.display = 'inline-block';
+                    showMessage("CSV-fil laddad framgångsrikt.", false);
+
+                } catch (error) {
+                    showMessage(`Fel vid läsning av fil: ${error.message}`, true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function saveResult() {
+            if (!csvLoaded || !currentCsvData) {
+                showMessage("Ingen CSV-fil har laddats att spara.", true);
+                return;
+            }
+
+            let courseName = 'Okänd bana';
+            let dateString = 'okänt datum';
+            let aceCount = 0;
+            let eagleCount = 0;
+            
+            const myScore = currentCsvData.players.find(p => p[0] === playerName);
+            if (!myScore) {
+                showMessage(`Kunde inte hitta spelaren "${playerName}" i det inlästa resultatet.`, true);
+                return;
+            }
+
+            if (myScore.length > 1) courseName = myScore[1];
+            if (myScore.length > 3) dateString = myScore[3].split(' ')[0];
+
+            const currentTotal = parseFloat(myScore[5]);
+            const currentPlusMinus = parseFloat(myScore[6]);
+
+            if (isNaN(currentTotal) || isNaN(currentPlusMinus)) {
+                showMessage(`Ogiltigt resultat: total eller +/- är ej ett nummer.`, true);
+                return;
+            }
+
+            // Hämta Gamla PB-värden FÖRE uppdatering
+            const oldSummary = savedSummaries[courseName];
+            const oldPBTotal = oldSummary ? parseFloat(oldSummary.personalBestTotal) : Infinity;
+            const oldPBPlusMinus = oldSummary ? parseFloat(oldSummary.personalBestPlusMinus) : Infinity;
+            const isFirstRound = oldSummary === undefined;
+
+            const parRow = currentCsvData.par;
+            const holeStartIndex = currentCsvData.header.findIndex(h => h === "Hole1");
+            if (holeStartIndex !== -1) {
+                for(let i = holeStartIndex; i < myScore.length && i < parRow.length; i++) {
+                    const score = parseFloat(myScore[i]);
+                    const par = parseFloat(parRow[i]);
+                    if (isNaN(score) || isNaN(par)) continue;
+                    const diff = score - par;
+                    if (score === 1 && par > 1) {
+                        aceCount++;
+                    } else if (diff <= -2) {
+                        eagleCount++;
+                    }
+                }
+            }
+            
+            const defaultName = `${courseName} - ${dateString}`;
+            let resultName = defaultName;
+
+            // Kontrollera om det redan finns ett sparat resultat med samma namn
+            let count = 1;
+            while (savedResults.some(r => r.name === resultName)) {
+                count++;
+                resultName = `${defaultName} (${count})`;
+            }
+
+            const newResult = {
+                name: resultName,
+                data: currentCsvData
+            };
+
+            savedResults.push(newResult);
+            fileHashes[currentCsvData.fileHash] = true;
+            localStorage.setItem('savedResults', JSON.stringify(savedResults));
+            localStorage.setItem('fileHashes', JSON.stringify(fileHashes));
+
+            // Uppdatera sammanfattningen FÖR DENNA runda
+            updateSummaryRow(playerName, aceCount, eagleCount, currentCsvData.players, currentCsvData.header);
+
+            // Kolla efter Nya PB efter uppdatering
+            const updatedSummary = savedSummaries[courseName];
+            const newPBTotal = updatedSummary ? parseFloat(updatedSummary.personalBestTotal) : currentTotal;
+            const newPBPlusMinus = updatedSummary ? parseFloat(updatedSummary.personalBestPlusMinus) : currentPlusMinus;
+            
+            const isNewTotalPB = currentTotal <= newPBTotal && currentTotal < oldPBTotal;
+            const isNewPlusMinusPB = currentPlusMinus <= newPBPlusMinus && currentPlusMinus < oldPBPlusMinus;
+
+            // Visa temporärt meddelande för PB
+            showTemporaryPBMessage(isFirstRound, isNewTotalPB, isNewPlusMinusPB, currentTotal, currentPlusMinus, oldPBTotal, oldPBPlusMinus);
+
+
+            updateSavedResults();
+            precalculateHoleStats();
+            calculateOverallPDGA();
+            calculateAndDisplayTopPlayers();
+            // Dölj knappar efter sparning
+            document.getElementById('saveButton').style.display = 'none';
+            document.getElementById('downloadButton').style.display = 'none';
+            csvLoaded = false;
+        }
+
+        function showTemporaryPBMessage(isFirstRound, isNewTotalPB, isNewPlusMinusPB, currentTotal, currentPlusMinus, oldPBTotal, oldPBPlusMinus) {
+            const scrollingTextElement = document.getElementById('scrollingText');
+            scrollingTextElement.className = 'scrolling-text-temp'; 
+            let message = '';
+
+            let totalPBText = '';
+            if (isNewTotalPB) {
+                totalPBText = `<span class="better-result">Nytt PB Kast (${currentTotal})</span>`;
+            } else if (currentTotal === oldPBTotal) {
+                totalPBText = `<span class="better-result">PB Kast tangerat (${currentTotal})</span>`;
+            } else {
+                totalPBText = `Kast: ${currentTotal} (PB: ${oldPBTotal === Infinity ? 'N/A' : oldPBTotal})`;
+            }
+
+            let plusMinusPBText = '';
+            if (isNewPlusMinusPB) {
+                plusMinusPBText = `<span class="better-result">Nytt PB +/- (${currentPlusMinus})</span>`;
+            } else if (currentPlusMinus === oldPBPlusMinus) {
+                plusMinusPBText = `<span class="better-result">PB +/- tangerat (${currentPlusMinus})</span>`;
+            } else {
+                plusMinusPBText = `+/-: ${currentPlusMinus} (PB: ${oldPBPlusMinus === Infinity ? 'N/A' : oldPBPlusMinus})`;
+            }
+            
+            if (isFirstRound) {
+                 message = `<span class="better-result">🎉 Första rundan sparad! Kast: ${currentTotal}, +/-: ${currentPlusMinus}</span>`;
+            } else if (isNewTotalPB && isNewPlusMinusPB) {
+                 message = `<span class="better-result">🤯 DUBBELT NYTT BANREKORD! ${totalPBText} | ${plusMinusPBText}</span>`;
+            } else if (isNewTotalPB || isNewPlusMinusPB) {
+                 message = `<span class="better-result">🎉 NYTT BANREKORD! ${totalPBText} | ${plusMinusPBText}</span>`;
+            } else {
+                message = `<span class="worse-result">👎 Inget nytt banrekord: ${totalPBText} | ${plusMinusPBText}</span>`;
+            }
+
+            showMessage("Resultatet har sparats framgångsrikt.", false);
+            scrollingTextElement.innerHTML = message; 
+
+            setTimeout(() => {
+                displayStaticBestResults(); 
+            }, 5000);
+        }
+
+        function downloadResult() {
+            if (!csvLoaded || !currentCsvData) {
+                showMessage("Ingen CSV-fil har laddats att ladda ner.", true);
+                return;
+            }
+
+            const data = currentCsvData.text;
+            const blob = new Blob([data], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            let courseName = 'Resultat';
+            let dateString = '';
+            const myScore = currentCsvData.players.find(p => p[0] === playerName);
+            if (myScore && myScore.length > 1) courseName = myScore[1].replace(/[^a-zA-Z0-9]/g, '_');
+            if (myScore && myScore.length > 3) dateString = myScore[3].split(' ')[0];
+
+            a.download = `${courseName}_${dateString}_Udisc.csv`;
+            a.href = url;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showMessage("CSV-filen har laddats ner som CSV-fil.", false);
+        }
+        
+        /**
+         * BERÄKNAR och returnerar rad-datan för Medel (Alla rundor) på en specifik bana.
+         * Denna funktion beräknar Totalt/ +/- / Rating GLOBAL för ALLA spelare.
+         */
+        function calculateAllRoundsAvg(courseName, header) {
+            let sumTotal = 0;
+            let sumPlusMinus = 0;
+            let sumRating = 0;
+            let totalPlayerRounds = 0;
+            let roundsWithRating = 0;
+
+            const totalIndex = 5;
+            const plusMinusIndex = 6;
+            const ratingIndex = 7;
+            
+            // --- 1. GLOBAL BERÄKNING AV TOTALT, +/-, RATING ---
+            savedResults.forEach(result => {
+                const roundCourseName = result.data.players[0] ? result.data.players[0][1] : null;
+                if (roundCourseName !== courseName) return; 
+
+                // Gå igenom ALLA spelare i den HÄR rundan
+                result.data.players.forEach(player => {
+                    const total = parseInt(player[totalIndex], 10);
+                    const plusMinus = parseInt(player[plusMinusIndex], 10);
+                    const rating = parseInt(player[ratingIndex], 10);
+                    
+                    if (!isNaN(total) && !isNaN(plusMinus)) {
+                        sumTotal += total;
+                        sumPlusMinus += plusMinus;
+                        totalPlayerRounds++; // Räknar ALLA spelare
+                    }
+
+                    if (!isNaN(rating) && rating > 0) {
+                        sumRating += rating;
+                        roundsWithRating++;
+                    }
+                });
+            });
+
+            // Beräkna medelvärdena och formatera till 2 decimaler
+const avgTotal = totalPlayerRounds > 0 ? (sumTotal / totalPlayerRounds).toFixed(2) : 'N/A';
+const avgPlusMinus = totalPlayerRounds > 0 ? (sumPlusMinus / totalPlayerRounds).toFixed(2) : 'N/A';
+const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(2) : 'N/A';
+            
+            // --- 2. BYGG RADEN (ARRAYEN) MED HJÄLP AV BÅDE GLOBAL DATA OCH HOLESTATS ---
+            
+            const holeRegex = /^(Hole|Hål)\d+$/; 
+            const holeStartIndex = header.findIndex(h => holeRegex.test(h)); 
+            
+            if (holeStartIndex === -1) {
+                return null;
+            }
+            
+            const avgRowData = header.map((headerCell, index) => {
+                if (index === 0) {
+                    return 'Medel (Alla rundor)';
+                } 
+                // FIXEN: Använder de nu korrekt beräknade GLOBAL averages
+                else if (index === 5) { // Total
+                    return avgTotal; 
+                } else if (index === 6) { // +/-
+                    return avgPlusMinus; 
+                } else if (index === 7) { // UdiscRating
+                    return avgRating; 
+                } 
+                // Hål (Använder globala holeStats, vilket är korrekt)
+                else if (index >= holeStartIndex) { 
+                    const holeName = headerCell;
+                    const stats = holeStats[courseName] ? holeStats[courseName][holeName] : null;
+                    if (stats && stats.roundsPlayed > 0) {
+                        const avgScore = stats.totalScore / stats.roundsPlayed;
+                        return avgScore.toFixed(2);
+                    }
+                    return '';
+                } else {
+                    return '';
+                }
+            });
+
+            // Lägg till en tom cell för PDGA-kolumnen
+            avgRowData.push('');
+            return avgRowData;
+        }
+
+
+        function displayCSV(data) {
+            const table = document.getElementById('csvTable');
+            table.innerHTML = '';
+            
+            const courseName = data.players[0][1]; 
+            const holeStartIndex = data.header.findIndex(h => h === "Hole1");
+
+            // Header
+            const headerRowElement = document.createElement('thead');
+            const tr = document.createElement('tr');
+            
+            data.header.forEach((headerCell, index) => {
+                const th = document.createElement('th');
+                const translatedHeader = translationMap[headerCell] || headerCell;
+                th.textContent = translatedHeader;
+                th.onclick = () => sortTable(index);
+                
+                if (translatedHeader.startsWith("Hål ")) {
+                    th.addEventListener('mouseover', (e) => showTooltip(e, headerCell, courseName));
+                    th.addEventListener('mouseout', hideTooltip);
+                }
+                tr.appendChild(th);
+            });
+            
+            const pdgaHeader = document.createElement('th');
+            pdgaHeader.textContent = 'PDGA';
+            pdgaHeader.onclick = () => sortTable(data.header.length); 
+            tr.appendChild(pdgaHeader);
+
+            headerRowElement.appendChild(tr);
+            table.appendChild(headerRowElement);
+
+            const tbody = document.createElement('tbody');
+
+            // Par-rad – precis som i CSV-resultatet: "Par" längst till vänster.
+            // Totalen för par visas i Total-kolumnen så att man direkt ser banans par.
+            const parRowElement = document.createElement('tr');
+            parRowElement.className = 'par-row';
+            data.par.forEach((parCell, index) => {
+                const td = document.createElement('td');
+                if (index === 0) {
+                    td.textContent = 'Par';
+                    td.style.fontWeight = 'normal';
+                } else if (index === 5) {
+                    const parTotal = data.par.slice(holeStartIndex).reduce((sum, value) => {
+                        const n = parseFloat(value);
+                        return sum + (isNaN(n) ? 0 : n);
+                    }, 0);
+                    td.textContent = parTotal || '';
+                } else {
+                    td.textContent = parCell;
+                }
+                parRowElement.appendChild(td);
+            });
+            const emptyPdgaPar = document.createElement('td');
+            emptyPdgaPar.textContent = '';
+            parRowElement.appendChild(emptyPdgaPar);
+            tbody.appendChild(parRowElement);
+
+            // Sorterade spelare
+            const sortedPlayers = data.players.slice().sort((a, b) => parseFloat(a[5]) - parseFloat(b[5]));
+            
+            let totalsForAverage = new Array(data.header.length).fill(0);
+            let playerCount = 0;
+
+            sortedPlayers.forEach(cells => {
+                if (cells.length < data.header.length) return;
+                const row = document.createElement('tr');
+                let pdgaText = '';
+                playerCount++;
+
+                if (cells[0] === playerName) {
+                    row.style.fontWeight = 'bold'; // Behåll fet stil för hela raden
+                }
+
+                cells.forEach((cell, cellIndex) => {
+                    const cellElement = document.createElement('td');
+                    cellElement.textContent = cell;
+
+                    // Samla för medel för denna runda
+                    const val = parseFloat(cell);
+                    if (!isNaN(val) && cellIndex >= holeStartIndex && cellIndex < data.par.length) {
+                        totalsForAverage[cellIndex] += val;
+                        // Färglägg hålresultat
+                        const par = parseFloat(data.par[cellIndex]);
+                        cellElement.className = getCellColorClass(val, par);
+                    } else if (!isNaN(val) && cellIndex === 5) {
+                        totalsForAverage[cellIndex] += val;
+                    } else if (!isNaN(val) && cellIndex === 6) {
+                        totalsForAverage[cellIndex] += val;
+                    }
+		    else if (!isNaN(val) && cellIndex === 7) { 
+        totalsForAverage[cellIndex] += val; 
+    }	
+
+                    if (cellIndex === 7 && !isNaN(val)) { 
+                        const rating = parseFloat(cell);
+                        pdgaText = (-0.0065 * (rating * rating) + 4.8259 * rating + 206.48).toFixed(2);
+                    }
+
+                    // NYTT: Lägg till ljusblå färg till icke-hål kolumner för spelaren
+                    if (cells[0] === playerName && cellIndex >= 0 && cellIndex < holeStartIndex) {
+                        cellElement.classList.add('player-highlight-cell');
+                    }
+                    
+                    row.appendChild(cellElement);
+                });
+
+                // Lägg till PDGA-rating
+                const pdgaCell = document.createElement('td');
+                pdgaCell.textContent = pdgaText;
+
+                // NYTT: Lägg till ljusblå färg till PDGA-kolumnen för spelaren
+                if (cells[0] === playerName) {
+                    pdgaCell.classList.add('player-highlight-cell');
+                }
+
+                row.appendChild(pdgaCell);
+
+                
+                tbody.appendChild(row);
+            });
+
+            // Medel-rad (för denna runda)
+            const avgRow = document.createElement('tr');
+            avgRow.style.fontWeight = 'bold';
+            avgRow.style.backgroundColor = '#e9ecef'; 
+            avgRow.className = 'avg-round-row'; // Lade till klass för sortering
+            
+            data.header.forEach((_, index) => {
+    const td = document.createElement('td');
+    if (index === 0) {
+        td.textContent = 'Medel (Denna runda)';
+    } else if (index === 5 || index === 6 || index === 7 || (index >= holeStartIndex && index < data.par.length)) { // <--- NY KOD: Lade till index === 7
+        const avg = totalsForAverage[index] / playerCount;
+        // UDisc Rating (index 7) avrundas till heltal
+        if (index === 7) {
+            td.textContent = Math.round(avg);
+        } else {
+            td.textContent = avg.toFixed(2);
+        }
+    } else {
+        td.textContent = '';
+    }
+    avgRow.appendChild(td);
+});
+            const emptyPdgaAvg = document.createElement('td');
+            emptyPdgaAvg.textContent = '';
+            avgRow.appendChild(emptyPdgaAvg);
+            tbody.appendChild(avgRow);
+            
+            // Medel-rad (för alla runder på denna bana) - ANVÄNDER KORRIGERAD calculateAllRoundsAvg
+            const allRoundsAvgData = calculateAllRoundsAvg(courseName, data.header);
+
+            if (allRoundsAvgData) {
+                const avgAllRoundsRow = document.createElement('tr');
+                avgAllRoundsRow.style.fontWeight = 'bold';
+                // background-color hanteras av CSS-klassen .avg-all-round-row
+                avgAllRoundsRow.className = 'avg-all-round-row'; 
+
+                allRoundsAvgData.forEach(cellText => {
+                    const td = document.createElement('td');
+                    td.textContent = cellText;
+                    // Fix: Tar bort färgkoder för enskilda celler
+                    avgAllRoundsRow.appendChild(td);
+                });
+                tbody.appendChild(avgAllRoundsRow);
+            }
+
+            table.appendChild(tbody);
+        }
+        
+        function sortTable(columnIndex) {
+            const table = document.getElementById('csvTable');
+            const tbody = table.querySelector('tbody');
+            
+            // Välj endast spelarraderna (exkludera par-raden och medelraderna)
+            const rows = Array.from(tbody.querySelectorAll('tr:not(.par-row):not(.avg-round-row):not(.avg-all-round-row)'));
+            
+            const isNumeric = columnIndex === 5 || columnIndex === 6 || columnIndex === 7 || (columnIndex >= 8 && columnIndex < currentCsvData.par.length) || columnIndex === currentCsvData.header.length;
+            const direction = sortDirection[columnIndex] === 'asc' ? 'desc' : 'asc';
+
+            rows.sort((a, b) => {
+                let aText = a.children[columnIndex].textContent;
+                let bText = b.children[columnIndex].textContent;
+                
+                if (columnIndex === currentCsvData.header.length) { // PDGA-kolumnen
+                    aText = a.children[columnIndex].textContent;
+                    bText = b.children[columnIndex].textContent;
+                }
+                
+                if (isNumeric || columnIndex === currentCsvData.header.length) {
+                    const aVal = parseFloat(aText) || Infinity; 
+                    const bVal = parseFloat(bText) || Infinity;
+                    return direction === 'asc' ? aVal - bVal : bVal - aVal;
+                } else {
+                    return direction === 'asc' ? aText.localeCompare(bText) : bText.localeCompare(aText);
+                }
+            });
+
+            // Hämta medelraderna innan de tas bort
+            const avgRoundRow = tbody.querySelector('.avg-round-row');
+            const avgAllRoundsRow = tbody.querySelector('.avg-all-round-row');
+            
+            // Ta bort dem temporärt
+            if (avgRoundRow) tbody.removeChild(avgRoundRow);
+            if (avgAllRoundsRow) tbody.removeChild(avgAllRoundsRow);
+            
+            // Återställ spelarraderna
+            rows.forEach(row => tbody.appendChild(row));
+            
+            // Återställ medelraderna i rätt ordning
+            if (avgRoundRow) tbody.appendChild(avgRoundRow);
+            if (avgAllRoundsRow) tbody.appendChild(avgAllRoundsRow);
+
+
+            sortDirection[columnIndex] = direction;
+        }
+
+        function displaySavedComparison(index) {
+            const result = savedResults[index];
+            if (!result) return;
+            
+            const players = result.data.players.map(p => {
+                const total = parseFloat(p[5]);
+                const plusMinus = parseFloat(p[6]);
+                const rating = parseFloat(p[7]);
+                const pdga = !isNaN(rating) ? (-0.0065 * (rating * rating) + 4.8259 * rating + 206.48).toFixed(2) : 'N/A';
+                
+                let stats = { ace: 0, eagle: 0, birdie: 0, par: 0, bogey: 0, doubleBogey: 0, trippelBogey: 0, other: 0 };
+
+                // Räkna slag-statistik
+                const holeStartIndex = result.data.header.findIndex(h => h === "Hole1");
+                const parRow = result.data.par;
+                
+                if(holeStartIndex !== -1) {
+                    for(let i = holeStartIndex; i < p.length && i < parRow.length; i++) {
+                        const score = parseFloat(p[i]);
+                        const par = parseFloat(parRow[i]);
+                        if (isNaN(score) || isNaN(par)) continue;
+                        const diff = score - par;
+                        
+                        if (score === 1 && par > 1) { // Ace (Par 3 eller 4)
+                            stats.ace++;
+                        } else if (diff <= -2) { // Eagle eller bättre (förutom Ace)
+                            stats.eagle++;
+                        } else if (diff === -1) { // Birdie
+                            stats.birdie++;
+                        } else if (diff === 0) { // Par
+                            stats.par++;
+                        } else if (diff === 1) { // Bogey
+                            stats.bogey++;
+                        } else if (diff === 2) { // Dubbelbogey
+                            stats.doubleBogey++;
+                        } else if (diff >= 3) { // Trippelbogey eller sämre
+                            stats.trippelBogey++;
+                        }
+                    }
+                }
+
+                return {
+                    name: p[0],
+                    total: isNaN(total) ? 'N/A' : total,
+                    plusMinus: isNaN(plusMinus) ? 'N/A' : plusMinus,
+                    rating: isNaN(rating) ? 'N/A' : rating,
+                    pdga: pdga,
+                    stats: stats
+                };
+            });
+
+            // Sortera spelarna för ranking
+            players.sort((a, b) => {
+                const totalA = isNaN(parseFloat(a.total)) ? Infinity : parseFloat(a.total);
+                const totalB = isNaN(parseFloat(b.total)) ? Infinity : parseFloat(b.total);
+                const plusMinusA = isNaN(parseFloat(a.plusMinus)) ? Infinity : parseFloat(a.plusMinus);
+                const plusMinusB = isNaN(parseFloat(b.plusMinus)) ? Infinity : parseFloat(b.plusMinus);
+
+                if (totalA !== totalB) {
+                    return totalA - totalB;
+                }
+                return plusMinusA - plusMinusB;
+            });
+
+            const uniqueTotals = [...new Set(players.map(p => parseFloat(p.total)))].filter(t => !isNaN(t));
+            const firstPlaceTotal = uniqueTotals[0];
+            const secondPlaceTotal = uniqueTotals[1];
+            const thirdPlaceTotal = uniqueTotals[2];
+            const fourthPlaceTotal = uniqueTotals[3];
+            const lastTotal = uniqueTotals[uniqueTotals.length - 1];
+
+            const resultDiv = document.getElementById('comparisonResult');
+            resultDiv.innerHTML = '';
+            
+            players.forEach((player) => {
+                let rankClass = '';
+                const playerTotal = parseFloat(player.total);
+                
+                if (playerTotal === firstPlaceTotal) {
+                    rankClass = 'rank-1';
+                } else if (playerTotal === secondPlaceTotal) {
+                    rankClass = 'rank-2';
+                } else if (playerTotal === thirdPlaceTotal) {
+                    rankClass = 'rank-3';
+                } else if (playerTotal === fourthPlaceTotal) {
+                    rankClass = 'rank-4';
+                } else if (playerTotal === lastTotal) {
+                    rankClass = 'rank-last-dark';
+                }
+
+                const playerHtml = `
+                    <div class="player-card ${rankClass}">
+                        <h4>${player.name}</h4>
+                        <p><strong>Totalt:</strong> ${player.total}</p>
+                        <p><strong>+/-:</strong> ${player.plusMinus}</p>
+                        <p><strong>UDisc Rating:</strong> ${player.rating}</p>
+                        <p><strong>PDGA Rating:</strong> ${player.pdga}</p>
+                        <p><strong>Ace:</strong> ${player.stats.ace}</p>
+                        <p><strong>Eagle:</strong> ${player.stats.eagle}</p>
+                        <p><strong>Birdie:</strong> ${player.stats.birdie}</p>
+                        <p><strong>Par:</strong> ${player.stats.par}</p>
+                        <p><strong>Bogey:</strong> ${player.stats.bogey}</p>
+                        <p><strong>Dubbelbogey:</strong> ${player.stats.doubleBogey}</p>
+                        <p><strong>Trippelbogey+:</strong> ${player.stats.trippelBogey}</p>
+                    </div>
+                `;
+                resultDiv.innerHTML += playerHtml;
+            });
+        }
+        
+        // NY FUNKTION: Rensa ALLA runda-specifika element utan att röra den statiska PB-listan
+        function clearDynamicElements() {
+            // Rensa runda-specifika vyer
+            document.getElementById('csvTable').innerHTML = '';
+            document.getElementById('comparisonResult').innerHTML = '';
+            document.getElementById('dynamicCourseStats').style.display = 'none';
+            document.getElementById('holeAnalysisContent').innerHTML = '';
+            document.getElementById('courseHeadToHeadList').innerHTML = '';
+
+            // Rensa diagrammet
+            if (myChartInstance) {
+                myChartInstance.destroy();
+                myChartInstance = null;
+            }
+            document.getElementById('holeProgressionChartContainer').style.display = 'none';
+            
+            // Dölj Tooltip
+            hideTooltip();
+        }
+        
+        // UPPDATERAD FUNKTION: Rensa allt runda-specifikt och visa den STATISKA listan över bästa resultat
+        function clearRoundDisplay() {
+            clearDynamicElements();
+            displayStaticBestResults(); // Återställ till den statiska PB-listan
+        }
+
+
+        // UPPDATERAD FUNKTION: Visar all rundstatistik villkorligt
+        function displayFullRoundView(index, includeComparisonCards = true) {
+            const result = savedResults[index];
+            if (!result) {
+                 clearRoundDisplay(); 
+                 return;
+            }
+            
+            const courseName = result.data.players[0][1];
+            
+            // 1. Rensa eventuell gammal runda-data
+            clearDynamicElements(); 
+
+            // 2. Visa den stora tabellen
+            displayCSV(result.data); 
+            
+            // 3. Visa jämförelsekorten (player cards) - VILLKORLIGT
+            if (includeComparisonCards) {
+                displaySavedComparison(index); 
+            } else {
+                // Se till att jämförelseresultatet är tomt även om det inte visas
+                document.getElementById('comparisonResult').innerHTML = '';
+            }
+            
+            // 4. Visa hålanalys och H2H
+            updateDynamicCourseStats(courseName); 
+            
+            // 5. Visa diagrammet (Korrigerad funktion)
+            displayHoleProgressionChart(result.data); 
+            
+            // 6. Visa sammanfattningen för den valda banan
+            displayStoredSummaries(courseName);
+            
+            // NYTT: Uppdatera rubriken i "Bästa resultat" för att visa att den valda rundan visas (temporär info)
+            const scrollingTextElement = document.getElementById('scrollingText');
+            scrollingTextElement.innerHTML = `<strong>Visar runda:</strong> ${result.name}`;
+            scrollingTextElement.className = 'scrolling-text-temp'; 
+
+            // Se till att containrarna faktiskt visas
+            document.getElementById('holeProgressionChartContainer').style.display = 'block'; 
+            document.getElementById('dynamicCourseStats').style.display = 'grid';
+        }
+        
+        function calculateOverallPDGA() {
+            const allRatings = savedResults.flatMap(result => {
+                const myScore = result.data.players.find(p => p[0] === playerName);
+                const rating = myScore ? parseFloat(myScore[7]) : NaN;
+                return isNaN(rating) ? [] : [rating];
+            });
+
+            const ratingElement = document.getElementById('overallRating');
+
+            if (allRatings.length > 0) {
+                const totalRating = allRatings.reduce((sum, rating) => sum + rating, 0);
+                const avgRating = totalRating / allRatings.length;
+                const currentPdga = (-0.0065 * (avgRating * avgRating) + 4.8259 * avgRating + 206.48);
+                const currentPdgaRounded = parseFloat(currentPdga.toFixed(2));
+
+                const previousPdga = parseFloat(localStorage.getItem('currentOverallRating')); 
+                localStorage.setItem('previousOverallRating', previousPdga);
+
+                let changeIndicator = '';
+                if (!isNaN(previousPdga)) {
+                    const change = currentPdgaRounded - previousPdga;
+                    const arrow = change >= 0 ? '▲' : '▼';
+                    const color = change >= 0 ? 'green' : 'red';
+                    changeIndicator = `<span style="color:${color};"> (${arrow} ${Math.abs(change).toFixed(2)})</span>`;
+                }
+
+                ratingElement.innerHTML = `PDGA Rating: ${currentPdgaRounded}${changeIndicator}`;
+                localStorage.setItem('currentOverallRating', currentPdgaRounded);
+
+            } else {
+                ratingElement.textContent = 'Ingen PDGA-rating att visa.';
+                localStorage.removeItem('currentOverallRating');
+                localStorage.removeItem('previousOverallRating');
+            }
+        }
+
+        function calculateAndDisplayTopPlayers() {
+            const listContainer = document.getElementById('topPlayersList');
+            listContainer.innerHTML = '';
+            
+            const playerStats = {};
+            const userPlayerName = playerName;
+
+            savedResults.forEach(result => {
+                const playersData = result.data.players;
+                const userScore = playersData.find(p => p[0] === userPlayerName);
+                if (!userScore || isNaN(parseFloat(userScore[5]))) {
+                    return;
+                }
+                const userTotalScore = parseFloat(userScore[5]);
+
+                playersData.forEach(opponentData => {
+                    const opponentName = opponentData[0];
+                    if (opponentName === userPlayerName || isNaN(parseFloat(opponentData[5]))) {
+                        return;
+                    }
+
+                    const opponentTotalScore = parseFloat(opponentData[5]);
+
+                    if (!playerStats[opponentName]) {
+                        playerStats[opponentName] = { wins: 0, losses: 0, games: 0 };
+                    }
+                    playerStats[opponentName].games++;
+
+                    if (userTotalScore < opponentTotalScore) {
+                        playerStats[opponentName].wins++;
+                    } else if (userTotalScore > opponentTotalScore) {
+                        playerStats[opponentName].losses++;
+                    }
+                });
+            });
+
+            const sortedPlayers = Object.keys(playerStats).map(name => ({
+                name,
+                ...playerStats[name],
+                winPercentage: (playerStats[name].wins / playerStats[name].games) * 100
+            })).sort((a, b) => b.games - a.games).slice(0, 5); // Topp 5 baserat på antal spelade rundor
+
+            if (sortedPlayers.length === 0) {
+                listContainer.innerHTML = '<li>Spela fler rundor för att se dina toppmotståndare.</li>';
+                return;
+            }
+
+            sortedPlayers.forEach(stats => {
+                const opponentName = stats.name;
+                const winPercentage = stats.winPercentage;
+                
+                let arrowClass = 'tie-arrow';
+                let arrowIcon = '—';
+
+                if (winPercentage > 50) {
+                    arrowClass = 'win-arrow';
+                    arrowIcon = '▲';
+                } else if (winPercentage < 50) {
+                    arrowClass = 'loss-arrow';
+                    arrowIcon = '▼';
+                } else {
+                    arrowClass = 'tie-arrow';
+                    arrowIcon = '—';
+                }
+
+                const listItem = document.createElement('li');
+                // ÄNDRING HÄR: Spelarnamnet i fet stil (<strong>)
+                listItem.innerHTML = `<strong>${opponentName}</strong> (${stats.games} rundor): <span class="${arrowClass}">${arrowIcon} ${winPercentage.toFixed(0)}%</span>`;
+                listContainer.appendChild(listItem);
+            });
+        }
+        
+        // NY FUNKTION (tidigare logik från displayFullRoundView)
+        function showRoundStats() {
+            const select = document.getElementById('compareSelect');
+            const selectedIndex = select.value;
+            const selectedText = select.options[select.selectedIndex].textContent;
+
+            if (selectedIndex === "") {
+                showMessage("Vänligen välj en runda att visa.", true);
+                return;
+            }
+            
+            // Synkronisera de andra select-boxarna
+            document.getElementById('savedResults').value = selectedIndex;
+            const courseName = savedResults[selectedIndex].data.players[0][1];
+            document.getElementById('courseSelect').value = courseName;
+            
+            // Visa ALL statistik, INKLUSIVE jämförelsekort
+            displayFullRoundView(selectedIndex, true); 
+            showMessage(`Visar ALL statistik (inkl. jämförelsekort) för runda: ${selectedText}`, false);
+        }
+
+        // UPPDATERAD FUNKTION: Döljer alla extra vyer (rundstatistik och tabell)
+        function hideAll() {
+            clearRoundDisplay(); // Rensa allt runda-specifikt och visa statisk lista
+
+            // Rensa select-boxar
+            document.getElementById('savedResults').selectedIndex = 0;
+            document.getElementById('compareSelect').selectedIndex = 0;
+            document.getElementById('courseSelect').value = 'none';
+
+            // Rensa sammanfattningarna i botten
+            document.getElementById('summaryContainer').innerHTML = '';
+            
+            showMessage("All statistik och visade resultat har dolts.", false);
+        }
+        
+        // UPPDATERAD FUNKTION: Återaktiverar visning av full statistik, men utan jämförelsekort.
+        function handleResultSelection() {
+            const select = document.getElementById('savedResults');
+            const selectedIndex = select.value;
+            
+            if (selectedIndex !== null && selectedIndex !== "") {
+                const result = savedResults[selectedIndex];
+                const courseName = result.data.players[0][1];
+                
+                document.getElementById('compareSelect').value = selectedIndex;
+                document.getElementById('courseSelect').value = courseName; 
+                
+                // NYTT: Visa statistik, men UTAN jämförelsekort
+                displayFullRoundView(selectedIndex, false); 
+                
+                showMessage(`Visar statistik för runda: ${result.name}. Klicka på "Visa statistik" för att se alla spelare.`, false);
+            } else {
+                 clearRoundDisplay();
+            }
+        } 
+
+        // UPPDATERAD FUNKTION: Återaktiverar visning av full statistik, men utan jämförelsekort.
+        function handleCompareSelection() {
+            const select = document.getElementById('compareSelect');
+            const selectedIndex = select.value;
+            
+            if (selectedIndex !== null && selectedIndex !== "") {
+                const result = savedResults[selectedIndex];
+                const courseName = result.data.players[0][1];
+                
+                document.getElementById('savedResults').value = selectedIndex;
+                document.getElementById('courseSelect').value = courseName;
+                
+                // NYTT: Visa statistik, men UTAN jämförelsekort
+                displayFullRoundView(selectedIndex, false);
+                
+                showMessage(`Visar statistik för runda: ${result.name}. Klicka på "Visa statistik" för att se alla spelare.`, false);
+            } else {
+                 clearRoundDisplay();
+            }
+        }
+
+        function deleteSelectedResult() {
+            const select = document.getElementById('savedResults');
+            const selectedIndex = select.value;
+            if (selectedIndex !== null && selectedIndex !== "") {
+                const userConfirmed = confirm("Är du säker på att du vill permanent ta bort ditt resultat?");
+                if (userConfirmed) {
+                    const resultToDelete = savedResults[selectedIndex];
+                    const courseName = resultToDelete.data.players[0][1];
+                    const deletedHash = resultToDelete.data.fileHash;
+
+                    savedResults.splice(selectedIndex, 1);
+                    localStorage.setItem('savedResults', JSON.stringify(savedResults));
+                    
+                    delete fileHashes[deletedHash];
+                    localStorage.setItem('fileHashes', JSON.stringify(fileHashes));
+
+                    recalculateSummaryForCourse(courseName);
+                    updateSavedResults();
+                    hideAll();
+                    calculateOverallPDGA();
+                    calculateAndDisplayTopPlayers();
+                    precalculateHoleStats(); 
+                    displayStaticBestResults();
+
+                    showMessage("Resultatet har tagits bort och sammanfattningen har räknats om.", false);
+                }
+            }
+        } 
+        
+        /**
+         * UPPDATERAD FUNKTION: Beräknar hålstatistiken för alla spelare på den aktuella banan.
+         */
+        function precalculateHoleStats() {
+            const newHoleStats = {};
+
+            savedResults.forEach(result => {
+                const courseName = result.data.players[0][1];
+                const header = result.data.header;
+                const parRow = result.data.par;
+                const playersData = result.data.players;
+
+                if (!newHoleStats[courseName]) {
+                    newHoleStats[courseName] = {};
+                }
+
+                const holeIndices = header.reduce((acc, current, index) => {
+                    if (current.startsWith("Hole")) {
+                        acc.push(index);
+                    }
+                    return acc;
+                }, []);
+
+                holeIndices.forEach(holeIndex => {
+                    const holeName = header[holeIndex];
+                    const par = parseInt(parRow[holeIndex]);
+                    if (isNaN(par)) return;
+
+                    if (!newHoleStats[courseName][holeName]) {
+                        newHoleStats[courseName][holeName] = { totalScore: 0, roundsPlayed: 0, par: par };
+                    }
+
+                    // NY LOGIK: Gå igenom ALLA spelare i den sparade rundan
+                    playersData.forEach(player => {
+                        // Kontrollera att spelaren faktiskt spelade den aktuella banan (redundant men säkert)
+                        if (player[1] !== courseName) return; 
+
+                        const score = parseInt(player[holeIndex]);
+                        if (isNaN(score)) return;
+                        
+                        // Aggregera score och antal spelade rundor för detta hål (nu inkluderas ALLA spelare)
+                        newHoleStats[courseName][holeName].totalScore += score;
+                        newHoleStats[courseName][holeName].roundsPlayed++;
+                    });
+                });
+            });
+
+            holeStats = newHoleStats;
+            localStorage.setItem('holeStats', JSON.stringify(holeStats));
+        }
+/**
+         * Beräknar genomsnittlig diff från par (score - par) för varje hål,
+         * ENDAST för den inloggade spelaren (playerName).
+         * FIX: Använder ABSOLUT index för att hämta Par-värden.
+         */
+        function calculateUserHoleStats(savedResults, courseName, playerName) {
+            const userHoleStats = {};
+
+            const holeRegex = /^(Hole|Hål)\d+$/; 
+
+            savedResults.forEach(result => {
+                const header = result.data.header;
+                const par = result.data.par; 
+                
+                // Hitta användarens resultatrad och verifiera banan
+                const userResult = result.data.players.find(p => p[0] === playerName && p[1] === courseName);
+                if (!userResult) return; 
+
+                // 1. Hitta det första hålet dynamiskt
+                const holeStartIndex = header.findIndex(h => holeRegex.test(h));
+                if (holeStartIndex === -1) return; 
+
+                // 2. Loopa igenom kolumner från och med startindexet
+                for (let i = holeStartIndex; i < header.length; i++) {
+                    const holeKey = header[i];
+                    
+                    // KONTROLL: Stoppa loopen helt om vi INTE är på en hålkolumn
+                    if (!holeRegex.test(holeKey)) {
+                        break; 
+                    }
+
+                    // *** HÄR ÄR FIXEN: Använd ABSOLUT index 'i' för Par-värdet ***
+                    if (i >= par.length) continue; // Förhindra out of bounds
+                    
+                    const holePar = parseInt(par[i], 10); // NYTT: Använder i istället för relativ parIndex
+                    
+                    // Hämta spelarens resultat
+                    const holeScore = parseInt(userResult[i], 10); 
+
+                    if (isNaN(holeScore) || isNaN(holePar)) continue; 
+
+                    if (!userHoleStats[holeKey]) {
+                        userHoleStats[holeKey] = { totalDiff: 0, roundsPlayed: 0 };
+                    }
+
+                    userHoleStats[holeKey].totalDiff += (holeScore - holePar);
+                    userHoleStats[holeKey].roundsPlayed += 1;
+                }
+            });
+
+            return userHoleStats;
+        }
+        function calculateCourseHoleAnalysis(courseName) {
+            const analysisContainer = document.getElementById('holeAnalysisContent');
+            analysisContainer.innerHTML = '';
+            
+            // NY FUNKTION: Översätter HoleX till Hål X
+            const translateHoleName = (name) => {
+                // Använder regex för att hitta Hole eller Hål följt av siffror
+                const match = name.match(/^(Hole|Hål)(\d+)$/i);
+                if (match) {
+                    return `Hål ${match[2]}`; // match[2] är siffran (1, 2, 3...)
+                }
+                return name; // Returnerar namnet oförändrat om det inte matchar
+            };
+
+            const stats = calculateUserHoleStats(savedResults, courseName, playerName);
+            
+            if (Object.keys(stats).length === 0) {
+                analysisContainer.innerHTML = '<li>Ingen hålstatistik sparad för dig på denna bana.</li>';
+                return;
+            }
+
+            const analysisList = [];
+            let parMap = {};
+            const resultWithPar = savedResults.find(r => r.data.players.some(p => p[1] === courseName));
+            
+            const holeRegex = /^(Hole|Hål)\d+$/; 
+            
+            if (resultWithPar) {
+                const header = resultWithPar.data.header;
+                const parRow = resultWithPar.data.par;
+                
+                const holeStartIndex = header.findIndex(h => holeRegex.test(h));
+                
+                if (holeStartIndex !== -1) {
+                    for (let i = holeStartIndex; i < header.length; i++) {
+                        const holeName = header[i];
+                        
+                        if (!holeRegex.test(holeName)) break; 
+                        
+                        if (parRow.length > i) {
+                             parMap[holeName] = parRow[i]; 
+                        }
+                    }
+                }
+            }
+
+            Object.keys(stats).forEach(holeName => {
+                const holeStat = stats[holeName];
+                const totalDiff = holeStat.totalDiff;
+                const roundsPlayed = holeStat.roundsPlayed;
+                
+                if (roundsPlayed > 0) {
+                    const avgDiff = (totalDiff / roundsPlayed).toFixed(2);
+                    
+                    analysisList.push({
+                        name: holeName,
+                        diff: parseFloat(avgDiff),
+                        rounds: roundsPlayed,
+                        par: parMap[holeName] || 'N/A'
+                    });
+                }
+            });
+
+            // Sortera efter bäst till sämst diff (lägst diff = bäst)
+            analysisList.sort((a, b) => a.diff - b.diff);
+
+            const bestList = analysisList.slice(0, 3);
+            const worstList = analysisList.slice(-3).reverse();
+            
+            // --- HÄR ANVÄNDS ÖVERSÄTTNINGEN I UTMATNINGEN ---
+
+            if (bestList.length > 0) {
+                analysisContainer.innerHTML += `<li><strong>Bästa Hål (Ditt Medel Diff):</strong></li>`;
+                bestList.forEach(h => {
+                    const diffText = h.diff >= 0 ? `+${h.diff.toFixed(2)}` : h.diff.toFixed(2);
+                    const displayName = translateHoleName(h.name); // <--- ANVÄND ÖVERSÄTTNINGEN
+                    analysisContainer.innerHTML += `<li class="best-hole">${displayName} (Par ${h.par}): ${diffText} (${h.rounds} rundor)</li>`;
+                });
+            } else {
+                analysisContainer.innerHTML += `<li>Ingen hålstatistik att analysera.</li>`;
+            }
+
+            if (worstList.length > 0) {
+                analysisContainer.innerHTML += `<li><strong>Sämsta Hål (Ditt Medel Diff):</strong></li>`;
+                worstList.forEach(h => {
+                    const diffText = h.diff >= 0 ? `+${h.diff.toFixed(2)}` : h.diff.toFixed(2);
+                    const displayName = translateHoleName(h.name); // <--- ANVÄND ÖVERSÄTTNINGEN
+                    analysisContainer.innerHTML += `<li class="worst-hole">${displayName} (Par ${h.par}): ${diffText} (${h.rounds} rundor)</li>`;
+                });
+            }
+        }
+
+        function calculateCourseHeadToHead(courseName) {
+            const listContainer = document.getElementById('courseHeadToHeadList');
+            listContainer.innerHTML = '';
+            
+            const playerStats = {};
+            const userPlayerName = playerName;
+            const courseResults = savedResults.filter(r => r.data.players.length > 0 && r.data.players[0][1] === courseName);
+
+            if (courseResults.length === 0) {
+                listContainer.innerHTML = '<li>Ingen Head-to-Head data för denna bana.</li>';
+                return;
+            }
+
+            courseResults.forEach(result => {
+                const playersData = result.data.players;
+                const userScore = playersData.find(p => p[0] === userPlayerName);
+                if (!userScore || isNaN(parseFloat(userScore[5]))) {
+                    return;
+                }
+                const userTotalScore = parseFloat(userScore[5]);
+
+                playersData.forEach(opponentData => {
+                    const opponentName = opponentData[0];
+                    if (opponentName === userPlayerName || isNaN(parseFloat(opponentData[5]))) {
+                        return;
+                    }
+                    const opponentTotalScore = parseFloat(opponentData[5]);
+
+                    if (!playerStats[opponentName]) {
+                        playerStats[opponentName] = { wins: 0, losses: 0, games: 0 };
+                    }
+                    playerStats[opponentName].games++;
+
+                    if (userTotalScore < opponentTotalScore) {
+                        playerStats[opponentName].wins++;
+                    } else if (userTotalScore > opponentTotalScore) {
+                        playerStats[opponentName].losses++;
+                    }
+                });
+            });
+
+            const sortedPlayers = Object.keys(playerStats).map(name => ({
+                name,
+                ...playerStats[name],
+                winPercentage: (playerStats[name].wins / playerStats[name].games) * 100
+            })).sort((a, b) => b.games - a.games); 
+
+            if (sortedPlayers.length === 0) {
+                listContainer.innerHTML = '<li>Ingen Head-to-Head data för denna bana.</li>';
+                return;
+            }
+
+            sortedPlayers.forEach(stats => {
+                const opponentName = stats.name;
+                const winPercentage = stats.winPercentage;
+                
+                let arrowClass = 'tie-arrow';
+                let arrowIcon = '—';
+
+                if (winPercentage > 50) {
+                    arrowClass = 'win-arrow';
+                    arrowIcon = '▲';
+                } else if (winPercentage < 50) {
+                    arrowClass = 'loss-arrow';
+                    arrowIcon = '▼';
+                } else {
+                    arrowClass = 'tie-arrow';
+                    arrowIcon = '—';
+                }
+
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<strong>${opponentName}</strong> (${stats.games} rundor): <span class="${arrowClass}">${arrowIcon} ${winPercentage.toFixed(0)}%</span>`;
+                listContainer.appendChild(listItem);
+            });
+        }
+        
+        function updateDynamicCourseStats(courseName) {
+            document.getElementById('dynamicCourseStats').style.display = 'grid';
+            calculateCourseHoleAnalysis(courseName);
+            calculateCourseHeadToHead(courseName);
+        }
+
+        // KORRIGERAD FUNKTION: Beräknar och ritar ut spelarnas rankning (placering) hål för hål
+        function displayHoleProgressionChart(data) {
+            const chartContainer = document.getElementById('holeProgressionChartContainer');
+            
+            if (typeof Chart === 'undefined') {
+                chartContainer.style.display = 'none';
+                console.error("Chart.js biblioteket är inte laddat.");
+                showMessage("Kunde inte ladda diagram: Chart.js saknas.", true);
+                return;
+            }
+
+            if (myChartInstance) {
+                myChartInstance.destroy();
+                myChartInstance = null;
+            }
+
+            const playersData = data.players;
+            const header = data.header;
+            const holeStartIndex = header.findIndex(h => h === "Hole1");
+
+            if (holeStartIndex === -1 || playersData.length === 0) {
+                chartContainer.style.display = 'none';
+                showMessage("Kunde inte hitta håldata eller spelardata i filen.", true);
+                return;
+            }
+
+            // 1. Förbered data för diagrammet
+            const numHoles = data.par.length - holeStartIndex; 
+            const labels = [];
+            for (let i = 1; i <= numHoles; i++) {
+                labels.push(translationMap[`Hole${i}`] || `Hål ${i}`);
+            }
+
+            const playerScores = {}; 
+
+            // Steg 1: Extrahera hålresultat och kumulativ score för varje spelare
+            playersData.forEach(p => {
+                const name = p[0];
+                playerScores[name] = { name: name, cumulative: [], rankings: [] };
+                let cumulative = 0;
+                for (let i = 0; i < numHoles; i++) {
+                    const score = parseFloat(p[holeStartIndex + i]);
+                    if (!isNaN(score)) {
+                        cumulative += score;
+                        playerScores[name].cumulative.push(cumulative);
+                    } else {
+                        // Om score saknas (t.ex. vid DNS/DNF), använd den senaste kumulativa poängen
+                        playerScores[name].cumulative.push(cumulative);
+                    }
+                }
+            });
+
+            // Steg 2: Beräkna rankning efter varje hål
+            let maxRank = playersData.length;
+
+            for (let i = 0; i < numHoles; i++) {
+                const scoresAtHole = [];
+                playersData.forEach(p => {
+                     const name = p[0];
+                     const cumulativeScore = playerScores[name].cumulative[i];
+                     // Lägg till spelare som har en score för detta hål
+                     if (cumulativeScore !== undefined) {
+                         scoresAtHole.push({ name: name, score: cumulativeScore });
+                     }
+                });
+
+                scoresAtHole.sort((a, b) => a.score - b.score);
+
+                // Tilldela rank, hantera tie-breakers
+                if (scoresAtHole.length > 0) {
+                    let currentRank = 1;
+                    playerScores[scoresAtHole[0].name].rankings.push(currentRank);
+
+                    for (let j = 1; j < scoresAtHole.length; j++) {
+                        // Samma rank vid samma score, annars nästa position (j + 1)
+                        if (scoresAtHole[j].score > scoresAtHole[j - 1].score) {
+                            currentRank = j + 1;
+                        }
+                        playerScores[scoresAtHole[j].name].rankings.push(currentRank);
+                    }
+                }
+            }
+            
+            // Steg 3: Skapa datasets för Chart.js
+            const datasets = playersData.map(p => {
+                const name = p[0];
+                let color;
+                let isMine = (name === playerName);
+                if (isMine) {
+                    color = '#dc3545'; // Röd för spelaren själv
+                } else {
+                    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                    const hue = hash % 360;
+                    color = `hsl(${hue}, 70%, 50%)`;
+                }
+
+                return {
+                    label: isMine ? `${name} (Du)` : name,
+                    // KORRIGERING: Använd 'rankings' istället för 'cumulative'
+                    data: playerScores[name].rankings, 
+                    borderColor: color,
+                    backgroundColor: isMine ? 'rgba(220, 53, 69, 0.3)' : 'rgba(0,0,0,0.1)',
+                    borderWidth: isMine ? 4 : 2,
+                    pointRadius: isMine ? 5 : 3,
+                    fill: false,
+                    tension: 0.2, 
+                    hidden: !isMine // Dölj andras data som standard
+                };
+            });
+
+            // Skapa konfigurationen för diagrammet
+            const config = {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets.reverse() // Vänd ordningen så "Du" hamnar överst
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                             callbacks: {
+                                 title: function(context) {
+                                     return context[0].label;
+                                 },
+                                 label: function(context) {
+                                     const rank = context.parsed.y;
+                                     let label = context.dataset.label || '';
+                                     if (label) {
+                                         label += ': ';
+                                     }
+                                     label += `Plats ${rank}`; 
+                                     
+                                     // Hämta den kumulativa scoren för detta hålet (för extra info i tooltip)
+                                     const cumulativeScores = playerScores[context.dataset.label].cumulative;
+                                     const holeIndex = context.dataIndex;
+                                     const cumulativeScore = cumulativeScores[holeIndex];
+
+                                     if (cumulativeScore !== undefined) {
+                                         label += ` (Slag: ${cumulativeScore})`;
+                                     }
+
+                                     return label;
+                                 }
+                             }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            reverse: true, // Placering 1 överst
+                            min: 1,
+                            max: maxRank,
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Placering (Rankning)'
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return `Plats ${value}`;
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Hål'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            };
+            
+            chartContainer.style.display = 'block';
+
+            const ctx = document.getElementById('holeProgressionChart').getContext('2d');
+            myChartInstance = new Chart(ctx, config);
+        }
+        
+        // ------------------------------ NYA TOOLTIP-FUNKTIONER ------------------------------
+        
+        function showTooltip(e, headerKey, courseName) {
+            const tooltip = document.getElementById('holeTooltip');
+            const stats = holeStats[courseName] ? holeStats[courseName][headerKey] : null;
+            let content = `<strong>${translationMap[headerKey] || headerKey}</strong>`;
+            
+            if (stats && stats.roundsPlayed > 0) {
+                // Hitta par-värdet för hålet från det senaste sparade resultatet
+                let par = 'N/A';
+                const resultWithPar = savedResults.find(r => r.data.players[0][1] === courseName);
+                if (resultWithPar) {
+                    const headerIndex = resultWithPar.data.header.findIndex(h => h === headerKey);
+                    par = headerIndex !== -1 ? resultWithPar.data.par[headerIndex] : 'N/A';
+                }
+
+                const avgScore = (stats.totalScore / stats.roundsPlayed).toFixed(2);
+                let diff = 'N/A';
+                if (!isNaN(parseFloat(par))) {
+                    diff = (parseFloat(avgScore) - parseFloat(par)).toFixed(2);
+                    diff = (diff > 0 ? '+' : '') + diff;
+                }
+
+                content += `<br>Medel (Alla spelare): ${avgScore} (Par ${par})`;
+                content += `<br>Diff: ${diff}`;
+                content += `<br>Spelade: ${stats.roundsPlayed} scores`;
+            } else {
+                content += `<br>Ingen medelstatistik tillgänglig`;
+                // Visa par från den nyladdade filen om den finns
+                if (currentCsvData) {
+                     const headerIndex = currentCsvData.header.findIndex(h => h === headerKey);
+                     if (headerIndex !== -1) {
+                         content += `<br>Par: ${currentCsvData.par[headerIndex]}`;
+                     }
+                }
+            }
+
+            tooltip.innerHTML = content;
+            tooltip.style.display = 'block';
+            
+            // Positionera tooltipen
+            const offsetX = 10; // Horisontellt och vertikalt avstånd från muspekaren
+            const x = e.clientX + offsetX;
+
+            // Kontrollera X-axelns gränser (samma som förut)
+            if (x + tooltip.offsetWidth > window.innerWidth) {
+                tooltip.style.left = (e.clientX - tooltip.offsetWidth - offsetX) + 'px';
+            } else {
+                tooltip.style.left = x + 'px';
+            }
+
+            // NYTT: Försök placera tooltipen OVANFÖR muspekaren som standard
+            const topPosition = e.clientY - tooltip.offsetHeight - offsetX;
+
+            // Kontrollera om tooltipen går utanför skärmens ÖVRE kant
+            if (topPosition < 0) {
+                // Om den gör det, placera den istället NEDANFÖR muspekaren
+                tooltip.style.top = (e.clientY + offsetX) + 'px';
+            } else {
+                // Annars, placera den OVANFÖR
+                tooltip.style.top = topPosition + 'px';
+            }
+        }
+
+        function hideTooltip() {
+            document.getElementById('holeTooltip').style.display = 'none';
+        }
+        
+        // ------------------------------ START OCH INSTÄLLNINGAR ------------------------------
+
+        function setupApp() {
+            if (playerName) {
+                document.getElementById('startPage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('playerTitle').textContent = playerName;
+                updateSavedResults();
+                calculateOverallPDGA();
+                calculateAndDisplayTopPlayers();
+                precalculateHoleStats();
+                displayStaticBestResults(); 
+                updateCourseSelect();
+                
+            } else {
+                document.getElementById('startPage').style.display = 'block';
+                document.getElementById('mainContent').style.display = 'none';
+            }
+        }
+
+        function setPlayerName() {
+            const name = document.getElementById('playerNameInput').value.trim();
+            if (name) {
+                playerName = name;
+                localStorage.setItem('playerName', name);
+                setupApp();
+            }
+        }
+
+        function displayStaticBestResults() {
+            const scrollingTextElement = document.getElementById('scrollingText');
+            scrollingTextElement.className = 'static-best';
+            
+            // Gruppera efter bana och hitta personbästa
+            const courseStats = {};
+
+            savedResults.forEach(result => {
+                const playersData = result.data.players;
+                const myScore = playersData.find(p => p[0] === playerName);
+                if (!myScore || myScore.length < 7) return;
+
+                const course = myScore[1];
+                const total = parseFloat(myScore[5]);
+                const plusMinus = parseFloat(myScore[6]);
+                const date = myScore[3];
+
+                if (!courseStats[course]) {
+                    courseStats[course] = {
+                        personalBestTotal: Infinity,
+                        personalBestPlusMinus: Infinity,
+                        rounds: [],
+                        totalRounds: 0
+                    };
+                }
+
+                courseStats[course].totalRounds++;
+                
+                if (!isNaN(total) && total < courseStats[course].personalBestTotal) {
+                    courseStats[course].personalBestTotal = total;
+                }
+                if (!isNaN(plusMinus) && plusMinus < courseStats[course].personalBestPlusMinus) {
+                    courseStats[course].personalBestPlusMinus = plusMinus;
+                }
+                
+                courseStats[course].rounds.push({ total, plusMinus, date });
+            });
+
+            // Konvertera till array för sortering
+            let sortedCourses = Object.keys(courseStats).map(course => ({
+                course: course,
+                personalBestTotal: courseStats[course].personalBestTotal === Infinity ? 'N/A' : courseStats[course].personalBestTotal,
+                personalBestPlusMinus: courseStats[course].personalBestPlusMinus === Infinity ? 'N/A' : courseStats[course].personalBestPlusMinus,
+                totalRounds: courseStats[course].totalRounds
+            }));
+            
+            // Sortera: 1. Lägst total score, 2. Lägst +/- score
+            sortedCourses.sort((a, b) => {
+                const totalA = a.personalBestTotal === 'N/A' ? Infinity : parseFloat(a.personalBestTotal);
+                const totalB = b.personalBestTotal === 'N/A' ? Infinity : parseFloat(b.personalBestTotal);
+                if (totalA !== totalB) return totalA - totalB;
+                
+                const pmA = a.personalBestPlusMinus === 'N/A' ? Infinity : parseFloat(a.personalBestPlusMinus);
+                const pmB = b.personalBestPlusMinus === 'N/A' ? Infinity : parseFloat(b.personalBestPlusMinus);
+                return pmA - pmB;
+            });
+            
+            // Visa endast de 5 bästa unika banorna
+            const top5Courses = sortedCourses.slice(0, 5);
+
+            if (top5Courses.length === 0) {
+                scrollingTextElement.innerHTML = 'Inga sparade resultat med totala kast-värden.';
+                return;
+            }
+
+            let htmlContent = '<ul>';
+            
+            top5Courses.forEach(result => {
+                const course = result.course;
+                const pbTotal = result.personalBestTotal;
+                const pbPlusMinus = result.personalBestPlusMinus;
+                const totalRounds = result.totalRounds;
+
+                const totalText = pbTotal === 'N/A' ? 'N/A' : `${pbTotal} slag`;
+                
+                let pmClass = '';
+                const pmValue = parseFloat(pbPlusMinus);
+                if (pmValue < 0) {
+                    pmClass = 'better-result';
+                } else if (pmValue > 0) {
+                    pmClass = 'worse-result';
+                } else if (pmValue === 0) {
+                    pmClass = 'better-result';
+                }
+
+                // Ställ upp som en lista liknande Top 5 motståndare
+                htmlContent += `<li><strong>${course}</strong> (${totalRounds} rundor): PB Kast: ${totalText} | PB +/-: <span class="${pmClass}">${pbPlusMinus}</span></li>`;
+            });
+
+            htmlContent += '</ul>';
+            scrollingTextElement.innerHTML = htmlContent;
+        }
+
+
+        window.onload = function() {
+            setupApp();
+        };
+        
+    </script>
+</body>
+</html>
