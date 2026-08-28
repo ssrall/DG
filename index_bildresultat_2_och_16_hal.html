@@ -1134,55 +1134,259 @@ return {
         }
 
         async function readResultImage() {
-            const input = document.getElementById('resultImageFile');
-            const progress = document.getElementById('ocrProgress');
-            const ocrText = document.getElementById('ocrText');
-            const createButton = document.getElementById('createImageResultButton');
-            const saveButton = document.getElementById('saveImageResultButton');
-            const file = input.files && input.files[0];
+const input = document.getElementById('resultImageFile');
+const progress = document.getElementById('ocrProgress');
+const ocrText = document.getElementById('ocrText');
+const createButton = document.getElementById('createImageResultButton');
+const saveButton = document.getElementById('saveImageResultButton');
+const file = input.files && input.files[0];
 
-            if (!file) {
-                showMessage('Vänligen välj en resultatbild.', true);
-                return;
+```
+if (!file) {
+    showMessage('Vänligen välj en resultatbild.', true);
+    return;
+}
+
+if (typeof Tesseract === 'undefined') {
+    showMessage(
+        'OCR-biblioteket kunde inte laddas. Kontrollera internetanslutningen och försök igen.',
+        true
+    );
+    return;
+}
+
+progress.style.display = 'block';
+progress.textContent = 'Förbereder bilden...';
+createButton.style.display = 'none';
+saveButton.style.display = 'none';
+
+try {
+    // ---------------------------------------------------------
+    // SKAPA TRE VARIANTER AV BILDEN
+    // ---------------------------------------------------------
+    const originalCanvas = await createOcrCanvas(file);
+
+    // Variant 1: Din nuvarande bild
+    const canvas1 = originalCanvas;
+
+    // Hjälpfunktion för att skapa nya canvas-varianter
+    function createVariant(sourceCanvas, mode) {
+        const canvas = document.createElement('canvas');
+
+        const scale = mode === 'large' ? 1.5 : 1;
+
+        canvas.width = Math.round(sourceCanvas.width * scale);
+        canvas.height = Math.round(sourceCanvas.height * scale);
+
+        const ctx = canvas.getContext('2d', {
+            willReadFrequently: true
+        });
+
+        ctx.drawImage(
+            sourceCanvas,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        const imageData = ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        const d = imageData.data;
+
+        for (let i = 0; i < d.length; i += 4) {
+
+            const r = d[i];
+            const g = d[i + 1];
+            const b = d[i + 2];
+
+            // Luminans
+            let y =
+                0.299 * r +
+                0.587 * g +
+                0.114 * b;
+
+            if (mode === 'contrast') {
+                // Mjukare kontrast än svartvit
+                y = (y - 128) * 1.25 + 128;
             }
-            if (typeof Tesseract === 'undefined') {
-                showMessage('OCR-biblioteket kunde inte laddas. Kontrollera internetanslutningen och försök igen.', true);
-                return;
+
+            if (mode === 'sharp') {
+                // Lite extra kontrast, men behåll gråskalor
+                y = (y - 128) * 1.55 + 128;
             }
 
-            progress.style.display = 'block';
-            progress.textContent = 'Förbereder bilden...';
-            createButton.style.display = 'none';
-            saveButton.style.display = 'none';
+            y = Math.max(0, Math.min(255, y));
 
-            try {
-                const canvas = await createOcrCanvas(file);
-                const worker = await Tesseract.createWorker('eng', 1, {
-                    logger: m => {
-                        if (m.status) {
-                            const pct = m.progress ? ` ${Math.round(m.progress * 100)}%` : '';
-                            progress.textContent = `Läser bild: ${m.status}${pct}`;
-                        }
-                    }
-                });
+            d[i] = y;
+            d[i + 1] = y;
+            d[i + 2] = y;
+        }
 
-                const result = await worker.recognize(canvas);
-                await worker.terminate();
-                const text = (result && result.data && result.data.text) ? result.data.text.trim() : '';
-                imageOcrWords = (result && result.data && Array.isArray(result.data.words)) ? result.data.words : [];
+        ctx.putImageData(imageData, 0, 0);
 
-                if (!text) throw new Error('Ingen text kunde hittas i bilden.');
-                ocrText.value = text;
-                ocrText.style.display = 'block';
-                createButton.style.display = 'inline-block';
-                progress.textContent = 'OCR klar. Kontrollera texten och klicka sedan på “Skapa resultat från bild”.';
-                showMessage('Bildresultatet har lästs. Kontrollera OCR-texten innan du skapar resultatet.', false);
-            } catch (error) {
-                console.error(error);
-                progress.textContent = 'Kunde inte läsa bilden.';
-                showMessage(`Fel vid OCR-läsning: ${error.message || error}`, true);
+        return canvas;
+    }
+
+    // Variant 2: större + mjuk kontrast
+    const canvas2 = createVariant(
+        originalCanvas,
+        'contrast'
+    );
+
+    // Variant 3: större + kraftigare kontrast
+    const canvas3 = createVariant(
+        originalCanvas,
+        'sharp'
+    );
+
+    // ---------------------------------------------------------
+    // OCR-WORKER
+    // ---------------------------------------------------------
+
+    progress.textContent =
+        'Startar OCR – flera försök görs...';
+
+    const worker = await Tesseract.createWorker('eng', 1, {
+        logger: m => {
+            if (m.status) {
+                const pct = m.progress
+                    ? ` ${Math.round(m.progress * 100)}%`
+                    : '';
+
+                progress.textContent =
+                    `OCR: ${m.status}${pct}`;
             }
         }
+    });
+
+    // ---------------------------------------------------------
+    // FUNKTION FÖR ETT OCR-FÖRSÖK
+    // ---------------------------------------------------------
+
+    async function runOCR(canvas, namn) {
+
+        progress.textContent =
+            `Läser ${namn}...`;
+
+        const result =
+            await worker.recognize(canvas);
+
+        const text =
+            result &&
+            result.data &&
+            result.data.text
+                ? result.data.text.trim()
+                : '';
+
+        const words =
+            result &&
+            result.data &&
+            Array.isArray(result.data.words)
+                ? result.data.words
+                : [];
+
+        return {
+            namn: namn,
+            text: text,
+            words: words
+        };
+    }
+
+    // ---------------------------------------------------------
+    // TRE FÖRSÖK
+    // ---------------------------------------------------------
+
+    const result1 =
+        await runOCR(
+            canvas1,
+            'Försök 1 – original'
+        );
+
+    const result2 =
+        await runOCR(
+            canvas2,
+            'Försök 2 – kontrast'
+        );
+
+    const result3 =
+        await runOCR(
+            canvas3,
+            'Försök 3 – kraftigare kontrast'
+        );
+
+    await worker.terminate();
+
+    // ---------------------------------------------------------
+    // VISA ALLA TRE RESULTATEN
+    // ---------------------------------------------------------
+
+    const combinedText =
+        '============================\n' +
+        'OCR FÖRSÖK 1 – ORIGINAL\n' +
+        '============================\n\n' +
+        (result1.text || '[Ingen text]') +
+        '\n\n\n' +
+
+        '============================\n' +
+        'OCR FÖRSÖK 2 – KONTRAST\n' +
+        '============================\n\n' +
+        (result2.text || '[Ingen text]') +
+        '\n\n\n' +
+
+        '============================\n' +
+        'OCR FÖRSÖK 3 – KRAFTIGARE KONTRAST\n' +
+        '============================\n\n' +
+        (result3.text || '[Ingen text]');
+
+    ocrText.value = combinedText;
+    ocrText.style.display = 'block';
+
+    // ---------------------------------------------------------
+    // VIKTIGT:
+    // Använd första försöket för parsern tills vidare.
+    // Vi ändrar INTE resten av appen ännu.
+    // ---------------------------------------------------------
+
+    imageOcrWords = result1.words;
+
+    if (!result1.text && !result2.text && !result3.text) {
+        throw new Error(
+            'Ingen text kunde hittas i bilden.'
+        );
+    }
+
+    createButton.style.display = 'inline-block';
+
+    progress.textContent =
+        'OCR klar. Tre försök visas ovanför.';
+
+    showMessage(
+        'OCR klar. Jämför de tre försöken innan resultatet skapas.',
+        false
+    );
+
+} catch (error) {
+
+    console.error(error);
+
+    progress.textContent =
+        'Kunde inte läsa bilden.';
+
+    showMessage(
+        `Fel vid OCR-läsning: ${error.message || error}`,
+        true
+    );
+}
+```
+
+}
+
 
         function normalizeOcrText(text) {
             return text
@@ -1195,16 +1399,15 @@ return {
         }
 
         function parseScoreLine(line) {
-            const tokens = line.match(/\b\d{1,2}\b/g) || [];
-            return tokens.map(Number).filter(n => n >= 1 && n <= 20);
-        }
+// OCR kan läsa en inramad 5 från UDisc som t.ex. "©".
+// Vi testar därför att tolka just © som resultatet 5.
+const normalizedLine = String(line)
+.replace(/©/g, ' 5 ');
 
-        function cleanOcrName(text) {
-            return String(text || '')
-                .replace(/[^A-Za-zÅÄÖåäöÅÄÖéÉüÜ_ -]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
-        }
+const tokens = normalizedLine.match(/\b\d{1,2}\b/g) || [];
+return tokens.map(Number).filter(n => n >= 1 && n <= 20);
+
+}
 
         function getOcrTableRows() {
             if (!Array.isArray(imageOcrWords) || !imageOcrWords.length) return [];
