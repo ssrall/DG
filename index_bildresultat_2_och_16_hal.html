@@ -1235,39 +1235,175 @@ return {
                 .map(r => r.words.sort((a,b) => a.x-b.x).map(w=>w.text).join(' '));
         }
 
-        function extractHoleCountAndPar(lines) { let par = []; // Hitta alla rader som börjar med "Par" for (const line of lines) { if (/^par\b/i.test(line)) { const values = parseScoreLine(line) .filter(n => n >= 2 && n <= 6); if (values.length > 0) { par.push(...values); } } } // UDisc kan ha: // 9 hål = en Par-rad // 16 hål = två Par-rader // 18 hål = två Par-rader if (par.length > 18) { par = par.slice(0, 18); } const holeCount = par.length; return { holeCount, par }; }
+        function extractHoleCountAndPar(lines) {
+    let par = [];
+
+    for (const line of lines) {
+        if (/^par\b/i.test(line)) {
+            const values = parseScoreLine(line)
+                .filter(n => n >= 2 && n <= 6);
+
+            if (values.length > 0) {
+                par.push(...values);
+            }
+        }
+    }
+
+    if (par.length > 18) {
+        par = par.slice(0, 18);
+    }
+
+    return {
+        holeCount: par.length,
+        par: par
+    };
+}
 
         function extractGenericPlayerRows(text, holeCount) {
-            const textLines = normalizeOcrText(text);
-            const positionalRows = getOcrTableRows();
-            const sourceRows = positionalRows.length ? positionalRows : textLines;
-            const players = [];
-            const seen = new Set();
+    const textLines = normalizeOcrText(text);
+    const positionalRows = getOcrTableRows();
+    const sourceRows = positionalRows.length ? positionalRows : textLines;
 
-            // Leta efter rader med en textetikett följd av minst holeCount numeriska värden.
-            sourceRows.forEach((line, index) => {
-                const parsed = parsePlayerRowFromText(line, holeCount);
-                if (parsed && !seen.has(parsed.name.toLowerCase())) {
-                    seen.add(parsed.name.toLowerCase());
-                    players.push(parsed);
-                    return;
-                }
+    const players = [];
+    const seen = new Set();
 
-                // Om OCR delat upp en spelarrad över flera rader, slå ihop några närliggande rader.
-                for (let span = 2; span <= 4; span++) {
-                    const joined = sourceRows.slice(index, index + span).join(' ');
-                    const p = parsePlayerRowFromText(joined, holeCount);
-                    if (p && !seen.has(p.name.toLowerCase())) {
-                        seen.add(p.name.toLowerCase());
-                        players.push(p);
-                        break;
-                    }
-                }
-            });
-            return players;
+    sourceRows.forEach((line, index) => {
+        const parsed = parsePlayerRowFromText(line, holeCount);
+
+        if (parsed && !seen.has(parsed.name.toLowerCase())) {
+            seen.add(parsed.name.toLowerCase());
+            players.push(parsed);
+            return;
         }
 
-        function buildImageResultData(text) { const lines = normalizeOcrText(text); const { holeCount, par: detectedPar } = extractHoleCountAndPar(lines); if (!holeCount) { throw new Error( 'Kunde inte hitta Par-raden i bilden.' ); } const header = [ 'PlayerName', 'CourseName', 'LayoutName', 'StartDate', 'EndDate', 'Total', '+/-', 'RoundRating', ...Array.from( { length: holeCount }, (_, i) => `Hole${i + 1}` ) ]; // Hitta spelarna med den befintliga OCR-funktionen const generic = extractGenericPlayerRows(text, holeCount); if (generic.length === 0) { throw new Error( `Kunde inte hitta spelarnas resultat i bilden. ` + `Bilden verkar innehålla ${holeCount} hål.` ); } // Par-raden const par = [ 'Par', '', '', '', '', detectedPar.reduce((a, b) => a + b, 0), '', '', ...detectedPar ]; // Spelarrader const players = generic.map(p => { const holes = p.holes.slice(0, holeCount); const total = holes.reduce((a, b) => a + Number(b), 0); const parTotal = detectedPar.reduce((a, b) => a + Number(b), 0); const plusMinus = total - parTotal; return [ p.name, '', '', '', '', total, plusMinus >= 0 ? `+${plusMinus}` : String(plusMinus), p.rating || '', ...holes ]; }); const raw = JSON.stringify({ text, header, par, players, source: imageResultSource }); return { text, fileHash: calculateHash('IMAGE|' + raw), header, par, players, sourceType: 'image', sourceFileName: imageResultSource || 'resultatbild', imageDataUrl: imageResultDataUrl || '' }; }
+        for (let span = 2; span <= 4; span++) {
+            const joined = sourceRows
+                .slice(index, index + span)
+                .join(' ');
+
+            const p = parsePlayerRowFromText(
+                joined,
+                holeCount
+            );
+
+            if (p && !seen.has(p.name.toLowerCase())) {
+                seen.add(p.name.toLowerCase());
+                players.push(p);
+                break;
+            }
+        }
+    });
+
+    return players;
+}
+
+        function buildImageResultData(text) {
+    const lines = normalizeOcrText(text);
+
+    const result = extractHoleCountAndPar(lines);
+    const holeCount = result.holeCount;
+    const detectedPar = result.par;
+
+    if (!holeCount) {
+        throw new Error(
+            'Kunde inte hitta Par-raden i bilden.'
+        );
+    }
+
+    const header = [
+        'PlayerName',
+        'CourseName',
+        'LayoutName',
+        'StartDate',
+        'EndDate',
+        'Total',
+        '+/-',
+        'RoundRating'
+    ];
+
+    for (let i = 1; i <= holeCount; i++) {
+        header.push(`Hole${i}`);
+    }
+
+    const generic = extractGenericPlayerRows(
+        text,
+        holeCount
+    );
+
+    if (generic.length === 0) {
+        throw new Error(
+            'Kunde inte hitta spelarnas resultat i bilden.'
+        );
+    }
+
+    const parTotal = detectedPar.reduce(
+        (sum, value) => sum + Number(value),
+        0
+    );
+
+    const par = [
+        'Par',
+        '',
+        '',
+        '',
+        '',
+        parTotal,
+        '',
+        ''
+    ];
+
+    par.push(...detectedPar);
+
+    const players = generic.map(player => {
+        const holes = player.holes
+            .slice(0, holeCount);
+
+        const total = holes.reduce(
+            (sum, value) => sum + Number(value),
+            0
+        );
+
+        const difference = total - parTotal;
+
+        const plusMinus =
+            difference > 0
+                ? `+${difference}`
+                : String(difference);
+
+        return [
+            player.name,
+            '',
+            '',
+            '',
+            '',
+            total,
+            plusMinus,
+            player.rating || '',
+            ...holes
+        ];
+    });
+
+    const raw = JSON.stringify({
+        text: text,
+        header: header,
+        par: par,
+        players: players,
+        source: imageResultSource
+    });
+
+    return {
+        text: text,
+        fileHash: calculateHash('IMAGE|' + raw),
+        header: header,
+        par: par,
+        players: players,
+        sourceType: 'image',
+        sourceFileName:
+            imageResultSource || 'resultatbild',
+        imageDataUrl:
+            imageResultDataUrl || ''
+    };
+}
 
         function getImageMetaValues() {
             return {
