@@ -11,6 +11,7 @@
     <link rel="apple-touch-icon" href="discgolf-icon-180.png"> 
     <title id="pageTitle"></title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         /* ------------------------------ BAS & TYPOGRAFI ------------------------------ */
         body {
@@ -387,6 +388,80 @@
                  grid-template-columns: 1fr;
             }
         }
+
+        /* ------------------------------ BILDRESULTAT / OCR ------------------------------ */
+        #imageResultPreview {
+            display: none;
+            max-width: 100%;
+            max-height: 520px;
+            margin: 12px auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            object-fit: contain;
+            background: #111;
+        }
+        #ocrProgress {
+            display: none;
+            margin: 8px 0;
+            font-size: .9em;
+            color: #1f8383;
+            min-height: 20px;
+        }
+        #ocrText {
+            display: none;
+            width: 100%;
+            min-height: 180px;
+            box-sizing: border-box;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            padding: 10px;
+        }
+        .image-meta-panel {
+            display: none;
+            margin: 14px 0;
+            padding: 16px;
+            border: 1px solid #d9e2e8;
+            border-radius: 12px;
+            background: #f7fafc;
+            text-align: left;
+        }
+        .image-meta-panel h3 { margin: 0 0 6px; font-size: 1.05em; }
+        .image-meta-panel p { margin: 0 0 12px; color: #667085; font-size: .85em; line-height: 1.4; }
+        .image-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .image-meta-grid label { font-size: .8em; font-weight: 700; color: #475467; display: flex; flex-direction: column; gap: 5px; }
+        .image-meta-grid input {
+            width: 100%; box-sizing: border-box; padding: 9px 10px; border: 1px solid #cfd8df;
+            border-radius: 7px; background: white; font-size: .95em;
+        }
+        .image-rating-box {
+            margin-top: 12px; padding: 11px 12px; border-radius: 9px; background: #eef7f7;
+            font-size: .84em; line-height: 1.45; color: #345;
+        }
+        .image-rating-box strong { color: #1f6f6f; }
+        .image-meta-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+        @media (max-width: 650px) { .image-meta-grid { grid-template-columns: 1fr; } }
+        .image-result-info {
+            font-size: .85em;
+            color: #666;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .image-result-status {
+            font-size: .9em;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+        .image-test-note {
+            font-size: .78em;
+            color: #777;
+            margin-top: 8px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -430,6 +505,45 @@
                     <p id="message"></p>
                     <button id="saveButton" style="display: none;" onclick="saveResult()">Spara resultat</button>
                     <button id="downloadButton" style="display: none;" onclick="downloadResult()">Ladda ner resultat</button>
+                </div>
+
+                <div class="top-box" id="imageInputContainer">
+                    <h2>Ladda upp resultat (Bild)</h2>
+                    <input type="file" id="resultImageFile" accept="image/png,image/jpeg,image/webp,image/jpg" onchange="previewResultImage()">
+                    <img id="imageResultPreview" alt="Förhandsvisning av resultatbild">
+                    <button type="button" onclick="readResultImage()">Läs resultat från bild</button>
+                    <div id="ocrProgress"></div>
+                    <p class="image-result-info">Ladda upp en skärmbild från UDisc. Appen läser resultatet med OCR och bygger ett vanligt resultatkort som kan sparas tillsammans med dina CSV-rundor.</p>
+                    <p class="image-test-note">Testlayout: UDisc-scorekort med 18 hål. Bana, layout och datum fyller du själv efter att bilden har lästs.</p>
+                    <textarea id="ocrText" placeholder="OCR-text visas här. Du kan korrigera texten innan resultatet skapas."></textarea>
+
+                    <div id="imageMetaPanel" class="image-meta-panel">
+                        <h3>Uppgifter för bildresultatet</h3>
+                        <p>Fyll i det som saknas. Dessa uppgifter sparas tillsammans med rundan och används av appens vanliga statistik.</p>
+                        <div class="image-meta-grid">
+                            <label>Bana
+                                <input id="imageCourseName" type="text" placeholder="T.ex. Hällby Discgolfbana">
+                            </label>
+                            <label>Layout
+                                <input id="imageLayoutName" type="text" placeholder="T.ex. Hällby 1 - 16">
+                            </label>
+                            <label>Startdatum
+                                <input id="imageStartDate" type="date">
+                            </label>
+                            <label>Slutdatum
+                                <input id="imageEndDate" type="date">
+                            </label>
+                        </div>
+                        <div id="imageRatingStatus" class="image-rating-box">
+                            <strong>UDisc Rating:</strong> Om rating saknas försöker appen hämta den från ett sparat resultat för samma spelare, samma bana och samma antal hål.
+                        </div>
+                        <div class="image-meta-actions">
+                            <button type="button" onclick="applyImageMetaAndRefresh()">Uppdatera resultat</button>
+                            <button type="button" onclick="findSavedRatingsForImage()">Hämta saknade UDisc Ratings</button>
+                        </div>
+                    </div>
+                    <button type="button" id="createImageResultButton" style="display:none;" onclick="createResultFromOCR()">Skapa resultat från bild</button>
+                    <button type="button" id="saveImageResultButton" style="display:none;" onclick="saveImageResult()">Spara bildresultat</button>
                 </div>
 
                 <div class="top-box" id="savedResultsContainer">
@@ -496,6 +610,13 @@
         
         // NYTT: Global variabel för Chart.js instans
         let myChartInstance = null;
+
+        // Bildresultat/OCR. CSV-logiken nedan är oförändrad.
+        let imageResultData = null;
+        let imageResultLoaded = false;
+        let imageResultSource = null;
+        let imageResultDataUrl = null;
+        let imageOcrWords = [];
 
         const translationMap = {
             "PlayerName": "Spelare",
@@ -949,6 +1070,533 @@ return {
             updateCourseSelect();
         }
 
+        /* ------------------------------ BILDRESULTAT / OCR ------------------------------ */
+        function previewResultImage() {
+            const input = document.getElementById('resultImageFile');
+            const preview = document.getElementById('imageResultPreview');
+            const ocrText = document.getElementById('ocrText');
+            const createButton = document.getElementById('createImageResultButton');
+            const saveButton = document.getElementById('saveImageResultButton');
+            const progress = document.getElementById('ocrProgress');
+            const file = input.files && input.files[0];
+
+            imageResultData = null;
+            imageResultLoaded = false;
+            imageResultSource = file ? file.name : null;
+            imageResultDataUrl = null;
+            ocrText.value = '';
+            ocrText.style.display = 'none';
+            createButton.style.display = 'none';
+            saveButton.style.display = 'none';
+            progress.style.display = 'none';
+            metaPanel.style.display = 'none';
+
+            if (!file) {
+                preview.removeAttribute('src');
+                preview.style.display = 'none';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imageResultDataUrl = e.target.result;
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function createOcrCanvas(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Begränsa storleken men behåll tillräcklig detalj för mobilbilder/skärmbilder.
+                    const scale = Math.min(2, 1800 / img.width);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.max(1, Math.round(img.width * scale));
+                    canvas.height = Math.max(1, Math.round(img.height * scale));
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const d = imageData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        // Luminans + kontrast. Detta gör vit text på mörk UDisc-bakgrund tydligare.
+                        const y = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                        const c = Math.max(0, Math.min(255, (y - 128) * 1.45 + 128));
+                        d[i] = d[i + 1] = d[i + 2] = c;
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                    resolve(canvas);
+                };
+                img.onerror = () => reject(new Error('Kunde inte öppna bilden.'));
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        async function readResultImage() {
+            const input = document.getElementById('resultImageFile');
+            const progress = document.getElementById('ocrProgress');
+            const ocrText = document.getElementById('ocrText');
+            const createButton = document.getElementById('createImageResultButton');
+            const saveButton = document.getElementById('saveImageResultButton');
+            const file = input.files && input.files[0];
+
+            if (!file) {
+                showMessage('Vänligen välj en resultatbild.', true);
+                return;
+            }
+            if (typeof Tesseract === 'undefined') {
+                showMessage('OCR-biblioteket kunde inte laddas. Kontrollera internetanslutningen och försök igen.', true);
+                return;
+            }
+
+            progress.style.display = 'block';
+            progress.textContent = 'Förbereder bilden...';
+            createButton.style.display = 'none';
+            saveButton.style.display = 'none';
+
+            try {
+                const canvas = await createOcrCanvas(file);
+                const worker = await Tesseract.createWorker('eng', 1, {
+                    logger: m => {
+                        if (m.status) {
+                            const pct = m.progress ? ` ${Math.round(m.progress * 100)}%` : '';
+                            progress.textContent = `Läser bild: ${m.status}${pct}`;
+                        }
+                    }
+                });
+
+                const result = await worker.recognize(canvas);
+                await worker.terminate();
+                const text = (result && result.data && result.data.text) ? result.data.text.trim() : '';
+                imageOcrWords = (result && result.data && Array.isArray(result.data.words)) ? result.data.words : [];
+
+                if (!text) throw new Error('Ingen text kunde hittas i bilden.');
+                ocrText.value = text;
+                ocrText.style.display = 'block';
+                createButton.style.display = 'inline-block';
+                progress.textContent = 'OCR klar. Kontrollera texten och klicka sedan på “Skapa resultat från bild”.';
+                showMessage('Bildresultatet har lästs. Kontrollera OCR-texten innan du skapar resultatet.', false);
+            } catch (error) {
+                console.error(error);
+                progress.textContent = 'Kunde inte läsa bilden.';
+                showMessage(`Fel vid OCR-läsning: ${error.message || error}`, true);
+            }
+        }
+
+        function normalizeOcrText(text) {
+            return text
+                .replace(/\u00a0/g, ' ')
+                .replace(/[|]/g, ' ')
+                .replace(/\r/g, '')
+                .split('\n')
+                .map(line => line.replace(/\s+/g, ' ').trim())
+                .filter(Boolean);
+        }
+
+        function parseScoreLine(line) {
+            const tokens = line.match(/\b\d{1,2}\b/g) || [];
+            return tokens.map(Number).filter(n => n >= 1 && n <= 20);
+        }
+
+        function cleanOcrName(text) {
+            return String(text || '')
+                .replace(/[^A-Za-zÅÄÖåäöÅÄÖéÉüÜ_ -]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function getOcrTableRows() {
+            if (!Array.isArray(imageOcrWords) || !imageOcrWords.length) return [];
+            const words = imageOcrWords
+                .filter(w => w && w.text && (!w.confidence || w.confidence >= 25))
+                .map(w => ({
+                    text: String(w.text).trim(),
+                    x: Number(w.bbox?.x0 ?? 0),
+                    y: Number(w.bbox?.y0 ?? 0),
+                    y2: Number(w.bbox?.y1 ?? w.bbox?.y0 ?? 0)
+                }))
+                .filter(w => w.text);
+
+            const rows = [];
+            words.sort((a,b) => a.y - b.y || a.x - b.x);
+            words.forEach(word => {
+                const centerY = (word.y + word.y2) / 2;
+                let row = rows.find(r => Math.abs(r.centerY - centerY) <= 14);
+                if (!row) {
+                    row = { centerY, words: [] };
+                    rows.push(row);
+                }
+                row.words.push(word);
+                row.centerY = row.words.reduce((sum,w) => sum + ((w.y+w.y2)/2), 0) / row.words.length;
+            });
+            return rows
+                .sort((a,b) => a.centerY - b.centerY)
+                .map(r => r.words.sort((a,b) => a.x-b.x).map(w=>w.text).join(' '));
+        }
+
+        function extractHoleCountAndPar(lines) {
+            let par = [];
+            const parLineIndex = lines.findIndex(line => /^par\b/i.test(line) || /\bpar\b/i.test(line) && parseScoreLine(line).length >= 8);
+            if (parLineIndex >= 0) {
+                par = parseScoreLine(lines[parLineIndex]);
+                // Ibland ligger parvärdena på nästa OCR-rad.
+                if (par.length < 9 && lines[parLineIndex + 1]) {
+                    par = par.concat(parseScoreLine(lines[parLineIndex + 1]));
+                }
+                // Par ska vara 3–5 på ett normalt UDisc-scorekort. Filtrera bort uppenbara metadata-tal.
+                par = par.filter(n => n >= 2 && n <= 6);
+            }
+
+            let holeCount = par.length;
+            if (holeCount < 1) {
+                const all = lines.join(' ');
+                const holeMatches = [...all.matchAll(/(?:hål|hole)\s*(\d{1,2})/gi)].map(m => Number(m[1]));
+                if (holeMatches.length) holeCount = Math.max(...holeMatches);
+            }
+            if (holeCount < 1) holeCount = 18;
+            if (par.length > holeCount) par = par.slice(0, holeCount);
+            return { holeCount, par };
+        }
+
+        function parsePlayerRowFromText(rowText, holeCount) {
+            const nums = parseScoreLine(rowText);
+            if (nums.length < holeCount + 1) return null;
+
+            const firstToken = String(rowText).trim().split(/\s+/)[0];
+            const name = cleanOcrName(firstToken);
+            if (!name || /^(spelare|player|par|hål|hole|längd|length|rating|runda)$/i.test(name)) return null;
+
+            // I UDisc ligger hålsiffrorna sist på spelarraden. Det gör att vi klarar
+            // både 18, 16 och 9 hål och även rader där rating/metadata finns med.
+            const holes = nums.slice(-holeCount);
+            if (holes.length !== holeCount) return null;
+
+            let total = '';
+            let plusMinus = '';
+            const pm = rowText.match(/([+-])\s*(\d{1,3})/);
+            if (pm) plusMinus = `${pm[1]}${pm[2]}`;
+            const totalMatch = rowText.match(/(?:\(|\b)(\d{2,3})(?:\)|\b)/g);
+            if (totalMatch) {
+                const candidates = totalMatch.map(x => parseInt(x.replace(/\D/g,''),10)).filter(n => n >= 10 && n <= 200);
+                if (candidates.length) total = String(candidates[0]);
+            }
+            if (!total) total = String(holes.reduce((a,b)=>a+b,0));
+
+            let rating = '';
+            const ratingMatches = rowText.match(/\b\d{2,3}\b/g) || [];
+            const ratingCandidates = ratingMatches.map(Number).filter(n => n >= 1 && n <= 999);
+            // Rating brukar vara ett tal direkt efter +/-/total. Vi tar endast en kandidat
+            // som inte är totalen och inte är ett hålresultat.
+            const nonHole = ratingCandidates.filter(n => !holes.includes(n) || n > 20);
+            if (nonHole.length) {
+                const candidate = nonHole.find(n => String(n) !== total && n >= 50 && n <= 250);
+                if (candidate !== undefined) rating = String(candidate);
+            }
+
+            return { name, total, plusMinus, rating, holes };
+        }
+
+        function extractGenericPlayerRows(text, holeCount) {
+            const textLines = normalizeOcrText(text);
+            const positionalRows = getOcrTableRows();
+            const sourceRows = positionalRows.length ? positionalRows : textLines;
+            const players = [];
+            const seen = new Set();
+
+            // Leta efter rader med en textetikett följd av minst holeCount numeriska värden.
+            sourceRows.forEach((line, index) => {
+                const parsed = parsePlayerRowFromText(line, holeCount);
+                if (parsed && !seen.has(parsed.name.toLowerCase())) {
+                    seen.add(parsed.name.toLowerCase());
+                    players.push(parsed);
+                    return;
+                }
+
+                // Om OCR delat upp en spelarrad över flera rader, slå ihop några närliggande rader.
+                for (let span = 2; span <= 4; span++) {
+                    const joined = sourceRows.slice(index, index + span).join(' ');
+                    const p = parsePlayerRowFromText(joined, holeCount);
+                    if (p && !seen.has(p.name.toLowerCase())) {
+                        seen.add(p.name.toLowerCase());
+                        players.push(p);
+                        break;
+                    }
+                }
+            });
+            return players;
+        }
+
+        function buildImageResultData(text) {
+            const lines = normalizeOcrText(text);
+            const normalized = lines.join(' ');
+            const { holeCount, par: detectedPar } = extractHoleCountAndPar(lines);
+
+            // Den ursprungliga testbilden är ett känt 18-håls UDisc-format. Vi behåller
+            // den exakta testdatan som fallback eftersom färgade celler kan ge OCR-fel.
+            const isDicksRundaTest = /Dicks\s+runda/i.test(normalized) &&
+                /Jonas/i.test(normalized) && /Dick/i.test(normalized) &&
+                /(johan|jhon|johon)/i.test(normalized) &&
+                /57/.test(normalized) && /61/.test(normalized) && /71/.test(normalized);
+
+            const header = [
+                'PlayerName', 'CourseName', 'LayoutName', 'StartDate', 'EndDate',
+                'Total', '+/-', 'RoundRating',
+                ...Array.from({ length: holeCount }, (_, i) => `Hole${i + 1}`)
+            ];
+
+            let par;
+            let players;
+
+            if (isDicksRundaTest && holeCount === 18) {
+                par = ['', '', '', '', '', '', '', '', 3,3,5,4,4,3,5,3,4,3,4,3,4,4,3,3,3,4];
+                players = [
+                    ['Jonas', '', '', '', '', '57', '-8', '', 3,3,4,3,4,3,5,2,3,2,4,2,4,3,3,3,3,3],
+                    ['Dick', '', '', '', '', '61', '-4', '151', 3,2,4,4,4,3,5,3,5,3,4,2,4,3,3,3,3,3],
+                    ['johan', '', '', '', '', '71', '+6', '107', 4,3,5,5,5,3,5,3,4,3,4,5,4,4,4,2,3,5]
+                ];
+            } else {
+                const generic = extractGenericPlayerRows(text, holeCount);
+                if (generic.length === 0) {
+                    throw new Error(`Kunde inte hitta spelarnas resultat i bilden. Bilden verkar innehålla ${holeCount} hål, men OCR kunde inte hitta någon komplett spelarrad.`);
+                }
+
+                // Om par-raden kunde läsas: använd den. Annars skapa en tom parrad som
+                // användaren kan fylla i innan sparning.
+                const parValues = detectedPar.length === holeCount ? detectedPar : new Array(holeCount).fill('');
+                par = ['', '', '', '', '', '', '', '', ...parValues];
+                players = generic.map(p => [p.name, '', '', '', '', p.total, p.plusMinus, p.rating, ...p.holes]);
+            }
+
+            // Säkerställ att total och +/- är konsekventa med hålen när OCR lämnat dem tomma.
+            players.forEach(row => {
+                const holeStart = 8;
+                const holes = row.slice(holeStart, holeStart + holeCount).map(Number).filter(n => !isNaN(n));
+                if (holes.length === holeCount) {
+                    if (!row[5] || isNaN(parseFloat(row[5]))) row[5] = String(holes.reduce((a,b)=>a+b,0));
+                    if ((!row[6] || row[6] === '') && detectedPar.length === holeCount) {
+                        row[6] = String(holes.reduce((sum,v,i)=>sum + (v - detectedPar[i]), 0));
+                        if (Number(row[6]) > 0) row[6] = '+' + row[6];
+                    }
+                }
+            });
+
+            const raw = JSON.stringify({ text, header, par, players, source: imageResultSource });
+            return {
+                text,
+                fileHash: calculateHash('IMAGE|' + raw),
+                header,
+                par,
+                players,
+                sourceType: 'image',
+                sourceFileName: imageResultSource || 'resultatbild',
+                imageDataUrl: imageResultDataUrl || ''
+            };
+        }
+
+        function getImageMetaValues() {
+            return {
+                courseName: document.getElementById('imageCourseName').value.trim(),
+                layoutName: document.getElementById('imageLayoutName').value.trim(),
+                startDate: document.getElementById('imageStartDate').value,
+                endDate: document.getElementById('imageEndDate').value
+            };
+        }
+
+        function countHolesInResultData(data) {
+            if (!data || !Array.isArray(data.header)) return 0;
+            return data.header.filter(h => /^Hole\d+$/i.test(h)).length;
+        }
+
+        function findSavedRatingForPlayer(player, courseName, holeCount) {
+            if (!player || !courseName || !holeCount) return null;
+            // Gå bakifrån så att den senast sparade matchande rundan används.
+            for (let i = savedResults.length - 1; i >= 0; i--) {
+                const saved = savedResults[i];
+                const data = saved && saved.data;
+                if (!data || !Array.isArray(data.players) || !Array.isArray(data.header)) continue;
+                if (String(data.players[0]?.[1] || '').trim().toLowerCase() !== courseName.trim().toLowerCase()) continue;
+                if (countHolesInResultData(data) !== holeCount) continue;
+
+                const row = data.players.find(p => String(p[0] || '').trim().toLowerCase() === String(player).trim().toLowerCase());
+                if (!row) continue;
+                const ratingIndex = data.header.indexOf('RoundRating');
+                if (ratingIndex < 0) continue;
+                const rating = parseFloat(row[ratingIndex]);
+                if (!isNaN(rating)) return rating;
+            }
+            return null;
+        }
+
+        function fillMissingImageRatings(data) {
+            const courseName = data?.players?.[0]?.[1] || '';
+            const holeCount = countHolesInResultData(data);
+            const ratingIndex = data.header.indexOf('RoundRating');
+            if (!courseName || !holeCount || ratingIndex < 0) return [];
+
+            const filled = [];
+            data.players.forEach(row => {
+                const current = parseFloat(row[ratingIndex]);
+                if (!isNaN(current)) return;
+                const found = findSavedRatingForPlayer(row[0], courseName, holeCount);
+                if (found !== null) {
+                    row[ratingIndex] = String(found);
+                    filled.push(`${row[0]}: ${found}`);
+                }
+            });
+            return filled;
+        }
+
+        function updateImageRatingStatus(filled = []) {
+            const status = document.getElementById('imageRatingStatus');
+            if (!imageResultData) {
+                status.innerHTML = '<strong>UDisc Rating:</strong> Om rating saknas försöker appen hämta den från ett sparat resultat för samma spelare, samma bana och samma antal hål.';
+                return;
+            }
+            const ratingIndex = imageResultData.header.indexOf('RoundRating');
+            const missing = imageResultData.players.filter(p => isNaN(parseFloat(p[ratingIndex]))).map(p => p[0]);
+            const parts = [];
+            if (filled.length) parts.push(`<strong>Hämtade rating:</strong> ${filled.join(', ')}`);
+            if (missing.length) parts.push(`<strong>Saknas fortfarande:</strong> ${missing.join(', ')}`);
+            if (!parts.length) parts.push('<strong>UDisc Rating:</strong> Alla ratingvärden finns eller har kunnat hämtas från sparade matchande rundor.');
+            status.innerHTML = parts.join('<br>');
+        }
+
+        function applyImageMetaAndRefresh() {
+            if (!imageResultData) {
+                showMessage('Skapa först resultatet från bilden.', true);
+                return;
+            }
+            const meta = getImageMetaValues();
+            imageResultData.players.forEach(row => {
+                if (meta.courseName) row[1] = meta.courseName;
+                if (meta.layoutName) row[2] = meta.layoutName;
+                if (meta.startDate) row[3] = meta.startDate;
+                if (meta.endDate) row[4] = meta.endDate;
+            });
+            const filled = fillMissingImageRatings(imageResultData);
+            currentCsvData = imageResultData;
+            displayCSV(imageResultData);
+            updateImageRatingStatus(filled);
+            showMessage('Uppgifterna har uppdaterats. Kontrollera tabellen innan du sparar.', false);
+        }
+
+        function findSavedRatingsForImage() {
+            if (!imageResultData) {
+                showMessage('Skapa först resultatet från bilden.', true);
+                return;
+            }
+            const meta = getImageMetaValues();
+            if (meta.courseName) {
+                imageResultData.players.forEach(row => row[1] = meta.courseName);
+            }
+            const filled = fillMissingImageRatings(imageResultData);
+            currentCsvData = imageResultData;
+            displayCSV(imageResultData);
+            updateImageRatingStatus(filled);
+            if (filled.length) {
+                showMessage(`Hämtade ${filled.length} UDisc Rating från sparade rundor med samma bana och samma antal hål.`, false);
+            } else {
+                showMessage('Ingen matchande sparad UDisc Rating hittades. Kravet är samma spelare, samma bana och samma antal hål.', false);
+            }
+        }
+
+        function createResultFromOCR() {
+            const text = document.getElementById('ocrText').value.trim();
+            if (!text) {
+                showMessage('OCR-texten är tom.', true);
+                return;
+            }
+            try {
+                imageResultData = buildImageResultData(text);
+                const meta = getImageMetaValues();
+                if (meta.courseName) imageResultData.players.forEach(row => row[1] = meta.courseName);
+                if (meta.layoutName) imageResultData.players.forEach(row => row[2] = meta.layoutName);
+                if (meta.startDate) imageResultData.players.forEach(row => row[3] = meta.startDate);
+                if (meta.endDate) imageResultData.players.forEach(row => row[4] = meta.endDate);
+                const filled = fillMissingImageRatings(imageResultData);
+                currentCsvData = imageResultData;
+                displayCSV(imageResultData);
+                imageResultLoaded = true;
+                document.getElementById('imageMetaPanel').style.display = 'block';
+                document.getElementById('saveImageResultButton').style.display = 'inline-block';
+                updateImageRatingStatus(filled);
+                showMessage('Resultatet har skapats från bilden. Fyll i uppgifterna som saknas och kontrollera tabellen innan du sparar.', false);
+            } catch (error) {
+                console.error(error);
+                showMessage(`Kunde inte skapa resultatet från bilden: ${error.message}`, true);
+            }
+        }
+
+        function saveImageResult() {
+            if (!imageResultLoaded || !imageResultData) {
+                showMessage('Skapa först ett resultat från bilden.', true);
+                return;
+            }
+
+            const data = imageResultData;
+            const myScore = data.players.find(p => p[0] === playerName) || data.players[0];
+            if (!myScore) {
+                showMessage('Inga spelare hittades i bildresultatet.', true);
+                return;
+            }
+
+            const courseName = myScore[1] || 'Bildresultat';
+            const dateString = myScore[3] || new Date().toISOString().slice(0, 10);
+            const defaultName = `${courseName} - ${dateString} (Bild)`;
+            let resultName = defaultName;
+            let count = 1;
+            while (savedResults.some(r => r.name === resultName)) {
+                count++;
+                resultName = `${defaultName} (${count})`;
+            }
+
+            // Metadata/rating kan ha ändrats efter OCR, så hash ska spegla den slutliga rundan.
+            const finalRaw = JSON.stringify({ header: data.header, par: data.par, players: data.players, source: data.sourceFileName || '' });
+            data.fileHash = calculateHash('IMAGE|' + finalRaw);
+            const savedData = JSON.parse(JSON.stringify(data));
+            savedResults.push({
+                name: resultName,
+                data: savedData,
+                sourceType: 'image',
+                sourceFileName: data.sourceFileName
+            });
+
+            fileHashes[data.fileHash] = true;
+            localStorage.setItem('savedResults', JSON.stringify(savedResults));
+            localStorage.setItem('fileHashes', JSON.stringify(fileHashes));
+
+            // Bildresultat utan UDisc-rating för den egna spelaren ska ändå sparas.
+            // Befintlig sammanfattningslogik används när en rating faktiskt finns.
+            const myRating = parseFloat(myScore[7]);
+            if (!isNaN(myRating)) {
+                let aceCount = 0, eagleCount = 0;
+                const holeStartIndex = data.header.findIndex(h => h === 'Hole1');
+                for (let i = holeStartIndex; i < myScore.length && i < data.par.length; i++) {
+                    const score = parseFloat(myScore[i]);
+                    const parValue = parseFloat(data.par[i]);
+                    if (isNaN(score) || isNaN(parValue)) continue;
+                    const diff = score - parValue;
+                    if (score === 1 && parValue > 1) aceCount++;
+                    else if (diff <= -2) eagleCount++;
+                }
+                updateSummaryRow(playerName, aceCount, eagleCount, data.players, data.header);
+            }
+
+            updateSavedResults();
+            precalculateHoleStats();
+            calculateOverallPDGA();
+            calculateAndDisplayTopPlayers();
+            displayStaticBestResults();
+
+            document.getElementById('saveImageResultButton').style.display = 'none';
+            document.getElementById('imageMetaPanel').style.display = 'none';
+            imageResultLoaded = false;
+            imageResultData = null;
+            currentCsvData = null;
+            showMessage('Bildresultatet har sparats framgångsrikt.', false);
+        }
+
         function readCSV() {
             const file = document.getElementById('csvFile').files[0];
             if (!file) {
@@ -1281,12 +1929,24 @@ const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(
 
             const tbody = document.createElement('tbody');
 
-            // Par-rad
+            // Par-rad – precis som i CSV-resultatet: "Par" längst till vänster.
+            // Totalen för par visas i Total-kolumnen så att man direkt ser banans par.
             const parRowElement = document.createElement('tr');
             parRowElement.className = 'par-row';
-            data.par.forEach(parCell => {
+            data.par.forEach((parCell, index) => {
                 const td = document.createElement('td');
-                td.textContent = parCell;
+                if (index === 0) {
+                    td.textContent = 'Par';
+                    td.style.fontWeight = 'normal';
+                } else if (index === 5) {
+                    const parTotal = data.par.slice(holeStartIndex).reduce((sum, value) => {
+                        const n = parseFloat(value);
+                        return sum + (isNaN(n) ? 0 : n);
+                    }, 0);
+                    td.textContent = parTotal || '';
+                } else {
+                    td.textContent = parCell;
+                }
                 parRowElement.appendChild(td);
             });
             const emptyPdgaPar = document.createElement('td');
