@@ -1211,1104 +1211,7 @@ return {
                 displayStaticBestResults(); 
             }, 5000);
         }
-// ============================================================
-// MANUELL RESULTATINMATNING
-// ============================================================
 
-let manualPlayers = [];
-
-
-/*
- * Hämta alla unika banor från sparade resultat.
- */
-function getManualCourses() {
-
-    const courses = new Set();
-
-    savedResults.forEach(result => {
-
-        if (!result.data || !result.data.players) return;
-
-        result.data.players.forEach(player => {
-
-            if (player[1]) {
-                courses.add(player[1]);
-            }
-
-        });
-
-    });
-
-    return Array.from(courses).sort();
-}
-
-
-/*
- * Hämta layouter för vald bana.
- *
- * Vi hämtar även par och antal hål från tidigare sparade
- * resultat för samma bana/layout.
- */
-function getManualLayouts(courseName) {
-
-    const layouts = {};
-
-    savedResults.forEach(result => {
-
-        if (!result.data || !result.data.players) return;
-
-        const players = result.data.players;
-
-        players.forEach(player => {
-
-            if (player[1] !== courseName) return;
-
-            const layoutName = player[2] || 'Standard';
-
-            const header = result.data.header || [];
-
-            const holeCount =
-                header.filter(h =>
-                    /^Hole\d+$/i.test(h)
-                ).length;
-
-            const holeStartIndex =
-                header.findIndex(h => h === 'Hole1');
-
-            if (holeStartIndex === -1) return;
-
-            const par = result.data.par
-                .slice(
-                    holeStartIndex,
-                    holeStartIndex + holeCount
-                )
-                .map(Number);
-
-            const key =
-                layoutName + '|' + holeCount;
-
-            layouts[key] = {
-                layout: layoutName,
-                holeCount: holeCount,
-                par: par,
-                header: header,
-                data: result.data
-            };
-
-        });
-
-    });
-
-    return Object.values(layouts);
-}
-
-
-/*
- * Fyll dropdownen med banor.
- */
-function initManualResultForm() {
-
-    const courseSelect =
-        document.getElementById('manualCourseSelect');
-
-    const dateInput =
-        document.getElementById('manualDate');
-
-    if (!courseSelect) return;
-
-    courseSelect.innerHTML =
-        '<option value="">Välj bana</option>';
-
-    const courses = getManualCourses();
-
-    courses.forEach(course => {
-
-        const option =
-            document.createElement('option');
-
-        option.value = course;
-        option.textContent = course;
-
-        courseSelect.appendChild(option);
-
-    });
-
-    /*
-     * Dagens datum som standard.
-     */
-    if (dateInput && !dateInput.value) {
-
-        const today =
-            new Date().toISOString().split('T')[0];
-
-        dateInput.value = today;
-    }
-
-    /*
-     * Börja med användaren själv.
-     */
-    manualPlayers = [];
-
-    addManualPlayer(playerName);
-}
-
-
-/*
- * När bana väljs.
- */
-function manualCourseChanged() {
-
-    const courseSelect =
-        document.getElementById('manualCourseSelect');
-
-    const layoutSelect =
-        document.getElementById('manualLayoutSelect');
-
-    const info =
-        document.getElementById('manualCourseInfo');
-
-    const course =
-        courseSelect.value;
-
-    layoutSelect.innerHTML =
-        '<option value="">Välj layout</option>';
-
-    layoutSelect.disabled = true;
-
-    info.innerHTML = '';
-
-    if (!course) return;
-
-    const layouts =
-        getManualLayouts(course);
-
-    layouts.forEach((layout, index) => {
-
-        const option =
-            document.createElement('option');
-
-        option.value = index;
-
-        option.textContent =
-            layout.layout +
-            ' (' +
-            layout.holeCount +
-            ' hål, Par ' +
-            layout.par.reduce((a, b) => a + b, 0) +
-            ')';
-
-        layoutSelect.appendChild(option);
-
-    });
-
-    if (layouts.length) {
-
-        layoutSelect.disabled = false;
-
-        /*
-         * Spara tillfälligt för layoutvalet.
-         */
-        window.manualAvailableLayouts = layouts;
-
-    } else {
-
-        info.innerHTML =
-            '<span style="color:red;">' +
-            'Ingen tidigare layout hittades för denna bana.' +
-            '</span>';
-
-    }
-
-}
-
-
-/*
- * När layout väljs.
- */
-function manualLayoutChanged() {
-
-    const layoutSelect =
-        document.getElementById('manualLayoutSelect');
-
-    const info =
-        document.getElementById('manualCourseInfo');
-
-    const index =
-        parseInt(layoutSelect.value);
-
-    if (
-        !window.manualAvailableLayouts ||
-        isNaN(index)
-    ) {
-        return;
-    }
-
-    const layout =
-        window.manualAvailableLayouts[index];
-
-    const totalPar =
-        layout.par.reduce(
-            (sum, value) => sum + value,
-            0
-        );
-
-    info.innerHTML =
-        '<strong>' +
-        layout.layout +
-        '</strong> · ' +
-        layout.holeCount +
-        ' hål · Par ' +
-        totalPar;
-
-    /*
-     * Skapa om spelarlistan.
-     */
-    renderManualPlayers(layout);
-}
-
-
-/*
- * Lägg till spelare.
- */
-function addManualPlayer(name = '') {
-
-    const playerNameToUse =
-        name || '';
-
-    /*
-     * Undvik samma spelare två gånger.
-     */
-    if (
-        playerNameToUse &&
-        manualPlayers.some(
-            p => p.name === playerNameToUse
-        )
-    ) {
-        return;
-    }
-
-    manualPlayers.push({
-        name: playerNameToUse,
-        scores: []
-    });
-
-    const layoutSelect =
-        document.getElementById('manualLayoutSelect');
-
-    if (
-        window.manualAvailableLayouts &&
-        !isNaN(parseInt(layoutSelect.value))
-    ) {
-        renderManualPlayers(
-            window.manualAvailableLayouts[
-                parseInt(layoutSelect.value)
-            ]
-        );
-    }
-}
-
-
-/*
- * Hämta alla spelarnamn som förekommer i sparade resultat.
- */
-function getManualPlayerNames() {
-
-    const names = new Set();
-
-    savedResults.forEach(result => {
-
-        if (!result.data || !result.data.players) return;
-
-        result.data.players.forEach(player => {
-
-            if (player[0]) {
-                names.add(player[0]);
-            }
-
-        });
-
-    });
-
-    /*
-     * Se till att aktuell användare alltid finns.
-     */
-    if (playerName) {
-        names.add(playerName);
-    }
-
-    return Array.from(names).sort();
-}
-
-
-/*
- * Hitta tidigare UDisc-rating för spelare/bana/layout/hål.
- */
-function findManualRating(
-    playerNameValue,
-    courseName,
-    layoutName,
-    holeCount
-) {
-
-    for (let i = savedResults.length - 1; i >= 0; i--) {
-
-        const result =
-            savedResults[i];
-
-        if (
-            !result.data ||
-            !result.data.players
-        ) {
-            continue;
-        }
-
-        const header =
-            result.data.header || [];
-
-        const savedHoleCount =
-            header.filter(h =>
-                /^Hole\d+$/i.test(h)
-            ).length;
-
-        if (savedHoleCount !== holeCount) {
-            continue;
-        }
-
-        const player =
-            result.data.players.find(
-                p =>
-                    p[0] === playerNameValue &&
-                    p[1] === courseName &&
-                    (p[2] || 'Standard') === layoutName
-            );
-
-        if (!player) continue;
-
-        const rating =
-            parseFloat(player[7]);
-
-        if (!isNaN(rating)) {
-            return rating;
-        }
-
-    }
-
-    return '';
-}
-
-
-/*
- * Rita upp spelarens scorekort.
- */
-function renderManualPlayers(layout) {
-
-    const container =
-        document.getElementById(
-            'manualPlayersContainer'
-        );
-
-    container.innerHTML = '';
-
-    if (!layout) return;
-
-    const holeCount =
-        layout.holeCount;
-
-    const totalPar =
-        layout.par.reduce(
-            (sum, value) => sum + value,
-            0
-        );
-
-    const playerNames =
-        getManualPlayerNames();
-
-    manualPlayers.forEach(
-        (player, playerIndex) => {
-
-        const wrapper =
-            document.createElement('div');
-
-        wrapper.style.marginTop = '20px';
-        wrapper.style.padding = '10px';
-        wrapper.style.border =
-            '1px solid #ddd';
-        wrapper.style.borderRadius =
-            '6px';
-
-        /*
-         * Spelarens namn.
-         */
-        const select =
-            document.createElement('select');
-
-        select.innerHTML =
-            '<option value="">Välj spelare</option>';
-
-        playerNames.forEach(name => {
-
-            const option =
-                document.createElement('option');
-
-            option.value = name;
-            option.textContent = name;
-
-            if (name === player.name) {
-                option.selected = true;
-            }
-
-            select.appendChild(option);
-
-        });
-
-        select.onchange = function() {
-
-            manualPlayers[playerIndex].name =
-                this.value;
-
-            renderManualPlayers(layout);
-
-        };
-
-        wrapper.appendChild(select);
-
-
-        /*
-         * Ta bort-knapp för extra spelare.
-         */
-        if (manualPlayers.length > 1) {
-
-            const removeButton =
-                document.createElement('button');
-
-            removeButton.textContent =
-                'Ta bort spelare';
-
-            removeButton.style.backgroundColor =
-                '#dc3545';
-
-            removeButton.onclick =
-                function() {
-
-                    manualPlayers.splice(
-                        playerIndex,
-                        1
-                    );
-
-                    renderManualPlayers(layout);
-                };
-
-            wrapper.appendChild(removeButton);
-        }
-
-
-        /*
-         * SCORETABELL
-         */
-        const table =
-            document.createElement('table');
-
-        table.style.width = '100%';
-        table.style.marginTop = '10px';
-
-        /*
-         * Par-rad
-         */
-        const parRow =
-            document.createElement('tr');
-
-        const parLabel =
-            document.createElement('th');
-
-        parLabel.textContent =
-            'Par';
-
-        parRow.appendChild(parLabel);
-
-        layout.par.forEach(par => {
-
-            const td =
-                document.createElement('td');
-
-            td.textContent = par;
-
-            parRow.appendChild(td);
-
-        });
-
-        const parTotal =
-            document.createElement('th');
-
-        parTotal.textContent =
-            totalPar;
-
-        parRow.appendChild(parTotal);
-
-        table.appendChild(parRow);
-
-
-        /*
-         * Score-rad
-         */
-        const scoreRow =
-            document.createElement('tr');
-
-        const scoreLabel =
-            document.createElement('th');
-
-        scoreLabel.textContent =
-            player.name || 'Spelare';
-
-        scoreRow.appendChild(scoreLabel);
-
-
-        for (let i = 0; i < holeCount; i++) {
-
-            const td =
-                document.createElement('td');
-
-            const input =
-                document.createElement('input');
-
-            input.type = 'number';
-            input.min = '1';
-            input.max = '20';
-            input.inputMode = 'numeric';
-
-            input.style.width = '45px';
-            input.style.textAlign = 'center';
-            input.style.padding = '6px';
-
-            input.value =
-                player.scores[i] || '';
-
-            input.dataset.player =
-                playerIndex;
-
-            input.dataset.hole =
-                i;
-
-            input.oninput =
-                function() {
-
-                    manualPlayers[
-                        playerIndex
-                    ].scores[i] =
-                        this.value;
-
-                    updateManualPlayerTotal(
-                        playerIndex,
-                        layout
-                    );
-                };
-
-            /*
-             * Tab / Enter går vidare.
-             */
-            input.onkeydown =
-                function(event) {
-
-                    if (
-                        event.key === 'Enter' ||
-                        event.key === 'Tab'
-                    ) {
-
-                        const inputs =
-                            Array.from(
-                                container.querySelectorAll(
-                                    'input[type="number"]'
-                                )
-                            );
-
-                        const currentIndex =
-                            inputs.indexOf(this);
-
-                        if (
-                            currentIndex >= 0 &&
-                            currentIndex + 1 <
-                            inputs.length
-                        ) {
-
-                            event.preventDefault();
-
-                            inputs[
-                                currentIndex + 1
-                            ].focus();
-
-                        }
-
-                    }
-
-                };
-
-            td.appendChild(input);
-
-            scoreRow.appendChild(td);
-
-        }
-
-
-        /*
-         * Total
-         */
-        const totalCell =
-            document.createElement('th');
-
-        totalCell.id =
-            'manualTotal_' +
-            playerIndex;
-
-        totalCell.textContent =
-            calculateManualTotal(
-                player
-            ) || '';
-
-        scoreRow.appendChild(totalCell);
-
-
-        /*
-         * +/- 
-         */
-        const plusMinusCell =
-            document.createElement('th');
-
-        plusMinusCell.id =
-            'manualPlusMinus_' +
-            playerIndex;
-
-        plusMinusCell.textContent =
-            calculateManualPlusMinus(
-                player,
-                layout
-            );
-
-        scoreRow.appendChild(
-            plusMinusCell
-        );
-
-
-        table.appendChild(scoreRow);
-
-        wrapper.appendChild(table);
-
-
-        /*
-         * Rating
-         */
-        const rating =
-            findManualRating(
-                player.name,
-                document.getElementById(
-                    'manualCourseSelect'
-                ).value,
-                layout.layout,
-                layout.holeCount
-            );
-
-        const ratingText =
-            document.createElement('p');
-
-        ratingText.innerHTML =
-            'Tidigare UDisc Rating: ' +
-            '<strong>' +
-            (rating || 'Ingen sparad') +
-            '</strong>';
-
-        wrapper.appendChild(ratingText);
-
-
-        container.appendChild(wrapper);
-
-    });
-
-}
-
-
-/*
- * Räkna total.
- */
-function calculateManualTotal(player) {
-
-    const scores =
-        player.scores
-            .map(Number)
-            .filter(n => !isNaN(n));
-
-    if (!scores.length) return '';
-
-    return scores.reduce(
-        (sum, value) => sum + value,
-        0
-    );
-}
-
-
-/*
- * Räkna +/- mot par.
- */
-function calculateManualPlusMinus(
-    player,
-    layout
-) {
-
-    let total = 0;
-    let count = 0;
-
-    player.scores.forEach(
-        (score, index) => {
-
-        const value =
-            Number(score);
-
-        const par =
-            Number(layout.par[index]);
-
-        if (
-            !isNaN(value) &&
-            !isNaN(par)
-        ) {
-
-            total += value - par;
-            count++;
-
-        }
-
-    });
-
-    if (!count) return '';
-
-    return total > 0
-        ? '+' + total
-        : String(total);
-}
-
-
-/*
- * Uppdatera total och +/- när score ändras.
- */
-function updateManualPlayerTotal(
-    playerIndex,
-    layout
-) {
-
-    const player =
-        manualPlayers[playerIndex];
-
-    const totalElement =
-        document.getElementById(
-            'manualTotal_' +
-            playerIndex
-        );
-
-    const plusMinusElement =
-        document.getElementById(
-            'manualPlusMinus_' +
-            playerIndex
-        );
-
-    if (totalElement) {
-
-        totalElement.textContent =
-            calculateManualTotal(
-                player
-            ) || '';
-
-    }
-
-    if (plusMinusElement) {
-
-        plusMinusElement.textContent =
-            calculateManualPlusMinus(
-                player,
-                layout
-            );
-
-    }
-
-}
-
-
-/*
- * Förhandsgranska resultatet.
- *
- * Bygger exakt samma datastruktur som CSV-importen använder.
- */
-function prepareManualResult() {
-
-    const course =
-        document.getElementById(
-            'manualCourseSelect'
-        ).value;
-
-    const layoutIndex =
-        parseInt(
-            document.getElementById(
-                'manualLayoutSelect'
-            ).value
-        );
-
-    const date =
-        document.getElementById(
-            'manualDate'
-        ).value;
-
-    if (!course) {
-
-        showMessage(
-            'Välj en bana.',
-            true
-        );
-
-        return;
-    }
-
-    if (
-        isNaN(layoutIndex) ||
-        !window.manualAvailableLayouts
-    ) {
-
-        showMessage(
-            'Välj en layout.',
-            true
-        );
-
-        return;
-    }
-
-    const layout =
-        window.manualAvailableLayouts[
-            layoutIndex
-        ];
-
-    if (!date) {
-
-        showMessage(
-            'Välj ett datum.',
-            true
-        );
-
-        return;
-    }
-
-
-    /*
-     * Kontrollera spelare.
-     */
-    const validPlayers =
-        manualPlayers.filter(
-            p => p.name
-        );
-
-    if (!validPlayers.length) {
-
-        showMessage(
-            'Välj minst en spelare.',
-            true
-        );
-
-        return;
-    }
-
-
-    /*
-     * Alla spelare måste ha alla hål.
-     */
-    for (const player of validPlayers) {
-
-        if (
-            player.scores.length !==
-            layout.holeCount
-        ) {
-
-            showMessage(
-                player.name +
-                ' saknar resultat på ett eller flera hål.',
-                true
-            );
-
-            return;
-        }
-
-        for (
-            let i = 0;
-            i < layout.holeCount;
-            i++
-        ) {
-
-            const score =
-                Number(player.scores[i]);
-
-            if (
-                isNaN(score) ||
-                score < 1 ||
-                score > 20
-            ) {
-
-                showMessage(
-                    player.name +
-                    ' har ett ogiltigt resultat på hål ' +
-                    (i + 1) +
-                    '.',
-                    true
-                );
-
-                return;
-            }
-
-        }
-
-    }
-
-
-    /*
-     * Bygg header.
-     */
-    const header = [
-        'PlayerName',
-        'CourseName',
-        'LayoutName',
-        'StartDate',
-        'EndDate',
-        'Total',
-        '+/-',
-        'RoundRating'
-    ];
-
-    for (
-        let i = 1;
-        i <= layout.holeCount;
-        i++
-    ) {
-
-        header.push(
-            'Hole' + i
-        );
-
-    }
-
-
-    /*
-     * Par-raden.
-     */
-    const par = [
-        'Par',
-        course,
-        layout.layout,
-        date,
-        date,
-        layout.par.reduce(
-            (sum, value) => sum + value,
-            0
-        ),
-        '',
-        '',
-        ...layout.par
-    ];
-
-
-    /*
-     * Spelarrader.
-     */
-    const players = validPlayers.map(
-        player => {
-
-        const total =
-            calculateManualTotal(
-                player
-            );
-
-        const plusMinus =
-            calculateManualPlusMinus(
-                player,
-                layout
-            );
-
-        const rating =
-            findManualRating(
-                player.name,
-                course,
-                layout.layout,
-                layout.holeCount
-            );
-
-        return [
-            player.name,
-            course,
-            layout.layout,
-            date,
-            date,
-            total,
-            plusMinus,
-            rating,
-            ...player.scores
-        ];
-
-    });
-
-
-    /*
-     * Skapa en syntetisk CSV-text.
-     *
-     * Detta gör att befintlig saveResult()
-     * kan användas.
-     */
-    const csvLines = [];
-
-    csvLines.push(
-        header.join(',')
-    );
-
-    csvLines.push(
-        par.join(',')
-    );
-
-    players.forEach(
-        player => {
-            csvLines.push(
-                player.join(',')
-            );
-        }
-    );
-
-    const text =
-        csvLines.join('\n');
-
-
-    currentCsvData = {
-        text: text,
-        fileHash: calculateHash(text),
-        header: header,
-        par: par,
-        players: players
-    };
-
-    csvLoaded = true;
-
-
-    /*
-     * Visa resultatet i den vanliga tabellen.
-     */
-    displayCSV(currentCsvData);
-
-
-    document.getElementById(
-        'manualSaveButton'
-    ).style.display =
-        'inline-block';
-
-
-    showMessage(
-        'Resultatet är klart. Kontrollera tabellen och klicka på "Spara resultat".',
-        false
-    );
-
-}
-
-
-/*
- * Spara manuellt resultat genom den befintliga
- * saveResult()-funktionen.
- */
 function saveManualResult() {
 
     if (
@@ -4393,142 +3296,104 @@ function findManualRating(
 function renderManualPlayers(layout) {
 
     const container =
-        document.getElementById(
-            'manualPlayersContainer'
-        );
-
+        document.getElementById('manualPlayersContainer');
 
     if (!container) {
         return;
     }
 
-
     container.innerHTML = '';
-
 
     if (!layout) {
         return;
     }
 
-
     const playerNames =
         getManualPlayerNames();
 
+    const holesPerRow = 6;
 
     manualPlayers.forEach(
         (player, playerIndex) => {
 
-
         const wrapper =
             document.createElement('div');
 
-
-        wrapper.style.marginTop =
-            '20px';
-
-        wrapper.style.padding =
-            '12px';
-
-        wrapper.style.border =
-            '1px solid #ddd';
-
-        wrapper.style.borderRadius =
-            '8px';
+        wrapper.style.marginTop = '20px';
+        wrapper.style.padding = '12px';
+        wrapper.style.border = '1px solid #ddd';
+        wrapper.style.borderRadius = '8px';
+        wrapper.style.background = '#fff';
+        wrapper.style.overflow = 'hidden';
 
 
         /*
-         * SPENARNAMN
+         * SPELARE
          */
 
         const nameLabel =
             document.createElement('label');
 
-        nameLabel.textContent =
-            'Spelare';
+        nameLabel.textContent = 'Spelare';
 
-        wrapper.appendChild(
-            nameLabel
-        );
+        nameLabel.style.display = 'block';
+        nameLabel.style.marginBottom = '5px';
+        nameLabel.style.fontWeight = 'bold';
+
+        wrapper.appendChild(nameLabel);
 
 
         const nameSelect =
             document.createElement('select');
 
-
         nameSelect.innerHTML =
             '<option value="">Välj spelare</option>';
-
 
         playerNames.forEach(name => {
 
             const option =
-                document.createElement(
-                    'option'
-                );
+                document.createElement('option');
 
             option.value = name;
-
             option.textContent = name;
 
-            if (
-                name === player.name
-            ) {
+            if (name === player.name) {
                 option.selected = true;
             }
 
-            nameSelect.appendChild(
-                option
-            );
+            nameSelect.appendChild(option);
 
         });
 
+        nameSelect.onchange = function () {
 
-        nameSelect.onchange =
-            function () {
+            manualPlayers[playerIndex].name =
+                this.value;
 
-                manualPlayers[
-                    playerIndex
-                ].name =
-                    this.value;
+            renderManualPlayers(layout);
 
-                renderManualPlayers(
-                    layout
-                );
+        };
 
-            };
-
-
-        wrapper.appendChild(
-            nameSelect
-        );
+        wrapper.appendChild(nameSelect);
 
 
         /*
          * TA BORT SPELARE
          */
 
-        if (
-            manualPlayers.length > 1
-        ) {
+        if (manualPlayers.length > 1) {
 
             const removeButton =
-                document.createElement(
-                    'button'
-                );
+                document.createElement('button');
 
-
-            removeButton.type =
-                'button';
+            removeButton.type = 'button';
 
             removeButton.textContent =
                 'Ta bort spelare';
 
-            removeButton.style.marginLeft =
-                '8px';
-
+            removeButton.style.marginTop = '8px';
             removeButton.style.background =
                 '#dc3545';
-
 
             removeButton.onclick =
                 function () {
@@ -4538,265 +3403,223 @@ function renderManualPlayers(layout) {
                         1
                     );
 
-                    renderManualPlayers(
-                        layout
-                    );
+                    renderManualPlayers(layout);
 
                 };
 
-
-            wrapper.appendChild(
-                removeButton
-            );
+            wrapper.appendChild(removeButton);
 
         }
 
 
         /*
-         * SCORETABELL
+         * SCOREKORT
+         *
+         * Max 6 hål per rad.
          */
 
-        const table =
-            document.createElement(
-                'table'
-            );
+        const scorecard =
+            document.createElement('div');
 
-
-        table.style.width =
-            '100%';
-
-        table.style.marginTop =
-            '12px';
+        scorecard.style.marginTop = '15px';
+        scorecard.style.width = '100%';
 
 
         /*
-         * PAR-RAD
-         */
-
-        const parRow =
-            document.createElement(
-                'tr'
-            );
-
-
-        const parHeader =
-            document.createElement(
-                'th'
-            );
-
-
-        parHeader.textContent =
-            'Par';
-
-
-        parRow.appendChild(
-            parHeader
-        );
-
-
-        layout.par.forEach(
-            (par, index) => {
-
-            const cell =
-                document.createElement(
-                    'td'
-                );
-
-
-            cell.textContent =
-                par;
-
-
-            cell.style.textAlign =
-                'center';
-
-
-            parRow.appendChild(
-                cell
-            );
-
-        });
-
-
-        /*
-         * TOTAL PAR
-         */
-
-        const parTotal =
-            layout.par
-                .map(Number)
-                .filter(
-                    n => !isNaN(n)
-                )
-                .reduce(
-                    (sum, value) =>
-                        sum + value,
-                    0
-                );
-
-
-        const parTotalCell =
-            document.createElement(
-                'th'
-            );
-
-
-        parTotalCell.textContent =
-            parTotal;
-
-
-        parRow.appendChild(
-            parTotalCell
-        );
-
-
-        table.appendChild(
-            parRow
-        );
-
-
-        /*
-         * SCORE-RAD
-         */
-
-        const scoreRow =
-            document.createElement(
-                'tr'
-            );
-
-
-        const scoreHeader =
-            document.createElement(
-                'th'
-            );
-
-
-        scoreHeader.textContent =
-            player.name ||
-            'Spelare';
-
-
-        scoreRow.appendChild(
-            scoreHeader
-        );
-
-
-        /*
-         * HÄR FYLLER VI AUTOMATISKT
-         * I PAR FÖR VARJE HÅL.
+         * Skapa block med max 6 hål.
          */
 
         for (
-            let hole = 0;
-            hole < layout.holeCount;
-            hole++
+            let startHole = 0;
+            startHole < layout.holeCount;
+            startHole += holesPerRow
         ) {
 
-            const cell =
-                document.createElement(
-                    'td'
+            const endHole =
+                Math.min(
+                    startHole + holesPerRow,
+                    layout.holeCount
                 );
-
-
-            cell.style.textAlign =
-                'center';
-
-
-            const input =
-                document.createElement(
-                    'input'
-                );
-
-
-            input.type =
-                'number';
-
-            input.min =
-                '1';
-
-            input.max =
-                '20';
-
-            input.inputMode =
-                'numeric';
-
-
-            input.style.width =
-                '42px';
-
-            input.style.textAlign =
-                'center';
 
 
             /*
-             * NYTT:
-             *
-             * Om spelaren inte har något
-             * resultat ännu används hålets par.
+             * HÅLRAD
              */
 
-            if (
-                player.scores[hole] ===
-                    undefined ||
-                player.scores[hole] ===
-                    ''
+            const holeRow =
+                document.createElement('div');
+
+            holeRow.style.display = 'grid';
+
+            holeRow.style.gridTemplateColumns =
+    `repeat(${endHole - startHole}, 1fr)`;
+
+            holeRow.style.gap = '5px';
+
+            holeRow.style.marginBottom = '5px';
+
+
+            for (
+                let hole = startHole;
+                hole < endHole;
+                hole++
             ) {
 
-                /*
-                 * VIKTIGT:
-                 *
-                 * Vi sparar faktiskt parvärdet
-                 * som spelarens startvärde.
-                 */
+                const cell =
+                    document.createElement('div');
 
-                player.scores[hole] =
-                    layout.par[hole];
+                cell.textContent =
+                    'Hål ' + (hole + 1);
+
+                cell.style.textAlign = 'center';
+                cell.style.fontWeight = 'bold';
+                cell.style.fontSize = '13px';
+                cell.style.padding = '5px 2px';
+
+                holeRow.appendChild(cell);
 
             }
 
-
-            input.value =
-                player.scores[hole];
-
-
-            input.dataset.player =
-                playerIndex;
-
-            input.dataset.hole =
-                hole;
-
-
-            input.oninput =
-                function () {
-
-                    manualPlayers[
-                        playerIndex
-                    ].scores[hole] =
-                        this.value;
-
-
-                    updateManualPlayerTotal(
-                        playerIndex,
-                        layout
-                    );
-
-                };
+            scorecard.appendChild(holeRow);
 
 
             /*
-             * Enter går till nästa hål.
+             * PAR-RAD
              */
 
-            input.onkeydown =
-                function (event) {
+            const parRow =
+                document.createElement('div');
 
-                    if (
-                        event.key ===
-                            'Enter'
-                    ) {
+            parRow.style.display = 'grid';
+
+            parRow.style.gridTemplateColumns =
+    `repeat(${endHole - startHole}, 1fr)`;
+
+            parRow.style.gap = '5px';
+
+            parRow.style.marginBottom = '5px';
+
+
+            for (
+                let hole = startHole;
+                hole < endHole;
+                hole++
+            ) {
+
+                const cell =
+                    document.createElement('div');
+
+                cell.textContent =
+                    'Par ' + layout.par[hole];
+
+                cell.style.textAlign = 'center';
+                cell.style.fontSize = '12px';
+                cell.style.color = '#666';
+                cell.style.padding = '3px 2px';
+
+                parRow.appendChild(cell);
+
+            }
+
+            scorecard.appendChild(parRow);
+
+
+            /*
+             * RESULTATRAD
+             */
+
+            const scoreRow =
+                document.createElement('div');
+
+            scoreRow.style.display = 'grid';
+
+            scoreRow.style.gridTemplateColumns =
+    `repeat(${endHole - startHole}, 1fr)`;
+
+            scoreRow.style.gap = '5px';
+
+
+            for (
+                let hole = startHole;
+                hole < endHole;
+                hole++
+            ) {
+
+                /*
+                 * Om inget resultat finns,
+                 * använd hålets par.
+                 */
+
+                if (
+                    player.scores[hole] === undefined ||
+                    player.scores[hole] === ''
+                ) {
+
+                    player.scores[hole] =
+                        layout.par[hole];
+
+                }
+
+
+                const input =
+                    document.createElement('input');
+
+                input.type = 'number';
+
+                input.min = '1';
+                input.max = '20';
+
+                input.inputMode = 'numeric';
+
+                input.value =
+                    player.scores[hole];
+
+                input.dataset.player =
+                    playerIndex;
+
+                input.dataset.hole =
+                    hole;
+
+                input.style.width = '100%';
+				input.style.height = '30px';
+				input.style.boxSizing = 'border-box';
+				input.style.textAlign = 'center';
+				input.style.fontSize = '15px';
+				input.style.fontWeight = 'bold';
+				input.style.padding = '4px 2px';
+
+
+                /*
+                 * När resultatet ändras.
+                 */
+
+                input.oninput =
+                    function () {
+
+                        manualPlayers[playerIndex]
+                            .scores[hole] =
+                            this.value;
+
+                        updateManualPlayerTotal(
+                            playerIndex,
+                            layout
+                        );
+
+                    };
+
+
+                /*
+                 * Enter går till nästa hål.
+                 */
+
+                input.onkeydown =
+                    function (event) {
+
+                        if (event.key !== 'Enter') {
+                            return;
+                        }
 
                         event.preventDefault();
-
 
                         const inputs =
                             Array.from(
@@ -4805,17 +3628,13 @@ function renderManualPlayers(layout) {
                                 )
                             );
 
-
                         const currentIndex =
-                            inputs.indexOf(
-                                this
-                            );
-
+                            inputs.indexOf(this);
 
                         if (
                             currentIndex >= 0 &&
                             currentIndex + 1 <
-                                inputs.length
+                            inputs.length
                         ) {
 
                             inputs[
@@ -4828,88 +3647,68 @@ function renderManualPlayers(layout) {
 
                         }
 
-                    }
-
-                };
+                    };
 
 
-            cell.appendChild(
-                input
-            );
+                scoreRow.appendChild(input);
 
+            }
 
-            scoreRow.appendChild(
-                cell
-            );
+            scorecard.appendChild(scoreRow);
 
         }
 
 
         /*
-         * TOTAL
+         * TOTAL OCH +/-
          */
 
-        const totalCell =
-            document.createElement(
-                'th'
-            );
+        const totals =
+            document.createElement('div');
+
+        totals.style.display = 'flex';
+        totals.style.justifyContent = 'center';
+        totals.style.gap = '25px';
+        totals.style.marginTop = '12px';
+        totals.style.fontWeight = 'bold';
 
 
-        totalCell.id =
-            'manualTotal_' +
-            playerIndex;
+        const totalElement =
+            document.createElement('span');
+
+        totalElement.id =
+            'manualTotal_' + playerIndex;
+
+        totalElement.textContent =
+            'Total: ' +
+            calculateManualTotal(player);
 
 
-        totalCell.textContent =
-            calculateManualTotal(
-                player
-            );
+        const plusMinusElement =
+            document.createElement('span');
 
+        plusMinusElement.id =
+            'manualPlusMinus_' + playerIndex;
 
-        scoreRow.appendChild(
-            totalCell
-        );
-
-
-        /*
-         * +/-
-         */
-
-        const plusMinusCell =
-            document.createElement(
-                'th'
-            );
-
-
-        plusMinusCell.id =
-            'manualPlusMinus_' +
-            playerIndex;
-
-
-        plusMinusCell.textContent =
+        plusMinusElement.textContent =
+            '+/-: ' +
             calculateManualPlusMinus(
                 player,
                 layout
             );
 
 
-        scoreRow.appendChild(
-            plusMinusCell
-        );
+        totals.appendChild(totalElement);
+        totals.appendChild(plusMinusElement);
+
+        scorecard.appendChild(totals);
 
 
-        table.appendChild(
-            scoreRow
-        );
-
-
-        wrapper.appendChild(
-            table
-        );
+        wrapper.appendChild(scorecard);
 
 
         /*
-         * RATING
+         * TIDIGARE UDISC RATING
          */
 
         const course =
@@ -4928,14 +3727,11 @@ function renderManualPlayers(layout) {
 
 
         const ratingInfo =
-            document.createElement(
-                'div'
-            );
+            document.createElement('div');
 
+        ratingInfo.style.marginTop = '8px';
 
-        ratingInfo.style.marginTop =
-            '8px';
-
+        ratingInfo.style.textAlign = 'center';
 
         ratingInfo.innerHTML =
             'Tidigare UDisc Rating: ' +
@@ -4948,23 +3744,13 @@ function renderManualPlayers(layout) {
             '</strong>';
 
 
-        wrapper.appendChild(
-            ratingInfo
-        );
+        wrapper.appendChild(ratingInfo);
 
-
-        container.appendChild(
-            wrapper
-        );
+        container.appendChild(wrapper);
 
     });
 
 }
-
-
-/* ---------------------------------------------------------
-   UPPDATERA TOTAL OCH +/-
-   --------------------------------------------------------- */
 
 function updateManualPlayerTotal(
     playerIndex,
