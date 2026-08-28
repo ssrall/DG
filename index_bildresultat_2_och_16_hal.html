@@ -1236,21 +1236,17 @@ return {
         }
 
         function extractHoleCountAndPar(lines) {
-    let par = [];
+    const par = [];
 
     for (const line of lines) {
-        if (/^par\b/i.test(line)) {
-            const values = parseScoreLine(line)
-                .filter(n => n >= 2 && n <= 6);
+        if (!/^par\b/i.test(line)) continue;
 
-            if (values.length > 0) {
-                par.push(...values);
-            }
+        const values = parseScoreLine(line)
+            .filter(n => n >= 2 && n <= 6);
+
+        if (values.length > 0) {
+            par.push(...values);
         }
-    }
-
-    if (par.length > 18) {
-        par = par.slice(0, 18);
     }
 
     return {
@@ -1258,130 +1254,193 @@ return {
         par: par
     };
 }
+        function parsePlayerRowFromText(line, holeCount) {
+    if (!line || !holeCount) return null;
 
+    const text = String(line).trim();
+
+    // Rader som aldrig är spelare
+    if (/^(par|hål|hal|ha[l1i]|längd|langd|scorekort|spelare|runda|rating)\b/i.test(text)) {
+        return null;
+    }
+
+    // Hämta alla siffror från raden
+    const numbers = parseScoreLine(text);
+
+    // Vi behöver minst ett resultat
+    if (!numbers.length) {
+        return null;
+    }
+
+    /*
+     * En spelarrad måste ha minst ett rimligt antal
+     * resultat. Vi accepterar även OCR-fel i vissa
+     * resultat, därför är kravet lägre än holeCount.
+     */
+    if (numbers.length < Math.min(3, holeCount)) {
+        return null;
+    }
+
+    /*
+     * Första siffran markerar slutet på spelarens namn.
+     */
+    const match = text.match(/\d/);
+
+    if (!match || match.index === undefined) {
+        return null;
+    }
+
+    let name = text
+        .substring(0, match.index)
+        .trim();
+
+    /*
+     * Rensa bort OCR-tecken före namnet.
+     *
+     * Exempel:
+     * "f@ 3 5..."
+     * "° Jonas 3..."
+     * "ea: Dick 3..."
+     */
+    name = name
+        .replace(/^[^A-Za-zÅÄÖåäöÉéÜü]+/, '')
+        .replace(/^[^A-Za-zÅÄÖåäöÉéÜü]+/, '')
+        .trim();
+
+    if (!name) return null;
+
+    const lower = name.toLowerCase();
+
+    // Tabellrubriker får aldrig bli spelare
+    if (
+        lower === 'par' ||
+        lower === 'hal' ||
+        lower === 'hål' ||
+        lower === 'langd' ||
+        lower === 'längd' ||
+        lower === 'scorekort' ||
+        lower === 'spelare' ||
+        lower === 'runda' ||
+        lower === 'rating'
+    ) {
+        return null;
+    }
+
+    /*
+     * OCR kan lägga skräp efter namnet.
+     * Behåll bara själva första ordet.
+     */
+    name = name.split(/\s+/)[0];
+
+    return {
+        name: name,
+        holes: numbers.slice(-holeCount)
+    };
+}
         function extractGenericPlayerRows(text, holeCount) {
-    const textLines = normalizeOcrText(text);
-    const positionalRows = getOcrTableRows();
-    const sourceRows = positionalRows.length ? positionalRows : textLines;
-
+    const lines = normalizeOcrText(text);
     const players = [];
-    const seen = new Set();
 
-    sourceRows.forEach((line, index) => {
-        const parsed = parsePlayerRowFromText(line, holeCount);
+    // Hitta spelarraderna i OCR-texten.
+    // Vi tillåter att resultatet är uppdelat på flera rader.
+    for (let i = 0; i < lines.length; i++) {
 
-        if (parsed && !seen.has(parsed.name.toLowerCase())) {
-            seen.add(parsed.name.toLowerCase());
-            players.push(parsed);
-            return;
-        }
+        const line = lines[i];
 
-        for (let span = 2; span <= 4; span++) {
-            const joined = sourceRows
-                .slice(index, index + span)
-                .join(' ');
+        // Försök läsa aktuell rad
+        let parsed = parsePlayerRowFromText(
+            line,
+            holeCount
+        );
 
-            const p = parsePlayerRowFromText(
-                joined,
-                holeCount
-            );
+        if (!parsed) continue;
 
-            if (p && !seen.has(p.name.toLowerCase())) {
-                seen.add(p.name.toLowerCase());
-                players.push(p);
+        /*
+         * Om vi inte har alla hål på första raden
+         * försöker vi hämta nästa rad med resultat.
+         *
+         * Exempel:
+         *
+         * Jonas 2 3 2 2 3 4 3 3 3
+         * ...
+         * Jonas 4 2 4 3 3 4 3
+         *
+         * => 16 hål
+         */
+
+        let holes = [...parsed.holes];
+
+        for (
+            let j = i + 1;
+            j < Math.min(i + 5, lines.length);
+            j++
+        ) {
+            const next = lines[j];
+
+            // Stoppa vid nästa Par/Hål/Längd-rad
+            if (
+                /^(par|hal|hål|langd|längd)\b/i.test(
+                    next.trim()
+                )
+            ) {
+                break;
+            }
+
+            const nextNumbers =
+                parseScoreLine(next);
+
+            if (!nextNumbers.length) continue;
+
+            /*
+             * Om nästa rad börjar med samma namn
+             * eller OCR har förstört namnet, tar vi
+             * bara resultaten.
+             */
+            const nextParsed =
+                parsePlayerRowFromText(
+                    next,
+                    holeCount
+                );
+
+            if (
+                nextParsed &&
+                nextParsed.name
+                    .toLowerCase() ===
+                    parsed.name.toLowerCase()
+            ) {
+                holes.push(...nextParsed.holes);
                 break;
             }
         }
-    });
+
+        /*
+         * Behåll bara om vi har tillräckligt många hål.
+         */
+        if (holes.length < holeCount) {
+            continue;
+        }
+
+        holes = holes.slice(0, holeCount);
+
+        /*
+         * Undvik dubletter.
+         */
+        const exists = players.find(
+            p =>
+                p.name.toLowerCase() ===
+                parsed.name.toLowerCase()
+        );
+
+        if (!exists) {
+            players.push({
+                name: parsed.name,
+                holes: holes
+            });
+        }
+    }
 
     return players;
 }
-
-        function buildImageResultData(text) {
-    const lines = normalizeOcrText(text);
-
-    const result = extractHoleCountAndPar(lines);
-    const holeCount = result.holeCount;
-    const detectedPar = result.par;
-
-    if (!holeCount) {
-        throw new Error(
-            'Kunde inte hitta Par-raden i bilden.'
-        );
-    }
-
-    const header = [
-        'PlayerName',
-        'CourseName',
-        'LayoutName',
-        'StartDate',
-        'EndDate',
-        'Total',
-        '+/-',
-        'RoundRating'
-    ];
-
-    for (let i = 1; i <= holeCount; i++) {
-        header.push(`Hole${i}`);
-    }
-
-    const generic = extractGenericPlayerRows(
-        text,
-        holeCount
-    );
-
-    if (generic.length === 0) {
-        throw new Error(
-            'Kunde inte hitta spelarnas resultat i bilden.'
-        );
-    }
-
-    const parTotal = detectedPar.reduce(
-        (sum, value) => sum + Number(value),
-        0
-    );
-
-    const par = [
-        'Par',
-        '',
-        '',
-        '',
-        '',
-        parTotal,
-        '',
-        ''
-    ];
-
-    par.push(...detectedPar);
-
-    const players = generic.map(player => {
-        const holes = player.holes
-            .slice(0, holeCount);
-
-        const total = holes.reduce(
-            (sum, value) => sum + Number(value),
-            0
-        );
-
-        const difference = total - parTotal;
-
-        const plusMinus =
-            difference > 0
-                ? `+${difference}`
-                : String(difference);
-
-        return [
-            player.name,
-            '',
-            '',
-            '',
-            '',
-            total,
-            plusMinus,
-            player.rating || '',
-            ...holes
-        ];
-    });
 
     const raw = JSON.stringify({
         text: text,
