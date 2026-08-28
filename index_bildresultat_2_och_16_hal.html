@@ -560,40 +560,7 @@
             </div>
         </div>
     </div>
-<div class="top-box" id="manualResultContainer">
-    <h2>Lägg till resultat manuellt</h2>
 
-    <label for="manualCourseSelect">Bana</label>
-    <select id="manualCourseSelect" onchange="manualCourseChanged()">
-        <option value="">Välj bana</option>
-    </select>
-
-    <label for="manualLayoutSelect">Layout</label>
-    <select id="manualLayoutSelect" onchange="manualLayoutChanged()" disabled>
-        <option value="">Välj layout</option>
-    </select>
-
-    <label for="manualDate">Datum</label>
-    <input type="date" id="manualDate">
-
-    <div id="manualCourseInfo" style="margin:10px 0;"></div>
-
-    <div id="manualPlayersContainer"></div>
-
-    <button onclick="addManualPlayer()">
-        + Lägg till spelare
-    </button>
-
-    <button onclick="prepareManualResult()">
-        Förhandsgranska resultat
-    </button>
-
-    <button id="manualSaveButton"
-            style="display:none;"
-            onclick="saveManualResult()">
-        Spara resultat
-    </button>
-</div>
     <script>
         let savedResults = JSON.parse(localStorage.getItem('savedResults')) || [];
         let savedSummaries = JSON.parse(localStorage.getItem('savedSummaries')) || {};
