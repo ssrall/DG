@@ -1548,7 +1548,7 @@ return {
         };
     }
 
-    // Hitta Scorekort och ignorera allt ovanför.
+    // Börja först när vi hittar Scorekort.
     const scorecardIndex = rows.findIndex(row =>
         /scorekort/i.test(row)
     );
@@ -1565,10 +1565,14 @@ return {
     let totalHoles = 0;
     let par = [];
 
+    // Spelarna i den ordning de visas.
     const players = [];
 
-    // Spelarordningen från första hål-blocket.
-    let blockPlayers = [];
+    // Spelare som hittades i aktuellt hålblock.
+    let currentBlockPlayers = [];
+
+    // Vi befinner oss efter en Hål-rad.
+    let insideScorecardBlock = false;
 
     for (let i = 0; i < scorecardRows.length; i++) {
 
@@ -1576,42 +1580,68 @@ return {
 
         if (!row) continue;
 
-        // Hål-rad
+        /*
+         * NYTT HÅLBLOCK
+         *
+         * Exempel:
+         * Hål 1 2 3 4 5 6 7 8 9
+         * Hål 10 11 12 13 14 15 16
+         */
         if (/^(hal|hål|ha1|hå1)\b/i.test(row)) {
 
-            const holes = parseScoreLine(row)
-                .filter(n => n >= 1 && n <= 100);
+            const holeNumbers =
+                parseScoreLine(row)
+                    .filter(n => n >= 1 && n <= 100);
 
-            if (holes.length) {
-                totalHoles += holes.length;
+            if (holeNumbers.length) {
+                totalHoles += holeNumbers.length;
             }
 
-            // Nytt block.
-            blockPlayers = [];
+            currentBlockPlayers = [];
+            insideScorecardBlock = true;
 
             continue;
         }
 
-        // Längd ska ignoreras.
+        if (!insideScorecardBlock) {
+            continue;
+        }
+
+        /*
+         * Längd är information om banan,
+         * inte en spelarrad.
+         */
         if (/^(langd|längd)\b/i.test(row)) {
             continue;
         }
 
-        // Par
+        /*
+         * PAR
+         */
         if (/^par\b/i.test(row)) {
 
-            const values = parseScoreLine(row)
-                .filter(n => n >= 2 && n <= 6);
+            const values =
+                parseScoreLine(row)
+                    .filter(n => n >= 2 && n <= 6);
 
             par.push(...values);
 
             continue;
         }
 
-        // Försök hitta spelarens scores.
+        /*
+         * Spelarrad.
+         *
+         * Vi kräver minst 3 scorevärden.
+         * Detta gör att exempelvis:
+         *
+         * a 4 -48
+         *
+         * inte blir en spelare.
+         */
         const scores = parseScoreLine(row);
 
-        if (scores.length < 1) {
+        if (scores.length < 3) {
             continue;
         }
 
@@ -1621,74 +1651,75 @@ return {
             continue;
         }
 
-        let name =
+        let detectedName =
             row.substring(0, firstNumber).trim();
 
-        name = name
+        detectedName = detectedName
             .replace(/^[^A-Za-zÅÄÖåäöÉéÜü]+/, '')
             .trim();
 
-        if (!name) continue;
-
-        /*
-         * Ta bort OCR-skräp efter själva namnet.
-         *
-         * Exempel:
-         * "pick BB" -> "pick"
-         */
-        name = name.split(/\s+/)[0];
-
-        /*
-         * Kontrollera om namnet redan finns.
-         */
-        let player = players.find(p =>
-            p.name.toLowerCase() ===
-            name.toLowerCase()
-        );
-
-        /*
-         * Om OCR:n har läst namnet fel använder vi
-         * spelarordningen från det första blocket.
-         */
-        if (!player && blockPlayers.length) {
-
-            const blockIndex =
-                blockPlayers.length;
-
-            if (players[blockIndex]) {
-                player = players[blockIndex];
-            }
+        if (!detectedName) {
+            continue;
         }
 
         /*
-         * Ny spelare.
+         * Försök först hitta exakt samma spelare.
+         */
+        const cleanName =
+            detectedName.split(/\s+/)[0];
+
+        let player = players.find(p =>
+            p.name.toLowerCase() ===
+            cleanName.toLowerCase()
+        );
+
+        /*
+         * Om OCR:n har förstört namnet, exempelvis:
+         *
+         * Dick
+         *
+         * senare:
+         *
+         * pick BB
+         *
+         * använder vi spelarens position i blocket.
+         */
+        if (!player && currentBlockPlayers.length < players.length) {
+
+            player =
+                players[currentBlockPlayers.length];
+        }
+
+        /*
+         * Om det fortfarande inte finns någon spelare
+         * skapar vi en ny.
          */
         if (!player) {
 
             player = {
-                name,
+                name: cleanName,
                 holes: []
             };
 
             players.push(player);
         }
 
-        player.holes.push(...scores);
+        /*
+         * Lägg till spelaren i aktuell blocks ordning.
+         */
+        if (!currentBlockPlayers.includes(player)) {
+            currentBlockPlayers.push(player);
+        }
 
         /*
-         * Lägg spelaren i blockets ordning.
+         * Lägg till scores från detta hålblock.
          */
-        if (!blockPlayers.includes(player)) {
-            blockPlayers.push(player);
-        }
+        player.holes.push(...scores);
     }
 
     /*
-     * Begränsa par och scores till det antal hål
-     * som faktiskt hittades.
+     * Begränsa till det verkliga antalet hål.
      */
-    par = par.slice(0, totalHoles);
-
     const finalPlayers = players.map(player => ({
         name: player.name,
         holes: player.holes.slice(0, totalHoles)
@@ -1696,7 +1727,7 @@ return {
 
     return {
         holeCount: totalHoles,
-        par,
+        par: par.slice(0, totalHoles),
         players: finalPlayers
     };
 }
