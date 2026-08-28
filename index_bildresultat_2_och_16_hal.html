@@ -1537,7 +1537,169 @@ return {
         holes: player.holes.slice(0, holeCount)
     }));
 }
+    function parseScorecardFromOCR(text) {
+    const rows = getOcrTableRows();
 
+    if (!rows.length) {
+        return {
+            holeCount: 0,
+            par: [],
+            players: []
+        };
+    }
+
+    // Hitta Scorekort och ignorera allt ovanför.
+    const scorecardIndex = rows.findIndex(row =>
+        /scorekort/i.test(row)
+    );
+
+    if (scorecardIndex === -1) {
+        throw new Error(
+            'Kunde inte hitta Scorekort i bilden.'
+        );
+    }
+
+    const scorecardRows =
+        rows.slice(scorecardIndex + 1);
+
+    let totalHoles = 0;
+    let par = [];
+
+    const players = [];
+
+    // Spelarordningen från första hål-blocket.
+    let blockPlayers = [];
+
+    for (let i = 0; i < scorecardRows.length; i++) {
+
+        const row = scorecardRows[i].trim();
+
+        if (!row) continue;
+
+        // Hål-rad
+        if (/^(hal|hål|ha1|hå1)\b/i.test(row)) {
+
+            const holes = parseScoreLine(row)
+                .filter(n => n >= 1 && n <= 100);
+
+            if (holes.length) {
+                totalHoles += holes.length;
+            }
+
+            // Nytt block.
+            blockPlayers = [];
+
+            continue;
+        }
+
+        // Längd ska ignoreras.
+        if (/^(langd|längd)\b/i.test(row)) {
+            continue;
+        }
+
+        // Par
+        if (/^par\b/i.test(row)) {
+
+            const values = parseScoreLine(row)
+                .filter(n => n >= 2 && n <= 6);
+
+            par.push(...values);
+
+            continue;
+        }
+
+        // Försök hitta spelarens scores.
+        const scores = parseScoreLine(row);
+
+        if (scores.length < 1) {
+            continue;
+        }
+
+        const firstNumber = row.search(/\d/);
+
+        if (firstNumber < 1) {
+            continue;
+        }
+
+        let name =
+            row.substring(0, firstNumber).trim();
+
+        name = name
+            .replace(/^[^A-Za-zÅÄÖåäöÉéÜü]+/, '')
+            .trim();
+
+        if (!name) continue;
+
+        /*
+         * Ta bort OCR-skräp efter själva namnet.
+         *
+         * Exempel:
+         * "pick BB" -> "pick"
+         */
+        name = name.split(/\s+/)[0];
+
+        /*
+         * Kontrollera om namnet redan finns.
+         */
+        let player = players.find(p =>
+            p.name.toLowerCase() ===
+            name.toLowerCase()
+        );
+
+        /*
+         * Om OCR:n har läst namnet fel använder vi
+         * spelarordningen från det första blocket.
+         */
+        if (!player && blockPlayers.length) {
+
+            const blockIndex =
+                blockPlayers.length;
+
+            if (players[blockIndex]) {
+                player = players[blockIndex];
+            }
+        }
+
+        /*
+         * Ny spelare.
+         */
+        if (!player) {
+
+            player = {
+                name,
+                holes: []
+            };
+
+            players.push(player);
+        }
+
+        player.holes.push(...scores);
+
+        /*
+         * Lägg spelaren i blockets ordning.
+         */
+        if (!blockPlayers.includes(player)) {
+            blockPlayers.push(player);
+        }
+    }
+
+    /*
+     * Begränsa par och scores till det antal hål
+     * som faktiskt hittades.
+     */
+    par = par.slice(0, totalHoles);
+
+    const finalPlayers = players.map(player => ({
+        name: player.name,
+        holes: player.holes.slice(0, totalHoles)
+    }));
+
+    return {
+        holeCount: totalHoles,
+        par,
+        players: finalPlayers
+    };
+}
     function buildImageResultData(text) {
     const parsedScorecard =
     parseScorecardFromOCR(text);
