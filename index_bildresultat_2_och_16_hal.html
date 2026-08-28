@@ -1134,101 +1134,55 @@ return {
         }
 
         async function readResultImage() {
-const input = document.getElementById('resultImageFile');
-const progress = document.getElementById('ocrProgress');
-const ocrText = document.getElementById('ocrText');
-const createButton = document.getElementById('createImageResultButton');
-const saveButton = document.getElementById('saveImageResultButton');
-const file = input.files && input.files[0];
+            const input = document.getElementById('resultImageFile');
+            const progress = document.getElementById('ocrProgress');
+            const ocrText = document.getElementById('ocrText');
+            const createButton = document.getElementById('createImageResultButton');
+            const saveButton = document.getElementById('saveImageResultButton');
+            const file = input.files && input.files[0];
 
-```
-if (!file) {
-    showMessage('Vänligen välj en resultatbild.', true);
-    return;
-}
+            if (!file) {
+                showMessage('Vänligen välj en resultatbild.', true);
+                return;
+            }
+            if (typeof Tesseract === 'undefined') {
+                showMessage('OCR-biblioteket kunde inte laddas. Kontrollera internetanslutningen och försök igen.', true);
+                return;
+            }
 
-if (typeof Tesseract === 'undefined') {
-    showMessage(
-        'OCR-biblioteket kunde inte laddas. Kontrollera internetanslutningen och försök igen.',
-        true
-    );
-    return;
-}
+            progress.style.display = 'block';
+            progress.textContent = 'Förbereder bilden...';
+            createButton.style.display = 'none';
+            saveButton.style.display = 'none';
 
-progress.style.display = 'block';
-progress.textContent = 'Förbereder bilden...';
-createButton.style.display = 'none';
-saveButton.style.display = 'none';
+            try {
+                const canvas = await createOcrCanvas(file);
+                const worker = await Tesseract.createWorker('swe+eng', 1, {
+                    logger: m => {
+                        if (m.status) {
+                            const pct = m.progress ? ` ${Math.round(m.progress * 100)}%` : '';
+                            progress.textContent = `Läser bild: ${m.status}${pct}`;
+                        }
+                    }
+                });
 
-try {
-    const canvas = await createOcrCanvas(file);
+                const result = await worker.recognize(canvas);
+                await worker.terminate();
+                const text = (result && result.data && result.data.text) ? result.data.text.trim() : '';
+                imageOcrWords = (result && result.data && Array.isArray(result.data.words)) ? result.data.words : [];
 
-    const worker = await Tesseract.createWorker('swe+eng', 1, {
-        logger: m => {
-            if (m.status) {
-                const pct = m.progress
-                    ? ` ${Math.round(m.progress * 100)}%`
-                    : '';
-
-                progress.textContent =
-                    `Läser bild: ${m.status}${pct}`;
+                if (!text) throw new Error('Ingen text kunde hittas i bilden.');
+                ocrText.value = text;
+                ocrText.style.display = 'block';
+                createButton.style.display = 'inline-block';
+                progress.textContent = 'OCR klar. Kontrollera texten och klicka sedan på “Skapa resultat från bild”.';
+                showMessage('Bildresultatet har lästs. Kontrollera OCR-texten innan du skapar resultatet.', false);
+            } catch (error) {
+                console.error(error);
+                progress.textContent = 'Kunde inte läsa bilden.';
+                showMessage(`Fel vid OCR-läsning: ${error.message || error}`, true);
             }
         }
-    });
-
-    const result = await worker.recognize(canvas);
-
-    await worker.terminate();
-
-    const text =
-        (result &&
-         result.data &&
-         result.data.text)
-            ? result.data.text.trim()
-            : '';
-
-    imageOcrWords =
-        (result &&
-         result.data &&
-         Array.isArray(result.data.words))
-            ? result.data.words
-            : [];
-
-    if (!text) {
-        throw new Error(
-            'Ingen text kunde hittas i bilden.'
-        );
-    }
-
-    ocrText.value = text;
-    ocrText.style.display = 'block';
-
-    createButton.style.display = 'inline-block';
-
-    progress.textContent =
-        'OCR klar. Kontrollera texten och klicka sedan på "Skapa resultat från bild".';
-
-    showMessage(
-        'Bildresultatet har lästs. Kontrollera OCR-texten innan du skapar resultatet.',
-        false
-    );
-
-} catch (error) {
-
-    console.error(error);
-
-    progress.textContent =
-        'Kunde inte läsa bilden.';
-
-    showMessage(
-        `Fel vid OCR-läsning: ${error.message || error}`,
-        true
-    );
-}
-```
-
-}
-
 
         function normalizeOcrText(text) {
             return text
