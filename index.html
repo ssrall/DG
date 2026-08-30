@@ -448,68 +448,61 @@
 
     <div style="margin-top:15px;">
 
-        <!-- ================================
-             IMPORTERA FRÅN PDGA
-             ================================= -->
+        <!-- =========================================================
+     PDGA RESULTAT – KLISTRA IN
+     ========================================================= -->
 
-        <details>
+<div class="top-box" id="pdgaImportContainer">
 
-            <summary style="cursor:pointer;">
-                🏆 Importera PDGA-tävling
-            </summary>
+    <h2>📋 Importera PDGA-resultat</h2>
 
-            <div style="margin-top:10px;">
+    <p style="margin-top:0;">
+        Öppna tävlingen på PDGA, markera hela sidan med
+        Ctrl+A, kopiera med Ctrl+C och klistra sedan in
+        resultatet här.
+    </p>
 
-                <label for="pdgaEventUrl">
-                    PDGA-länk till tävlingen
-                </label>
+    <textarea
+        id="pdgaPasteText"
+        placeholder="Klistra in hela innehållet från PDGA-sidan här..."
+        style="
+            width:100%;
+            min-height:180px;
+            box-sizing:border-box;
+            resize:vertical;
+            margin-top:10px;
+        "
+    ></textarea>
 
-                <input
-                    type="url"
-                    id="pdgaEventUrl"
-                    placeholder="https://www.pdga.com/tour/event/101563"
-                    style="
-                        width:100%;
-                        box-sizing:border-box;
-                    "
-                >
+    <div style="margin-top:10px;">
 
-                <button
-                    type="button"
-                    onclick="importPdgaEvent()"
-                    style="margin-top:8px;"
-                >
-                    Hämta tävling
-                </button>
+        <button
+            type="button"
+            onclick="analyzePastedPdgaResults()">
+            🔎 Analysera resultat
+        </button>
 
-                <div
-                    id="pdgaImportStatus"
-                    style="margin-top:10px;"
-                ></div>
+        <button
+            type="button"
+            id="pdgaSaveButton"
+            style="display:none;"
+            onclick="savePastedPdgaResults()">
+            💾 Spara resultat
+        </button>
 
-                <div
-                    id="pdgaImportPreview"
-                    style="
-                        display:none;
-                        margin-top:10px;
-                    "
-                ></div>
+    </div>
 
-                <button
-                    type="button"
-                    id="pdgaSaveButton"
-                    onclick="savePdgaImport()"
-                    style="
-                        display:none;
-                        margin-top:10px;
-                    "
-                >
-                    Spara ratingdata
-                </button>
+    <div
+        id="pdgaImportStatus"
+        style="margin-top:10px;">
+    </div>
 
-            </div>
+    <div
+        id="pdgaImportPreview"
+        style="margin-top:15px;">
+    </div>
 
-        </details>
+</div>
 
 
         <!-- ================================
@@ -4995,13 +4988,16 @@ function renderRatingDatabase() {
             setupApp();
         };
         // =========================================================
-// PDGA-IMPORT
+// PDGA – KLISTRA IN RESULTAT
 // =========================================================
 
-async function importPdgaEvent() {
+let pendingPastedPdgaResults = [];
 
-    const urlInput =
-        document.getElementById('pdgaEventUrl');
+
+function analyzePastedPdgaResults() {
+
+    const textarea =
+        document.getElementById('pdgaPasteText');
 
     const status =
         document.getElementById('pdgaImportStatus');
@@ -5013,109 +5009,54 @@ async function importPdgaEvent() {
         document.getElementById('pdgaSaveButton');
 
 
-    const url =
-        urlInput.value.trim();
+    const text =
+        textarea.value.trim();
 
 
-    if (!url) {
+    if (!text) {
 
         status.textContent =
-            'Klistra först in en PDGA-länk.';
+            'Klistra först in resultatet från PDGA-sidan.';
 
         return;
     }
-
-
-    const match =
-        url.match(
-            /pdga\.com\/tour\/event\/(\d+)/i
-        );
-
-
-    if (!match) {
-
-        status.textContent =
-            'Det ser inte ut som en giltig PDGA-tävlingslänk.';
-
-        return;
-    }
-
-
-    const eventId = match[1];
 
 
     status.textContent =
-        '⏳ Hämtar tävlingen från PDGA...';
+        '🔎 Analyserar PDGA-resultatet...';
 
-    preview.style.display = 'none';
     preview.innerHTML = '';
-    saveButton.style.display = 'none';
+
+    saveButton.style.display =
+        'none';
 
 
     try {
 
-        /*
-         * Vi använder en CORS-proxy för att kunna
-         * läsa PDGA-sidan från webbläsaren.
-         */
-
-        const targetUrl =
-            `https://www.pdga.com/tour/event/${eventId}`;
-
-        const proxyUrl =
-            'https://api.allorigins.win/raw?url=' +
-            encodeURIComponent(targetUrl);
+        const results =
+            parsePastedPdgaResults(text);
 
 
-        const response =
-            await fetch(proxyUrl);
-
-
-        if (!response.ok) {
+        if (!results.length) {
 
             throw new Error(
-                `Kunde inte hämta PDGA-sidan (${response.status}).`
+                'Kunde inte hitta några MA-resultat. Kontrollera att hela resultatdelen från PDGA är kopierad.'
             );
         }
 
 
-        const html =
-            await response.text();
+        pendingPastedPdgaResults =
+            results;
 
 
-        if (!html || html.length < 1000) {
-
-            throw new Error(
-                'PDGA-sidan returnerade inget användbart innehåll.'
-            );
-        }
-
-
-        const parsed =
-            parsePdgaEventHtml(html, eventId);
-
-
-        if (!parsed.players.length) {
-
-            throw new Error(
-                'Kunde inte hitta några MA-resultat på tävlingssidan.'
-            );
-        }
-
-
-        /*
-         * Spara tillfälligt så att
-         * Spara-knappen vet vad den ska spara.
-         */
-
-        window.pendingPdgaImport = parsed;
-
-
-        renderPdgaImportPreview(parsed);
+        renderPastedPdgaPreview(
+            results
+        );
 
 
         status.textContent =
-            `✅ Hittade ${parsed.players.length} MA-spelare.`;
+            `✅ Hittade ${results.length} unika MA-resultat.`;
+
 
         saveButton.style.display =
             'inline-block';
@@ -5133,463 +5074,348 @@ async function importPdgaEvent() {
 
     }
 }
-function parsePdgaEventHtml(html, eventId) {
+function parsePastedPdgaResults(text) {
 
-    const parser =
-        new DOMParser();
+    const lines = text
+        .replace(/\r/g, '')
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
 
-    const doc =
-        parser.parseFromString(
-            html,
-            'text/html'
+    const results = [];
+
+    let currentDivision = '';
+    let currentEvent = '';
+    let currentDate = '';
+
+    for (const originalLine of lines) {
+
+        const line = originalLine
+            .replace(/\*\*/g, '')
+            .trim();
+
+
+        // =====================================================
+        // HITTA KLASS
+        // =====================================================
+
+        const divisionMatch = line.match(
+            /\b(MA[1-4]|FA[1-4])\b/i
         );
 
+        if (divisionMatch) {
 
-    const result = {
+            currentDivision =
+                divisionMatch[1].toUpperCase();
 
-        eventId: eventId,
-
-        event: '',
-
-        date: '',
-
-        players: []
-
-    };
-
-
-    /*
-     * Tävlingens namn
-     */
-
-    const h1 =
-        doc.querySelector('h1');
-
-    if (h1) {
-
-        result.event =
-            h1.textContent.trim();
-
-    }
-
-
-    /*
-     * Försök hitta datum.
-     */
-
-    const bodyText =
-        doc.body
-            ? doc.body.innerText
-            : '';
-
-
-    const dateMatch =
-        bodyText.match(
-            /Date:\s*([^\n]+)/i
-        );
-
-    if (dateMatch) {
-
-        result.date =
-            dateMatch[1].trim();
-
-    }
-
-
-    /*
-     * PDGA:s resultat ligger i tabeller.
-     */
-
-    const tables =
-        Array.from(
-            doc.querySelectorAll('table')
-        );
-
-
-    tables.forEach(table => {
-
-        const rows =
-            Array.from(
-                table.querySelectorAll('tr')
-            );
-
-
-        if (!rows.length) return;
-
-
-        /*
-         * Kontrollera om tabellen hör till
-         * en MA-division.
-         */
-
-        const tableText =
-            table.innerText || '';
-
-
-        const isMA =
-            /\bMA[1-4]\b/i.test(
-                tableText
-            );
-
-
-        /*
-         * FA får aldrig importeras.
-         */
-
-        const isFA =
-            /\bFA[1-4]\b/i.test(
-                tableText
-            );
-
-
-        if (!isMA || isFA) {
-            return;
+            // FA ska alltid ignoreras
+            continue;
         }
 
 
+        // =====================================================
+        // DATUM
+        // =====================================================
+
+        const dateMatch = line.match(
+            /(?:Date|Datum)\s*:\s*(.+)/i
+        );
+
+        if (dateMatch) {
+
+            currentDate =
+                dateMatch[1].trim();
+        }
+
+
+        // =====================================================
+        // VI ÄR INTE I EN MA-KLASS
+        // =====================================================
+
+        if (!/^MA[1-4]$/i.test(currentDivision)) {
+            continue;
+        }
+
+
+        // =====================================================
+        // Dela upp tabellraden
+        // =====================================================
+
+        let cells = line
+            .split('|')
+            .map(cell =>
+                cell
+                    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+                    .replace(/\*\*/g, '')
+                    .trim()
+            )
+            .filter(Boolean);
+
+
         /*
-         * Hitta header-raden.
+         * Om raden inte innehåller | försöker vi
+         * även läsa den som vanlig text.
          */
 
-        const headerRow =
-            rows.find(row => {
+        if (cells.length < 6) {
 
-                const text =
-                    row.innerText || '';
-
-                return (
-                    /Name/i.test(text) &&
-                    /Rating/i.test(text) &&
-                    /Rd1/i.test(text)
-                );
-
-            });
+            continue;
+        }
 
 
-        if (!headerRow) return;
+        // =====================================================
+        // FÖRVÄNTADE FÄLT
+        //
+        // 0 = placering
+        // 1 = poäng
+        // 2 = namn
+        // 3 = PDGA #
+        // 4 = player rating
+        // 5 = +/-
+        // 6 = score
+        // 7 = round rating
+        // =====================================================
+
+        const position =
+            parseInt(cells[0], 10);
+
+        const pdgaNumber =
+            cells[3];
+
+        const playerRating =
+            parseInt(cells[4], 10);
 
 
-        const headers =
-            Array.from(
-                headerRow.querySelectorAll('th,td')
-            )
-            .map(cell =>
-                cell.innerText.trim()
-            );
-
-
-        const nameIndex =
-            headers.findIndex(
-                h => /^Name$/i.test(h)
-            );
-
-
-        const ratingIndex =
-            headers.findIndex(
-                h => /^Rating$/i.test(h)
-            );
+        // Måste vara en riktig spelarrad
+        if (
+            !Number.isFinite(position) ||
+            position < 1
+        ) {
+            continue;
+        }
 
 
         if (
-            nameIndex < 0 ||
-            ratingIndex < 0
+            !/^\d{4,7}$/.test(pdgaNumber)
         ) {
-            return;
+            continue;
         }
 
 
-        /*
-         * Leta efter rondkolumner.
-         *
-         * PDGA visar exempelvis:
-         *
-         * Rd1 | rating | Rd2 | rating | Rd3 | rating
-         */
-
-        const roundIndexes = [];
+        if (
+            !Number.isFinite(playerRating) ||
+            playerRating < 300 ||
+            playerRating > 1200
+        ) {
+            continue;
+        }
 
 
-        headers.forEach(
-            (header, index) => {
+        // =====================================================
+        // NAMN
+        // =====================================================
 
-                if (
-                    /^Rd\d+$/i.test(
-                        header
-                    )
-                ) {
+        let name = cells[2];
 
-                    roundIndexes.push({
-                        scoreIndex: index,
-                        ratingIndex: index + 1
-                    });
+        if (!name) {
+            continue;
+        }
 
-                }
+
+        name = name
+            .replace(
+                /\[([^\]]+)\]\([^)]+\)/g,
+                '$1'
+            )
+            .trim();
+
+
+        if (
+            name.length < 2 ||
+            /^\d+$/.test(name)
+        ) {
+            continue;
+        }
+
+
+        // =====================================================
+        // RONDER
+        //
+        // Efter +/- kommer:
+        //
+        // score | rating
+        // score | rating
+        // score | rating
+        //
+        // Exempel:
+        //
+        // -16 | 49 | 1024 | 52 | 995 | 54 | 975 | 155
+        // =====================================================
+
+        const rounds = [];
+
+
+        for (
+            let i = 6;
+            i + 1 < cells.length;
+            i += 2
+        ) {
+
+            const score =
+                parseInt(
+                    cells[i],
+                    10
+                );
+
+            const roundRating =
+                parseInt(
+                    cells[i + 1],
+                    10
+                );
+
+
+            /*
+             * 999 används av PDGA för
+             * ej spelad / DNF.
+             */
+
+            if (
+                !Number.isFinite(score) ||
+                score <= 0 ||
+                score >= 900
+            ) {
+                continue;
+            }
+
+
+            if (
+                !Number.isFinite(roundRating) ||
+                roundRating < 300 ||
+                roundRating > 1200
+            ) {
+                continue;
+            }
+
+
+            rounds.push({
+
+                score:
+                    score,
+
+                rating:
+                    roundRating
+
+            });
+
+        }
+
+
+        // Ingen giltig rond
+        if (!rounds.length) {
+            continue;
+        }
+
+
+        // =====================================================
+        // SPARA VARJE ROND
+        // =====================================================
+
+        rounds.forEach(
+            (round, index) => {
+
+                results.push({
+
+                    name:
+                        name,
+
+                    pdgaNumber:
+                        pdgaNumber,
+
+                    division:
+                        currentDivision,
+
+                    course:
+                        '',
+
+                    layout:
+                        '',
+
+                    holes:
+                        18,
+
+                    score:
+                        round.score,
+
+                    rating:
+                        round.rating,
+
+                    round:
+                        index + 1,
+
+                    event:
+                        currentEvent,
+
+                    date:
+                        currentDate
+
+                });
 
             }
         );
 
-
-        /*
-         * Läs spelarna.
-         */
-
-        rows.forEach(row => {
-
-            if (row === headerRow) {
-                return;
-            }
+    }
 
 
-            const cells =
-                Array.from(
-                    row.querySelectorAll(
-                        'td,th'
-                    )
-                )
-                .map(cell =>
-                    cell.innerText.trim()
-                );
-
-
-            if (
-                cells.length <=
-                Math.max(
-                    nameIndex,
-                    ratingIndex
-                )
-            ) {
-                return;
-            }
-
-
-            const name =
-                cells[nameIndex];
-
-
-            if (
-                !name ||
-                name.length < 2
-            ) {
-                return;
-            }
-
-
-            /*
-             * Hoppa över DNF-rader och liknande.
-             */
-
-            const rowText =
-                cells.join(' ');
-
-            if (
-                /\bDNF\b/i.test(
-                    rowText
-                )
-            ) {
-                return;
-            }
-
-
-            const playerRating =
-                cells[ratingIndex];
-
-
-            const rounds = [];
-
-
-            roundIndexes.forEach(
-                round => {
-
-                    const score =
-                        cells[
-                            round.scoreIndex
-                        ];
-
-                    const rating =
-                        cells[
-                            round.ratingIndex
-                        ];
-
-
-                    const numericScore =
-                        parseInt(
-                            score,
-                            10
-                        );
-
-
-                    const numericRating =
-                        parseInt(
-                            rating,
-                            10
-                        );
-
-
-                    if (
-                        !isNaN(
-                            numericScore
-                        ) &&
-                        !isNaN(
-                            numericRating
-                        ) &&
-                        numericScore > 0 &&
-                        numericRating > 0
-                    ) {
-
-                        rounds.push({
-
-                            score:
-                                numericScore,
-
-                            rating:
-                                numericRating
-
-                        });
-
-                    }
-
-                }
-            );
-
-
-            if (!rounds.length) {
-                return;
-            }
-
-
-            /*
-             * Försök hitta bana/layout/hål
-             * från tabellen.
-             */
-
-            const courseMatch =
-                tableText.match(
-                    /([^\n]+?)\s*-\s*([^\n;]+);\s*(\d+)\s*holes?/i
-                );
-
-
-            let course = '';
-            let layout = '';
-            let holes = 18;
-
-
-            if (courseMatch) {
-
-                course =
-                    courseMatch[1]
-                        .trim();
-
-                layout =
-                    courseMatch[2]
-                        .trim();
-
-                holes =
-                    parseInt(
-                        courseMatch[3],
-                        10
-                    ) || 18;
-
-            }
-
-
-            rounds.forEach(
-                round => {
-
-                    result.players.push({
-
-                        name: name,
-
-                        course: course,
-
-                        layout: layout,
-
-                        holes: holes,
-
-                        score:
-                            round.score,
-
-                        rating:
-                            round.rating
-
-                    });
-
-                }
-            );
-
-        });
-
-    });
-
-
-    /*
-     * Ta bort exakta dubbletter.
-     */
+    // =========================================================
+    // TA BORT DUBLETTER
+    // =========================================================
 
     const unique = [];
 
 
-    result.players.forEach(
-        player => {
+    results.forEach(result => {
 
-            const exists =
-                unique.some(
-                    existing =>
+        const duplicate =
+            unique.some(existing =>
 
-                        existing.name
-                            .toLowerCase() ===
-                        player.name
-                            .toLowerCase()
+                String(existing.pdgaNumber) ===
+                String(result.pdgaNumber)
 
-                        &&
+                &&
 
-                        existing.course ===
-                        player.course
+                existing.score ===
+                result.score
 
-                        &&
+                &&
 
-                        existing.layout ===
-                        player.layout
+                existing.rating ===
+                result.rating
 
-                        &&
+                &&
 
-                        existing.holes ===
-                        player.holes
+                existing.round ===
+                result.round
 
-                        &&
-
-                        existing.score ===
-                        player.score
-
-                        &&
-
-                        existing.rating ===
-                        player.rating
-                );
+            );
 
 
-            if (!exists) {
-                unique.push(player);
-            }
+        if (!duplicate) {
+
+            unique.push(result);
 
         }
-    );
+
+    });
 
 
-    result.players =
-        unique;
-
-
-    return result;
+    return unique;
 }
-function renderPdgaImportPreview(data) {
+function renderPastedPdgaPreview(results) {
 
     const preview =
         document.getElementById(
             'pdgaImportPreview'
         );
-
-
-    if (!preview) return;
 
 
     let html = `
@@ -5601,50 +5427,43 @@ function renderPdgaImportPreview(data) {
         ">
 
             <strong>
-                ${data.event || 'PDGA-tävling'}
+                Resultat som hittades
             </strong>
 
-            <br>
-
-            ${data.players.length}
-            ratingresultat hittades.
-
-            <hr>
+            <br><br>
 
     `;
 
 
-    data.players.forEach(
-        player => {
+    results.forEach(
+        (result, index) => {
 
             html += `
 
                 <div style="
-                    padding:4px 0;
+                    padding:6px 0;
                     border-bottom:1px solid #eee;
                 ">
 
                     <strong>
-                        ${player.name}
+                        ${index + 1}.
+                        ${result.name}
                     </strong>
 
                     –
-                    ${player.course}
-
-                    ${player.layout
-                        ? `– ${player.layout}`
-                        : ''}
-
-                    –
-                    ${player.holes} hål
-
-                    –
-                    ${player.score} kast
+                    ${result.score} kast
 
                     →
+
                     <strong>
-                        ${player.rating}
+                        PDGA ${result.rating}
                     </strong>
+
+                    ${
+                        result.holes
+                            ? `– ${result.holes} hål`
+                            : ''
+                    }
 
                 </div>
 
@@ -5661,42 +5480,29 @@ function renderPdgaImportPreview(data) {
 
     preview.innerHTML =
         html;
-
-    preview.style.display =
-        'block';
 }
-function savePdgaImport() {
-
-    const data =
-        window.pendingPdgaImport;
-
-
-    const status =
-        document.getElementById(
-            'pdgaImportStatus'
-        );
-
+function savePastedPdgaResults() {
 
     if (
-        !data ||
-        !Array.isArray(data.players)
+        !Array.isArray(
+            pendingPastedPdgaResults
+        ) ||
+        !pendingPastedPdgaResults.length
     ) {
-
-        status.textContent =
-            'Det finns ingen PDGA-import att spara.';
 
         return;
     }
 
 
     let added = 0;
+
     let duplicates = 0;
 
 
-    data.players.forEach(
-        player => {
+    pendingPastedPdgaResults.forEach(
+        result => {
 
-            const exists =
+            const duplicate =
                 ratingDatabase.some(
                     entry =>
 
@@ -5704,7 +5510,7 @@ function savePdgaImport() {
                             entry.course || ''
                         ).toLowerCase() ===
                         String(
-                            player.course || ''
+                            result.course || ''
                         ).toLowerCase()
 
                         &&
@@ -5713,7 +5519,7 @@ function savePdgaImport() {
                             entry.layout || ''
                         ).toLowerCase() ===
                         String(
-                            player.layout || ''
+                            result.layout || ''
                         ).toLowerCase()
 
                         &&
@@ -5722,7 +5528,7 @@ function savePdgaImport() {
                             entry.holes
                         ) ===
                         Number(
-                            player.holes
+                            result.holes
                         )
 
                         &&
@@ -5731,7 +5537,7 @@ function savePdgaImport() {
                             entry.score
                         ) ===
                         Number(
-                            player.score
+                            result.score
                         )
 
                         &&
@@ -5740,7 +5546,7 @@ function savePdgaImport() {
                             entry.rating
                         ) ===
                         Number(
-                            player.rating
+                            result.rating
                         )
 
                         &&
@@ -5749,16 +5555,17 @@ function savePdgaImport() {
                             entry.event || ''
                         ).toLowerCase() ===
                         String(
-                            data.event || ''
+                            result.event || ''
                         ).toLowerCase()
                 );
 
 
-            if (exists) {
+            if (duplicate) {
 
                 duplicates++;
 
                 return;
+
             }
 
 
@@ -5771,28 +5578,28 @@ function savePdgaImport() {
                         .substring(2, 8),
 
                 source:
-                    'pdga',
+                    'pdga-paste',
 
                 course:
-                    player.course,
+                    result.course,
 
                 layout:
-                    player.layout,
+                    result.layout,
 
                 holes:
-                    player.holes,
+                    result.holes,
 
                 score:
-                    player.score,
+                    result.score,
 
                 rating:
-                    player.rating,
+                    result.rating,
 
                 event:
-                    data.event,
+                    result.event,
 
                 date:
-                    data.date
+                    result.date
 
             });
 
@@ -5808,8 +5615,14 @@ function savePdgaImport() {
     renderRatingDatabase();
 
 
+    const status =
+        document.getElementById(
+            'pdgaImportStatus'
+        );
+
+
     status.textContent =
-        `✅ Sparat ${added} ratingresultat.` +
+        `✅ ${added} ratingresultat sparades.` +
         (
             duplicates
                 ? ` ${duplicates} dubbletter hoppades över.`
@@ -5817,8 +5630,8 @@ function savePdgaImport() {
         );
 
 
-    window.pendingPdgaImport =
-        null;
+    pendingPastedPdgaResults =
+        [];
 
 
     document.getElementById(
@@ -5826,6 +5639,7 @@ function savePdgaImport() {
     ).style.display =
         'none';
 }
+
     </script>
 </body>
 </html>
