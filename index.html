@@ -5085,121 +5085,256 @@ function parsePastedPdgaResults(text) {
     const results = [];
 
     let currentDivision = '';
+
     let currentEvent = '';
+
     let currentDate = '';
 
-    for (const originalLine of lines) {
 
-        const line = originalLine
+    // =====================================================
+    // HJÄLPFUNKTION
+    // =====================================================
+
+    function cleanCell(cell) {
+
+        return cell
+            .replace(
+                /\[([^\]]+)\]\([^)]+\)/g,
+                '$1'
+            )
             .replace(/\*\*/g, '')
             .trim();
 
+    }
 
-        // =====================================================
-        // HITTA KLASS
-        // =====================================================
 
-        const divisionMatch = line.match(
-            /\b(MA[1-4]|FA[1-4])\b/i
-        );
+    // =====================================================
+    // LÄS ALLA RADER
+    // =====================================================
+
+    for (const originalLine of lines) {
+
+        const line =
+            originalLine.trim();
+
+
+        // =================================================
+        // TÄVLINGSNAMN
+        // =================================================
+
+        if (
+            !currentEvent &&
+            line &&
+            !line.includes('|') &&
+            !/^MA[1-4]\b/i.test(line) &&
+            !/^FA[1-4]\b/i.test(line)
+        ) {
+
+            /*
+             * Vi tar första rimliga rubriken
+             * som tävlingsnamn.
+             */
+
+            if (
+                line.length > 3 &&
+                line.length < 150 &&
+                !/^Date:/i.test(line) &&
+                !/^Datum:/i.test(line)
+            ) {
+
+                currentEvent =
+                    line;
+
+            }
+
+        }
+
+
+        // =================================================
+        // DATUM
+        // =================================================
+
+        const dateMatch =
+            line.match(
+                /(?:Date|Datum)\s*:\s*(.+)/i
+            );
+
+        if (dateMatch) {
+
+            currentDate =
+                dateMatch[1].trim();
+
+        }
+
+
+        // =================================================
+        // KLASS
+        // =================================================
+
+        const divisionMatch =
+            line.match(
+                /\b(MA[1-4]|FA[1-4])\b/i
+            );
+
 
         if (divisionMatch) {
 
             currentDivision =
                 divisionMatch[1].toUpperCase();
 
-            // FA ska alltid ignoreras
             continue;
+
         }
 
 
-        // =====================================================
-        // DATUM
-        // =====================================================
+        // =================================================
+        // FA SKA IGNORERAS
+        // =================================================
 
-        const dateMatch = line.match(
-            /(?:Date|Datum)\s*:\s*(.+)/i
-        );
-
-        if (dateMatch) {
-
-            currentDate =
-                dateMatch[1].trim();
-        }
-
-
-        // =====================================================
-        // VI ÄR INTE I EN MA-KLASS
-        // =====================================================
-
-        if (!/^MA[1-4]$/i.test(currentDivision)) {
-            continue;
-        }
-
-
-        // =====================================================
-        // Dela upp tabellraden
-        // =====================================================
-
-        let cells = line
-            .split('|')
-            .map(cell =>
-                cell
-                    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-                    .replace(/\*\*/g, '')
-                    .trim()
+        if (
+            /^FA[1-4]$/i.test(
+                currentDivision
             )
-            .filter(Boolean);
+        ) {
+
+            continue;
+
+        }
+
+
+        // =================================================
+        // VI ÄR INTE I MA
+        // =================================================
+
+        if (
+            !/^MA[1-4]$/i.test(
+                currentDivision
+            )
+        ) {
+
+            continue;
+
+        }
+
+
+        // =================================================
+        // ENDAST TABELLRADER
+        // =================================================
+
+        if (
+            !line.includes('|')
+        ) {
+
+            continue;
+
+        }
+
+
+        // =================================================
+        // DELA UPP TABELLRAD
+        // =================================================
+
+        const cells =
+            line
+                .split('|')
+                .map(cleanCell)
+                .filter(Boolean);
 
 
         /*
-         * Om raden inte innehåller | försöker vi
-         * även läsa den som vanlig text.
+         * En riktig spelarrad har exempelvis:
+         *
+         * 1
+         * 115.00
+         * Per Sjögren
+         * 188063
+         * 964
+         * -16
+         * 49
+         * 1024
+         * 52
+         * 995
+         * 54
+         * 975
+         * 155
          */
 
-        if (cells.length < 6) {
+        if (
+            cells.length < 8
+        ) {
 
             continue;
+
         }
 
 
-        // =====================================================
-        // FÖRVÄNTADE FÄLT
-        //
-        // 0 = placering
-        // 1 = poäng
-        // 2 = namn
-        // 3 = PDGA #
-        // 4 = player rating
-        // 5 = +/-
-        // 6 = score
-        // 7 = round rating
-        // =====================================================
+        // =================================================
+        // PLACERING
+        // =================================================
 
         const position =
-            parseInt(cells[0], 10);
-
-        const pdgaNumber =
-            cells[3];
-
-        const playerRating =
-            parseInt(cells[4], 10);
+            parseInt(
+                cells[0],
+                10
+            );
 
 
-        // Måste vara en riktig spelarrad
         if (
             !Number.isFinite(position) ||
             position < 1
         ) {
+
             continue;
+
         }
+
+
+        // =================================================
+        // NAMN
+        // =================================================
+
+        const name =
+            cells[2];
 
 
         if (
-            !/^\d{4,7}$/.test(pdgaNumber)
+            !name ||
+            name.length < 2
         ) {
+
             continue;
+
         }
+
+
+        // =================================================
+        // PDGA-NUMMER
+        // =================================================
+
+        const pdgaNumber =
+            cells[3];
+
+
+        if (
+            !/^\d{4,7}$/.test(
+                pdgaNumber
+            )
+        ) {
+
+            continue;
+
+        }
+
+
+        // =================================================
+        // SPELARRATING
+        // =================================================
+
+        const playerRating =
+            parseInt(
+                cells[4],
+                10
+            );
 
 
         if (
@@ -5207,50 +5342,25 @@ function parsePastedPdgaResults(text) {
             playerRating < 300 ||
             playerRating > 1200
         ) {
+
             continue;
+
         }
 
 
-        // =====================================================
-        // NAMN
-        // =====================================================
-
-        let name = cells[2];
-
-        if (!name) {
-            continue;
-        }
-
-
-        name = name
-            .replace(
-                /\[([^\]]+)\]\([^)]+\)/g,
-                '$1'
-            )
-            .trim();
-
-
-        if (
-            name.length < 2 ||
-            /^\d+$/.test(name)
-        ) {
-            continue;
-        }
-
-
-        // =====================================================
+        // =================================================
         // RONDER
         //
-        // Efter +/- kommer:
+        // cells[5] = +/- 
         //
-        // score | rating
-        // score | rating
-        // score | rating
+        // cells[6] = score
+        // cells[7] = Round Rating
         //
-        // Exempel:
+        // cells[8] = score
+        // cells[9] = Round Rating
         //
-        // -16 | 49 | 1024 | 52 | 995 | 54 | 975 | 155
-        // =====================================================
+        // osv.
+        // =================================================
 
         const rounds = [];
 
@@ -5267,6 +5377,7 @@ function parsePastedPdgaResults(text) {
                     10
                 );
 
+
             const roundRating =
                 parseInt(
                     cells[i + 1],
@@ -5275,8 +5386,8 @@ function parsePastedPdgaResults(text) {
 
 
             /*
-             * 999 används av PDGA för
-             * ej spelad / DNF.
+             * 999 betyder normalt DNF/
+             * ej spelad rond.
              */
 
             if (
@@ -5284,7 +5395,9 @@ function parsePastedPdgaResults(text) {
                 score <= 0 ||
                 score >= 900
             ) {
+
                 continue;
+
             }
 
 
@@ -5293,7 +5406,9 @@ function parsePastedPdgaResults(text) {
                 roundRating < 300 ||
                 roundRating > 1200
             ) {
+
                 continue;
+
             }
 
 
@@ -5310,15 +5425,22 @@ function parsePastedPdgaResults(text) {
         }
 
 
-        // Ingen giltig rond
-        if (!rounds.length) {
+        // =================================================
+        // INGA GILTIGA RONDER
+        // =================================================
+
+        if (
+            !rounds.length
+        ) {
+
             continue;
+
         }
 
 
-        // =====================================================
+        // =================================================
         // SPARA VARJE ROND
-        // =====================================================
+        // =================================================
 
         rounds.forEach(
             (round, index) => {
@@ -5366,46 +5488,57 @@ function parsePastedPdgaResults(text) {
     }
 
 
-    // =========================================================
-    // TA BORT DUBLETTER
-    // =========================================================
+    // =====================================================
+    // DUBBLETTKONTROLL
+    // =====================================================
 
     const unique = [];
 
 
-    results.forEach(result => {
+    results.forEach(
+        result => {
 
-        const duplicate =
-            unique.some(existing =>
+            const duplicate =
+                unique.some(
+                    existing =>
 
-                String(existing.pdgaNumber) ===
-                String(result.pdgaNumber)
+                        String(
+                            existing.pdgaNumber
+                        ) ===
+                        String(
+                            result.pdgaNumber
+                        )
 
-                &&
+                        &&
 
-                existing.score ===
-                result.score
+                        existing.round ===
+                        result.round
 
-                &&
+                        &&
 
-                existing.rating ===
-                result.rating
+                        existing.score ===
+                        result.score
 
-                &&
+                        &&
 
-                existing.round ===
-                result.round
+                        existing.rating ===
+                        result.rating
 
-            );
+                );
 
 
-        if (!duplicate) {
+            if (
+                !duplicate
+            ) {
 
-            unique.push(result);
+                unique.push(
+                    result
+                );
+
+            }
 
         }
-
-    });
+    );
 
 
     return unique;
