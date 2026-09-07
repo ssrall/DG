@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Discgolf App","short_name":"Discgolf","start_url":".","display":"standalone"}'>
     <link rel="apple-touch-icon" href="discgolf-icon-180.png"> 
     <title id="pageTitle"></title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -391,6 +391,17 @@
     </style>
 </head>
 <body>
+<!-- Backup-panel i övre vänstra hörnet -->
+<div id="backup-panel" style="position: absolute; top: 10px; left: 10px; z-index: 9999; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-family: sans-serif; font-size: 12px; display: flex; flex-direction: column; gap: 5px;">
+    <div style="display: flex; gap: 6px;">
+        <button onclick="createBackup()" style="cursor: pointer; padding: 4px 8px; border: none; background: #2ecc71; color: white; border-radius: 4px; font-weight: bold;">💾 Spara backup</button>
+        <button onclick="document.getElementById('restore-input').click()" style="cursor: pointer; padding: 4px 8px; border: 1px solid #ccc; background: #f8f9fa; border-radius: 4px;">📂 Återställ</button>
+        <input type="file" id="restore-input" onchange="restoreBackup(event)" accept=".json" style="display: none;">
+    </div>
+    <div id="backup-status" style="font-size: 11px; color: #666; text-align: center;">
+        Läser backup-status...
+    </div>
+</div>
     <div id="startPage">
         <h2>Välkommen!</h2>
         <p>Vänligen ange ditt Udisc-namn för att visa din statistik.</p>
@@ -417,10 +428,7 @@
                 <span id="scrollingText" class="static-best"></span>
             </div>
             
-            <div id="holeProgressionChartContainer" class="top-box" style="grid-column: 1 / span 2; display: none;">
-                <h2>Rundanalys - Placeringsutveckling Hål för Hål</h2>
-                <canvas id="holeProgressionChart"></canvas>
-            </div>
+            
 
             <div class="top-container">
             
@@ -436,199 +444,160 @@
      PDGA RATING-DATABAS
      ========================================================= -->
 
-<details class="top-box" id="ratingDatabaseContainer">
-
-    <summary style="
-        cursor:pointer;
-        font-size:18px;
-        font-weight:bold;
-    ">
-        📊 Ban- och tävlingsrating
-    </summary>
-
-    <div style="margin-top:15px;">
-
-        <!-- =========================================================
-     PDGA RESULTAT – KLISTRA IN
+<!-- =========================================================
+     1. BAN- OCH TÄVLINGSRATING (PDGA RESULTAT – KLISTRA IN)
      ========================================================= -->
+<div class="top-box" id="ratingMainContainer" style="text-align: left;">
 
-<div class="top-box" id="pdgaImportContainer">
+    <!-- 1. BAN- OCH TÄVLINGSRATING -->
+    <details style="text-align: left; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+        <summary style="cursor:pointer; font-size:18px; font-weight:bold; text-align: left;">
+            📊 Ban- och tävlingsrating
+        </summary>
 
-    <h2>📋 Importera PDGA-resultat</h2>
+        <div id="pdgaImportContainer" style="margin-top:15px; padding: 10px 5px; text-align: left;">
+            <h3 style="margin-top:0;">📋 Importera PDGA-resultat</h3>
 
-    <p style="margin-top:0;">
-        Öppna tävlingen på PDGA, markera hela sidan med
-        Ctrl+A, kopiera med Ctrl+C och klistra sedan in
-        resultatet här.
-    </p>
+            <p style="margin-top:0;">
+                Öppna tävlingen på PDGA, markera hela sidan med
+                Ctrl+A, kopiera med Ctrl+C och klistra sedan in
+                resultatet här.
+            </p>
 
-    <textarea
-        id="pdgaPasteText"
-        placeholder="Klistra in hela innehållet från PDGA-sidan här..."
-        style="
-            width:100%;
-            min-height:180px;
-            box-sizing:border-box;
-            resize:vertical;
-            margin-top:10px;
-        "
-    ></textarea>
+            <label for="pdgaCourse">Bana</label>
+            <input
+                type="text"
+                id="pdgaCourse"
+                placeholder="T.ex. Vilsta"
+                style="width:100%; box-sizing:border-box; margin-bottom:10px;"
+            >
 
-    <div style="margin-top:10px;">
+            <label for="pdgaHoles">Antal hål</label>
+            <input
+                type="number"
+                id="pdgaHoles"
+                min="1"
+                max="36"
+                value="18"
+                style="width:100%; box-sizing:border-box; margin-bottom:10px;"
+            >
 
-        <button
-            type="button"
-            onclick="analyzePastedPdgaResults()">
-            🔎 Analysera resultat
-        </button>
-
-        <button
-            type="button"
-            id="pdgaSaveButton"
-            style="display:none;"
-            onclick="savePastedPdgaResults()">
-            💾 Spara resultat
-        </button>
-
-    </div>
-
-    <div
-        id="pdgaImportStatus"
-        style="margin-top:10px;">
-    </div>
-
-    <div
-        id="pdgaImportPreview"
-        style="margin-top:15px;">
-    </div>
-
-</div>
-
-
-        <!-- ================================
-             MANUELL RATING
-             ================================= -->
-
-        <details style="margin-top:10px;">
-
-            <summary style="cursor:pointer;">
-                ✍️ Lägg till rating manuellt
-            </summary>
+            <textarea
+                id="pdgaPasteText"
+                placeholder="Klistra in hela innehållet från PDGA-sidan här..."
+                style="
+                    width:100%;
+                    min-height:120px;
+                    box-sizing:border-box;
+                    resize:vertical;
+                    margin-top:5px;
+                "
+            ></textarea>
 
             <div style="margin-top:10px;">
-
-                <div>
-                    <label for="manualRatingCourse">
-                        Bana
-                    </label>
-
-                    <input
-                        type="text"
-                        id="manualRatingCourse"
-                        style="width:100%;"
-                        placeholder="T.ex. Vilsta"
-                    >
-                </div>
-
-                <div style="margin-top:8px;">
-
-                    <label for="manualRatingLayout">
-                        Layout
-                    </label>
-
-                    <input
-                        type="text"
-                        id="manualRatingLayout"
-                        style="width:100%;"
-                        placeholder="T.ex. SAMT 26"
-                    >
-
-                </div>
-
-                <div style="margin-top:8px;">
-
-                    <label for="manualRatingHoles">
-                        Antal hål
-                    </label>
-
-                    <input
-                        type="number"
-                        id="manualRatingHoles"
-                        min="1"
-                        max="36"
-                        value="18"
-                    >
-
-                </div>
-
-                <div style="margin-top:8px;">
-
-                    <label for="manualRatingScore">
-                        Score
-                    </label>
-
-                    <input
-                        type="number"
-                        id="manualRatingScore"
-                        min="1"
-                        max="200"
-                    >
-
-                </div>
-
-                <div style="margin-top:8px;">
-
-                    <label for="manualRatingValue">
-                        PDGA Round Rating
-                    </label>
-
-                    <input
-                        type="number"
-                        id="manualRatingValue"
-                        min="1"
-                        max="1200"
-                    >
-
-                </div>
+                <button
+                    type="button"
+                    onclick="analyzePastedPdgaResults()">
+                    🔎 Analysera resultat
+                </button>
 
                 <button
                     type="button"
-                    onclick="addManualRatingData()"
-                    style="margin-top:10px;"
-                >
-                    + Lägg till rating
+                    id="pdgaSaveButton"
+                    style="display:none;"
+                    onclick="savePastedPdgaResults()">
+                    💾 Spara resultat
                 </button>
-
-                <div
-                    id="manualRatingStatus"
-                    style="margin-top:8px;"
-                ></div>
-
             </div>
 
-        </details>
+            <div id="pdgaImportStatus" style="margin-top:10px;"></div>
+            <div id="pdgaImportPreview" style="margin-top:15px;"></div>
+        </div>
+    </details>
 
+    <!-- 2. LÄGG TILL RATING MANUELLT -->
+    <details style="text-align: left; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+        <summary style="cursor:pointer; font-size:18px; font-weight:bold; text-align: left;">
+            ✍️ Lägg till rating manuellt
+        </summary>
 
-        <!-- ================================
-             VISA SPARAD RATINGDATA
-             ================================= -->
+        <div style="margin-top:15px; padding: 10px 5px; text-align: left;">
+            <div>
+                <label for="manualRatingCourse">Bana</label>
+                <input
+                    type="text"
+                    id="manualRatingCourse"
+                    style="width:100%; box-sizing:border-box;"
+                    placeholder="T.ex. Vilsta"
+                >
+            </div>
 
-        <details style="margin-top:10px;">
+            <div style="margin-top:8px;">
+                <label for="manualRatingLayout">Layout</label>
+                <input
+                    type="text"
+                    id="manualRatingLayout"
+                    style="width:100%; box-sizing:border-box;"
+                    placeholder="T.ex. SAMT 26"
+                >
+            </div>
 
-            <summary style="cursor:pointer;">
-                📂 Visa sparad ratingdatabas
-            </summary>
+            <div style="margin-top:8px;">
+                <label for="manualRatingHoles">Antal hål</label>
+                <input
+                    type="number"
+                    id="manualRatingHoles"
+                    min="1"
+                    max="36"
+                    value="18"
+                    style="width:100%; box-sizing:border-box;"
+                >
+            </div>
 
-            <div
-                id="ratingDatabaseDisplay"
+            <div style="margin-top:8px;">
+                <label for="manualRatingScore">Score</label>
+                <input
+                    type="number"
+                    id="manualRatingScore"
+                    min="1"
+                    max="200"
+                    style="width:100%; box-sizing:border-box;"
+                >
+            </div>
+
+            <div style="margin-top:8px;">
+                <label for="manualRatingValue">PDGA Round Rating</label>
+                <input
+                    type="number"
+                    id="manualRatingValue"
+                    min="1"
+                    max="1200"
+                    style="width:100%; box-sizing:border-box;"
+                >
+            </div>
+
+            <button
+                type="button"
+                onclick="addManualRatingData()"
                 style="margin-top:10px;"
-            ></div>
+            >
+                + Lägg till rating
+            </button>
 
-        </details>
+            <div id="manualRatingStatus" style="margin-top:8px;"></div>
+        </div>
+    </details>
 
-    </div>
+    <!-- 3. VISA SPARAD RATINGDATABAS -->
+    <details style="text-align: left;">
+        <summary style="cursor:pointer; font-size:18px; font-weight:bold; text-align: left;">
+            📂 Visa sparad rating
+        </summary>
 
-</details>
+        <div id="ratingDatabaseDisplay" style="margin-top:15px; padding: 10px 5px; text-align: left;"></div>
+    </details>
+
+</div>
 				<!-- =========================================================
      MANUELL RESULTATINMATNING
      ========================================================= -->
@@ -729,7 +698,10 @@
                     <div id="comparisonResult"></div>
                 </div>
             </div>
-
+<div id="holeProgressionChartContainer" class="top-box" style="grid-column: 1 / span 2; display: none;">
+                <h2>Rundanalys - Placeringsutveckling Hål för Hål</h2>
+                <canvas id="holeProgressionChart"></canvas>
+            </div>
             <div id="dynamicCourseStats" style="display: none;">
                 <div class="top-box" id="holeAnalysisContainer">
                     <h2>Bästa/Sämsta Hål (På vald bana)</h2>
@@ -939,128 +911,454 @@
             displayStoredSummaries(selectedCourse);
         }
         
-        function recalculateSummaryForCourse(courseName) {
-            const resultsForCourse = savedResults.filter(r => r.data.players.length > 0 && r.data.players.some(p => p.length > 1 && p[1] === courseName));
+        
+function recalculateSummaryForCourse(courseName) {
 
-            if (resultsForCourse.length === 0) {
-                delete savedSummaries[courseName];
-                localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
-                displayStoredSummaries(document.getElementById('courseSelect').value);
-                updateCourseSelect();
-                return;
-            }
-
-            let totalSum = 0, plusMinusSum = 0, roundRatingSum = 0, pdgaSum = 0, count = 0, totalAceCount = 0, totalEagleCount = 0;
-            let personalBestTotal = Infinity, personalBestPlusMinus = Infinity;
-            let allRatings = []; 
-
-            resultsForCourse.forEach(result => {
-                const playersData = result.data.players;
-                const parRow = result.data.par;
-                
-                playersData.forEach(cells => {
-                    if (cells.length > 0 && cells[0] === playerName) {
-                        const total = parseFloat(cells[5]);
-                        const plusMinus = parseFloat(cells[6]);
-                        const roundRating = parseFloat(cells[7]);
-                        
-                        if (!isNaN(total)) {
-                            totalSum += total;
-                            if (total < personalBestTotal) {
-                                personalBestTotal = total;
-                            }
-                        }
-                        if (!isNaN(plusMinus)) {
-                            plusMinusSum += plusMinus;
-                            if (plusMinus < personalBestPlusMinus) {
-                                personalBestPlusMinus = plusMinus;
-                            }
-                        }
-                        if (!isNaN(roundRating)) {
-                            roundRatingSum += roundRating;
-                            allRatings.push(roundRating);
-                            const pdgaRow = (-0.0065 * (roundRating * roundRating)) + (4.8259 * roundRating) + 206.48;
-                            if (!isNaN(pdgaRow)) pdgaSum += pdgaRow;
-                            count++;
-                        }
-
-                        // Räkna Aces och Eagles
-                        const holeStartIndex = 8;
-                        for(let i = holeStartIndex; i < cells.length && i < parRow.length; i++) {
-                             const score = parseFloat(cells[i]);
-                             const par = parseFloat(parRow[i]);
-                             if (isNaN(score) || isNaN(par)) continue;
-                             const diff = score - par;
-
-                             if (score === 1 && par > 1) {
-                                 totalAceCount++;
-                             } else if (diff <= -2) {
-                                 totalEagleCount++;
-                             }
-                        }
-                    }
-                });
-            });
-
-            const currentNotes = savedSummaries[courseName] ? savedSummaries[courseName].notes : '';
-            
-            savedSummaries[courseName] = {
-                playerName: playerName,
-                total: count > 0 ? (totalSum / count).toFixed(2) : 'N/A',
-                plusMinus: count > 0 ? (plusMinusSum / count).toFixed(2) : 'N/A',
-                roundRating: count > 0 ? (roundRatingSum / count).toFixed(2) : 'N/A',
-                stDevRating: getStDevRating(allRatings),
-                pdga: count > 0 ? (pdgaSum / count).toFixed(2) : 'N/A',
-                count: count,
-                aces: totalAceCount,
-                eagles: totalEagleCount, 
-                personalBestTotal: personalBestTotal === Infinity ? 'N/A' : personalBestTotal,
-                personalBestPlusMinus: personalBestPlusMinus === Infinity ? 'N/A' : personalBestPlusMinus,
-                notes: currentNotes
-            };
-
-            localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
-            displayStoredSummaries(document.getElementById('courseSelect').value);
-            updateCourseSelect();
+    const resultsForCourse = savedResults.filter(result => {
+        if (
+            !result ||
+            !result.data ||
+            !Array.isArray(result.data.players)
+        ) {
+            return false;
         }
 
-        function updateSummaryRow(playerNameFilter, newRoundAceCount, newRoundEagleCount, playersData, header) {
-            let totalSum = 0, plusMinusSum = 0, roundRatingSum = 0, pdgaSum = 0, count = 0;
-            let courseName = '';
-            let personalBestTotal = Infinity, personalBestPlusMinus = Infinity;
-            let allRatings = [];
+        return result.data.players.some(player =>
+            player &&
+            player[0] === playerName &&
+            isSameCourse(player[1], courseName)
+        );
+    });
 
-            playersData.forEach(cells => {
-                if (cells.length > 0) {
-                    const playerName = cells[0];
-                    if (playerName === playerNameFilter) {
-                        courseName = cells[1];
-                        const total = parseFloat(cells[5]);
-                        const plusMinus = parseFloat(cells[6]);
-                        const roundRating = parseFloat(cells[7]);
-                        
-                        if (!isNaN(total)) {
-                            totalSum += total;
-                            if (total < personalBestTotal) {
-                                personalBestTotal = total;
-                            }
-                        }
-                        if (!isNaN(plusMinus)) {
-                            plusMinusSum += plusMinus;
-                            if (plusMinus < personalBestPlusMinus) {
-                                personalBestPlusMinus = plusMinus;
-                            }
-                        }
-                        if (!isNaN(roundRating)) {
-                            roundRatingSum += roundRating;
-                            allRatings.push(roundRating);
-                            const pdgaRow = (-0.0065 * (roundRating * roundRating)) + (4.8259 * roundRating) + 206.48;
-                            if (!isNaN(pdgaRow)) pdgaSum += pdgaRow;
-                            count++;
-                        }
+    // =====================================================
+    // INGA RESULTAT FÖR BANAN
+    // =====================================================
+    if (resultsForCourse.length === 0) {
+
+        delete savedSummaries[courseName];
+
+        localStorage.setItem(
+            'savedSummaries',
+            JSON.stringify(savedSummaries)
+        );
+
+        updateCourseSelect();
+        displayStoredSummaries(courseName);
+
+        return;
+    }
+
+    let totalSum = 0;
+    let plusMinusSum = 0;
+
+    let roundRatingSum = 0;
+    let roundsWithUdiscRating = 0;
+
+    let pdgaSum = 0;
+    let roundsWithPdgaRating = 0;
+
+    let totalAceCount = 0;
+    let totalEagleCount = 0;
+
+    let count = 0;
+
+    let personalBestTotal = Infinity;
+    let personalBestPlusMinus = Infinity;
+
+    let allRatings = [];
+
+    // =====================================================
+    // GÅ IGENOM ALLA RUNDOR
+    // =====================================================
+    resultsForCourse.forEach(result => {
+
+        const playersData =
+            Array.isArray(result.data.players)
+                ? result.data.players
+                : [];
+
+        const parRow =
+            Array.isArray(result.data.par)
+                ? result.data.par
+                : [];
+
+        const myScore = playersData.find(
+            player =>
+                player &&
+                player[0] === playerName
+        );
+
+        if (!myScore) {
+            return;
+        }
+
+        // =================================================
+        // GRUNDVÄRDEN
+        // =================================================
+        const total = Number(myScore[5]);
+        const plusMinus = Number(myScore[6]);
+
+        const rawUdiscRating = Number(myScore[7]);
+
+        const hasUdiscRating =
+            Number.isFinite(rawUdiscRating) &&
+            rawUdiscRating > 0;
+
+        // =================================================
+        // ANTAL HÅL
+        // =================================================
+        let holes = Number(
+            result.data.holeCount ||
+            result.data.holes ||
+            result.holes ||
+            (
+                parRow.length > 8
+                    ? parRow.length - 8
+                    : 18
+            )
+        );
+
+        if (
+            !Number.isFinite(holes) ||
+            holes < 1
+        ) {
+            holes = 18;
+        }
+
+        // =================================================
+        // RUNDAN RÄKNAS ALLTID
+        // =================================================
+        count++;
+
+        // =================================================
+        // TOTAL
+        // =================================================
+        if (Number.isFinite(total)) {
+
+            totalSum += total;
+
+            if (total < personalBestTotal) {
+                personalBestTotal = total;
+            }
+        }
+
+        // =================================================
+        // +/-
+        // =================================================
+        if (Number.isFinite(plusMinus)) {
+
+            plusMinusSum += plusMinus;
+
+            if (plusMinus < personalBestPlusMinus) {
+                personalBestPlusMinus = plusMinus;
+            }
+        }
+
+        // =================================================
+        // UDISC MEDEL
+        // =================================================
+        if (hasUdiscRating) {
+
+            roundRatingSum += rawUdiscRating;
+            roundsWithUdiscRating++;
+
+            allRatings.push(rawUdiscRating);
+        }
+
+        // =================================================
+        // PDGA RATING
+        //
+        // PRIORITET:
+        //
+        // 1. Manuell PDGA-rating i ratingDatabase
+        // 2. UDisc-rating → omräkning till PDGA
+        //
+        // Detta gör att en riktig PDGA Round Rating
+        // alltid vinner över UDisc om båda finns.
+        // =================================================
+
+        let finalPdgaRating = null;
+
+        const course = String(
+            myScore[1] || ''
+        ).trim();
+
+        // -------------------------------------------------
+        // FÖRST: LETA EFTER MANUELL PDGA-RATING
+        // -------------------------------------------------
+        const databaseRating =
+            getPdgaRatingFromDatabase(
+                course,
+                holes,
+                total
+            );
+			console.log("PDGA TEST:", {
+    course,
+    holes,
+    total,
+    databaseRating
+});
+
+        if (
+            Number.isFinite(databaseRating) &&
+            databaseRating > 0
+        ) {
+
+            finalPdgaRating = databaseRating;
+
+        }
+
+        // -------------------------------------------------
+        // OM INGEN PDGA-RATING FINNS:
+        // ANVÄND UDISC
+        // -------------------------------------------------
+        else if (hasUdiscRating) {
+
+            if (rawUdiscRating < 400) {
+
+                finalPdgaRating =
+                    (-0.0065 * (
+                        rawUdiscRating *
+                        rawUdiscRating
+                    )) +
+                    (4.8259 * rawUdiscRating) +
+                    206.48;
+
+            } else {
+
+                finalPdgaRating =
+                    rawUdiscRating;
+            }
+        }
+
+        // -------------------------------------------------
+        // SPARA PDGA-RATING
+        // -------------------------------------------------
+		console.log("FINAL PDGA INNE I FUNKTIONEN:", finalPdgaRating);
+console.log("FÖRE SUMMERING:", {
+    pdgaSum,
+    roundsWithPdgaRating
+});
+
+if (
+    finalPdgaRating !== null &&
+    Number.isFinite(finalPdgaRating)
+) {
+    pdgaSum += finalPdgaRating;
+    roundsWithPdgaRating++;
+}
+
+console.log("EFTER SUMMERING:", {
+    pdgaSum,
+    roundsWithPdgaRating
+});
+
+        // =================================================
+        // ACES OCH EAGLES
+        // =================================================
+        const holeStartIndex = 8;
+
+        for (
+            let i = holeStartIndex;
+            i < myScore.length &&
+            i < parRow.length;
+            i++
+        ) {
+
+            const score = Number(myScore[i]);
+            const par = Number(parRow[i]);
+
+            if (
+                !Number.isFinite(score) ||
+                !Number.isFinite(par)
+            ) {
+                continue;
+            }
+
+            const diff = score - par;
+
+            // Ace
+            if (
+                score === 1 &&
+                par > 1
+            ) {
+
+                totalAceCount++;
+
+            }
+
+            // Eagle eller bättre
+            else if (diff <= -2) {
+
+                totalEagleCount++;
+            }
+        }
+    });
+
+    // =====================================================
+    // BEHÅLL GAMLA ANTECKNINGAR
+    // =====================================================
+    const currentNotes =
+        savedSummaries[courseName]
+            ? savedSummaries[courseName].notes
+            : '';
+
+    // =====================================================
+    // SKAPA SAMMANFATTNING
+    // =====================================================
+	console.log("INNAN SUMMARY SKAPAS:", {
+    pdgaSum,
+    roundsWithPdgaRating,
+    pdgaResult:
+        roundsWithPdgaRating > 0
+            ? (pdgaSum / roundsWithPdgaRating).toFixed(2)
+            : 'N/A'
+});
+    savedSummaries[courseName] = {
+
+        playerName: playerName,
+
+        total:
+            count > 0
+                ? (totalSum / count).toFixed(2)
+                : 'N/A',
+
+        plusMinus:
+            count > 0
+                ? (plusMinusSum / count).toFixed(2)
+                : 'N/A',
+
+        roundRating:
+            roundsWithUdiscRating > 0
+                ? (
+                    roundRatingSum /
+                    roundsWithUdiscRating
+                ).toFixed(2)
+                : 'N/A',
+
+        stDevRating:
+            getStDevRating(allRatings),
+
+        pdga:
+            roundsWithPdgaRating > 0
+                ? (
+                    pdgaSum /
+                    roundsWithPdgaRating
+                ).toFixed(2)
+                : 'N/A',
+
+        count: count,
+
+        aces: totalAceCount,
+
+        eagles: totalEagleCount,
+
+        personalBestTotal:
+            personalBestTotal === Infinity
+                ? 'N/A'
+                : personalBestTotal,
+
+        personalBestPlusMinus:
+            personalBestPlusMinus === Infinity
+                ? 'N/A'
+                : personalBestPlusMinus,
+
+        notes: currentNotes
+    };
+	
+	console.log(
+    "SUMMARY SKAPAD:",
+    savedSummaries[courseName]
+);
+
+console.log(
+    "PDGA I SUMMARY:",
+    savedSummaries[courseName].pdga
+);
+
+console.log(
+    "SUMMARY JSON:",
+    JSON.stringify(savedSummaries[courseName])
+);
+
+    // =====================================================
+    // SPARA
+    // =====================================================
+    localStorage.setItem(
+        'savedSummaries',
+        JSON.stringify(savedSummaries)
+    );
+
+    // =====================================================
+    // UPPDATERA LISTA + VISA RÄTT BANA
+    // =====================================================
+    updateCourseSelect();
+    displayStoredSummaries(courseName);
+}
+
+
+
+        function updateSummaryRow(playerNameFilter, newRoundAceCount, newRoundEagleCount, playersData, header) {
+    let totalSum = 0, plusMinusSum = 0, roundRatingSum = 0, pdgaSum = 0, count = 0;
+    let courseName = '';
+    let personalBestTotal = Infinity, personalBestPlusMinus = Infinity;
+    let allRatings = [];
+
+    playersData.forEach(cells => {
+        if (cells.length > 0) {
+            const playerName = cells[0];
+            if (playerName === playerNameFilter) {
+                // 1. Öka count SÅ FORT vi hittat en runda för spelaren!
+                count++;
+
+                courseName = cells[1];
+                const total = parseFloat(cells[5]);
+                const plusMinus = parseFloat(cells[6]);
+                
+                // 2. Om roundRating är tom (NaN), sätt den till 0
+                const rawRating = parseFloat(cells[7]);
+                const roundRating = !isNaN(rawRating) ? rawRating : 0;
+                
+                if (!isNaN(total)) {
+                    totalSum += total;
+                    if (total < personalBestTotal) {
+                        personalBestTotal = total;
                     }
                 }
-            });
+                if (!isNaN(plusMinus)) {
+                    plusMinusSum += plusMinus;
+                    if (plusMinus < personalBestPlusMinus) {
+                        personalBestPlusMinus = plusMinus;
+                    }
+                }
+                
+                // 3. Hantera rating och PDGA (använder 0 om UDisc saknar rating)
+                roundRatingSum += roundRating;
+                allRatings.push(roundRating);
+
+                // Hämta i första hand från lokala ratingDatabase om den finns, annars beräkna på roundRating
+                let matchedPdga = null;
+                if (typeof ratingDatabase !== 'undefined' && Array.isArray(ratingDatabase)) {
+                    const dbMatch = ratingDatabase.find(entry => 
+                        entry.course && courseName.toLowerCase().includes(entry.course.toLowerCase()) && 
+                        parseInt(entry.score, 10) === total
+                    );
+                    if (dbMatch && dbMatch.rating) {
+                        matchedPdga = parseFloat(dbMatch.rating);
+                    }
+                }
+
+                if (matchedPdga !== null) {
+                    pdgaSum += matchedPdga;
+                } else if (roundRating > 0) {
+                    const pdgaRow = (-0.0065 * (roundRating * roundRating)) + (4.8259 * roundRating) + 206.48;
+                    if (!isNaN(pdgaRow)) pdgaSum += pdgaRow;
+                }
+            }
+        }
+    });
+
+    // ... resten av din funktion fortsätter här som vanligt
 	/**
          * Beräknar övergripande medelvärden (Total, +/-, Rating) 
          * för ALLA spelare i ALLA rundor på den angivna banan.
@@ -1226,8 +1524,9 @@ return {
             }
 
             localStorage.setItem('savedSummaries', JSON.stringify(savedSummaries));
-            displayStoredSummaries(document.getElementById('courseSelect').value);
-            updateCourseSelect();
+
+updateCourseSelect();
+displayStoredSummaries(courseName);
         }
 
         function readCSV() {
@@ -1416,29 +1715,7 @@ return {
             }, 5000);
         }
 
-function saveManualResult() {
 
-    if (
-        !currentCsvData ||
-        !csvLoaded
-    ) {
-
-        showMessage(
-            'Skapa först resultatet.',
-            true
-        );
-
-        return;
-    }
-
-    saveResult();
-
-    document.getElementById(
-        'manualSaveButton'
-    ).style.display =
-        'none';
-
-}
         function downloadResult() {
             if (!csvLoaded || !currentCsvData) {
                 showMessage("Ingen CSV-fil har laddats att ladda ner.", true);
@@ -1634,10 +1911,42 @@ const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(
         totalsForAverage[cellIndex] += val; 
     }	
 
-                    if (cellIndex === 7 && !isNaN(val)) { 
-                        const rating = parseFloat(cell);
-                        pdgaText = (-0.0065 * (rating * rating) + 4.8259 * rating + 206.48).toFixed(2);
-                    }
+                    if (cellIndex === 7) { 
+    const playerScore = Number(cells[5]);
+    const holesCount = data.par.length - holeStartIndex;
+
+    // 1:a hand: Sök i sparade PDGA-ratings i databasen
+    // ✅ NYTT SÄTT (Använder isSameCourse för att hitta banan oavsett skrivsätt)
+// ✅ Använd 'match' som variabelnamn så stämmer det med resten av din kod
+// ✅ Använder dina befintliga variabler: courseName, playerScore, holesCount
+const match = ratingDatabase.find(entry => {
+    // Hämta banans namn från databas-objektet (hanterar olika fältnamn och citationstecken)
+    const dbCourse = String(entry.course || entry.courseName || entry.Bana || '').replace(/"/g, '');
+    const currentCourse = String(courseName || '').replace(/"/g, '');
+
+    const sameCourse = isSameCourse(dbCourse, currentCourse);
+    const sameHoles = Number(entry.holes || entry.Hål) === Number(holesCount);
+    const sameScore = Number(entry.score || entry.Kast || entry.Resultat) === Number(playerScore);
+
+    return sameCourse && sameHoles && sameScore;
+});
+
+if (!match) {
+    console.log("❌ Ingen matchning för:", courseName, "Kast:", playerScore, "Hål:", holesCount);
+    console.log("Exempel ur databasen:", ratingDatabase[0]);
+} else {
+    console.log("✅ Matchning hittad!", match);
+}
+
+if (match) {
+    pdgaText = match.rating.toString();
+}
+    // 2:a hand: Räkna om från UDisc om det finns värde
+    else if (!isNaN(val) && val > 0) {
+        pdgaText = (-0.0065 * (val * val) + 4.8259 * val + 206.48).toFixed(2);
+    } 
+    // 3:e hand: Lämnas blank om varken sparad rating eller UDisc finns
+}
 
                     // NYTT: Lägg till ljusblå färg till icke-hål kolumner för spelaren
                     if (cells[0] === playerName && cellIndex >= 0 && cellIndex < holeStartIndex) {
@@ -1937,42 +2246,486 @@ const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(
             document.getElementById('holeProgressionChartContainer').style.display = 'block'; 
             document.getElementById('dynamicCourseStats').style.display = 'grid';
         }
-        
-        function calculateOverallPDGA() {
-            const allRatings = savedResults.flatMap(result => {
-                const myScore = result.data.players.find(p => p[0] === playerName);
-                const rating = myScore ? parseFloat(myScore[7]) : NaN;
-                return isNaN(rating) ? [] : [rating];
+        function getPdgaRatingFromDatabase(course, holes, score) {
+
+    if (!Array.isArray(ratingDatabase)) {
+        return NaN;
+    }
+
+    const found = ratingDatabase.find(entry => {
+
+        const dbCourse = String(
+            entry.course ||
+            entry.courseName ||
+            entry.Bana ||
+            ''
+        ).replace(/"/g, '').trim();
+
+        const currentCourse = String(course || '')
+            .replace(/"/g, '')
+            .trim();
+
+        const sameCourse = isSameCourse(dbCourse, currentCourse);
+
+        const sameHoles =
+            Number(entry.holes || entry.Hål) === Number(holes);
+
+        const sameScore =
+            Number(entry.score || entry.Kast || entry.Resultat) === Number(score);
+
+        return sameCourse && sameHoles && sameScore;
+    });
+
+    if (!found) {
+        return NaN;
+    }
+
+    const rating = Number(found.rating);
+
+    return Number.isFinite(rating)
+        ? rating
+        : NaN;
+}
+
+function calculateOverallPDGA() {
+
+    const ratingElement = document.getElementById('overallRating');
+
+    if (!ratingElement) {
+        return;
+    }
+
+    // =====================================================
+    // HÄMTA ALLA RUNDOR FRÅN SPARADE RESULTAT
+    // =====================================================
+    const rounds = [];
+
+    savedResults.forEach(result => {
+
+        if (!result || !result.data) {
+            return;
+        }
+
+        const players = Array.isArray(result.data.players)
+            ? result.data.players
+            : [];
+
+        const myScore = players.find(p => p[0] === playerName);
+
+        if (!myScore) {
+            return;
+        }
+
+        const course = String(myScore[1] || '').trim();
+        const score = Number(myScore[5]);
+        const date = myScore[3] || result.data.date || result.date || '';
+
+        // =================================================
+        // HÄMTA ANTAL HÅL
+        // =================================================
+        let holes = Number(
+    result.data.holeCount ||
+    result.data.holes ||
+    result.holes ||
+    (
+        Array.isArray(result.data.par) &&
+        result.data.par.length > 8
+            ? result.data.par.length - 8
+            : 18
+    )
+);
+
+if (!Number.isFinite(holes) || holes < 1) {
+    holes = 18;
+}
+
+        let finalPdgaRating = null;
+
+        // =====================================================
+        // ALTERNATIV 1: OFFICIELL / MANUELL PDGA-RATING
+        //
+        // PDGA-DATABASEN HAR FÖRETRÄDE FRAMFÖR UDISC
+        // =====================================================
+
+        if (typeof ratingDatabase !== 'undefined' && Array.isArray(ratingDatabase)) {
+
+            const matchingRatings = ratingDatabase.filter(entry => {
+
+                const dbCourse = String(
+                    entry.course ||
+                    entry.courseName ||
+                    entry.Bana ||
+                    ''
+                ).replace(/"/g, '').trim();
+
+                const sameCourse = isSameCourse(dbCourse, course);
+
+                const sameHoles =
+                    Number(entry.holes || entry.Hål) === holes;
+
+                const sameScore =
+                    Number(
+                        entry.score ||
+                        entry.Kast ||
+                        entry.Resultat
+                    ) === score;
+
+                const hasValidRating =
+                    Number.isFinite(Number(entry.rating)) &&
+                    Number(entry.rating) > 0;
+
+                return (
+                    sameCourse &&
+                    sameHoles &&
+                    sameScore &&
+                    hasValidRating
+                );
             });
 
-            const ratingElement = document.getElementById('overallRating');
+            if (matchingRatings.length > 0) {
 
-            if (allRatings.length > 0) {
-                const totalRating = allRatings.reduce((sum, rating) => sum + rating, 0);
-                const avgRating = totalRating / allRatings.length;
-                const currentPdga = (-0.0065 * (avgRating * avgRating) + 4.8259 * avgRating + 206.48);
-                const currentPdgaRounded = parseFloat(currentPdga.toFixed(2));
+                // Om flera matchar används den senast sparade
+                matchingRatings.sort((a, b) =>
+                    String(b.date || '').localeCompare(
+                        String(a.date || '')
+                    )
+                );
 
-                const previousPdga = parseFloat(localStorage.getItem('currentOverallRating')); 
-                localStorage.setItem('previousOverallRating', previousPdga);
+                const rawRating =
+                    Number(matchingRatings[0].rating);
 
-                let changeIndicator = '';
-                if (!isNaN(previousPdga)) {
-                    const change = currentPdgaRounded - previousPdga;
-                    const arrow = change >= 0 ? '▲' : '▼';
-                    const color = change >= 0 ? 'green' : 'red';
-                    changeIndicator = `<span style="color:${color};"> (${arrow} ${Math.abs(change).toFixed(2)})</span>`;
+                if (
+                    Number.isFinite(rawRating) &&
+                    rawRating > 0
+                ) {
+                    finalPdgaRating = rawRating;
                 }
-
-                ratingElement.innerHTML = `PDGA Rating: ${currentPdgaRounded}${changeIndicator}`;
-                localStorage.setItem('currentOverallRating', currentPdgaRounded);
-
-            } else {
-                ratingElement.textContent = 'Ingen PDGA-rating att visa.';
-                localStorage.removeItem('currentOverallRating');
-                localStorage.removeItem('previousOverallRating');
             }
         }
+
+        // =====================================================
+        // ALTERNATIV 2: UDISC
+        //
+        // Används ENDAST om ingen PDGA-rating hittades
+        // =====================================================
+
+        if (finalPdgaRating === null) {
+
+            const directUdiscRating = Number(myScore[7]);
+
+            if (
+                Number.isFinite(directUdiscRating) &&
+                directUdiscRating > 0
+            ) {
+
+                if (directUdiscRating < 400) {
+
+                    // UDisc → PDGA
+                    finalPdgaRating =
+                        (-0.0065 * (directUdiscRating * directUdiscRating)) +
+                        (4.8259 * directUdiscRating) +
+                        206.48;
+
+                } else {
+
+                    // Om värdet redan är på PDGA-skalan
+                    finalPdgaRating = directUdiscRating;
+                }
+            }
+        }
+
+        // =====================================================
+        // SPARA RUNDAN OM VI HITTADE EN GILTIG RATING
+        // =====================================================
+        if (
+            finalPdgaRating !== null &&
+            Number.isFinite(finalPdgaRating)
+        ) {
+
+            rounds.push({
+                rating: finalPdgaRating,
+                holes: holes,
+                date: date
+            });
+        }
+
+    });
+
+    // =====================================================
+    // INGA RATINGAR HITTADES
+    // =====================================================
+    if (!rounds.length) {
+
+        ratingElement.textContent =
+            'PDGA Rating: Ingen ratingdata';
+
+        return;
+    }
+
+    // =====================================================
+    // SORTERA ÄLDST → NYAST
+    // =====================================================
+    rounds.sort((a, b) =>
+        String(a.date || '').localeCompare(
+            String(b.date || '')
+        )
+    );
+
+    // =====================================================
+    // PDGA:S TIDSPERIOD
+    // SENASTE 12 MÅNADERNA
+    // =====================================================
+    const latestDate =
+        new Date(rounds[rounds.length - 1].date);
+
+    let includedRounds = rounds.filter(round => {
+
+        if (!round.date) {
+            return true;
+        }
+
+        const date = new Date(round.date);
+
+        if (Number.isNaN(date.getTime())) {
+            return true;
+        }
+
+        const months =
+            (latestDate.getTime() - date.getTime()) /
+            (1000 * 60 * 60 * 24 * 30.4375);
+
+        return months <= 12;
+    });
+
+    // =====================================================
+    // FÄRRE ÄN 8 RUNDOR → UTÖKA TILL 24 MÅNADER
+    // =====================================================
+    if (includedRounds.length < 8) {
+
+        includedRounds = rounds.filter(round => {
+
+            if (!round.date) {
+                return true;
+            }
+
+            const date = new Date(round.date);
+
+            if (Number.isNaN(date.getTime())) {
+                return true;
+            }
+
+            const months =
+                (latestDate.getTime() - date.getTime()) /
+                (1000 * 60 * 60 * 24 * 30.4375);
+
+            return months <= 24;
+        });
+    }
+
+    if (!includedRounds.length) {
+
+        ratingElement.textContent =
+            'PDGA Rating: Ingen ratingdata';
+
+        return;
+    }
+
+    // =====================================================
+    // HÅLVIKT
+    //
+    // 18 hål = 1.0
+    // 9 hål  = 0.5
+    // =====================================================
+    let weightedRounds = includedRounds.map(round => {
+
+        return {
+            ...round,
+            weight: Number(round.holes) / 18
+        };
+
+    });
+
+    // =====================================================
+    // SENASTE 25 % DUBBELVIKT
+    // GÄLLER VID 9+ RUNDOR
+    // =====================================================
+    if (weightedRounds.length >= 9) {
+
+        const recentCount =
+            Math.max(
+                1,
+                Math.ceil(weightedRounds.length * 0.25)
+            );
+
+        weightedRounds = weightedRounds.map(
+            (round, index) => {
+
+                if (
+                    index >=
+                    weightedRounds.length - recentCount
+                ) {
+
+                    return {
+                        ...round,
+                        weight: round.weight * 2
+                    };
+                }
+
+                return round;
+            }
+        );
+    }
+
+    // =====================================================
+    // VIKTAT GENOMSNITT
+    // =====================================================
+    function calculateWeightedAverage(data) {
+
+        let weightedTotal = 0;
+        let totalWeight = 0;
+
+        data.forEach(round => {
+
+            weightedTotal +=
+                round.rating * round.weight;
+
+            totalWeight +=
+                round.weight;
+        });
+
+        if (!totalWeight) {
+            return NaN;
+        }
+
+        return weightedTotal / totalWeight;
+    }
+
+    let average =
+        calculateWeightedAverage(weightedRounds);
+
+    // =====================================================
+    // DROP-SCORES
+    // VID MINST 7 RUNDOR
+    // =====================================================
+    let droppedRounds = [];
+
+    if (weightedRounds.length >= 7) {
+
+        const values =
+            weightedRounds.map(
+                round => round.rating
+            );
+
+        const mean =
+            values.reduce(
+                (sum, value) => sum + value,
+                0
+            ) / values.length;
+
+        const variance =
+            values.reduce(
+                (sum, value) =>
+                    sum + Math.pow(value - mean, 2),
+                0
+            ) / values.length;
+
+        const standardDeviation =
+            Math.sqrt(variance);
+
+        const dropLimit =
+            Math.min(
+                100,
+                standardDeviation * 2.5
+            );
+
+        const beforeCount =
+            weightedRounds.length;
+
+        weightedRounds =
+            weightedRounds.filter(round => {
+
+                const difference =
+                    mean - round.rating;
+
+                if (difference > dropLimit) {
+
+                    droppedRounds.push(round);
+
+                    return false;
+                }
+
+                return true;
+            });
+
+        if (
+            weightedRounds.length !==
+            beforeCount
+        ) {
+
+            average =
+                calculateWeightedAverage(
+                    weightedRounds
+                );
+        }
+    }
+
+    // =====================================================
+    // VISA RESULTAT OCH TREND
+    // =====================================================
+    const rounded =
+        Number(average.toFixed(2));
+
+    const previousRating =
+        Number(
+            localStorage.getItem(
+                'currentOverallRating'
+            )
+        ) || rounded;
+
+    const diff =
+        (rounded - previousRating).toFixed(2);
+
+    let diffString = '';
+
+    if (diff > 0) {
+
+        diffString =
+            ` <span style="color: #2ecc71; font-size: 0.85em;">(▲ +${diff})</span>`;
+
+    } else if (diff < 0) {
+
+        diffString =
+            ` <span style="color: #e74c3c; font-size: 0.85em;">(▼ ${diff})</span>`;
+
+    } else {
+
+        diffString =
+            ` <span style="color: #888; font-size: 0.85em;">(▲ 0.00)</span>`;
+    }
+
+    ratingElement.innerHTML =
+        `PDGA Rating: ${rounded}${diffString}`;
+
+    // =====================================================
+    // SPARA VÄRDEN
+    // =====================================================
+    localStorage.setItem(
+        'currentOverallRating',
+        rounded
+    );
+
+    localStorage.setItem(
+        'pdgaRatingStats',
+        JSON.stringify({
+            totalRounds: rounds.length,
+            includedRounds: weightedRounds.length,
+            droppedRounds: droppedRounds.length,
+            rating: rounded
+        })
+    );
+}
+
+
 
         function calculateAndDisplayTopPlayers() {
             const listContainer = document.getElementById('topPlayersList');
@@ -2557,31 +3310,36 @@ const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(
                             }
                         },
                         tooltip: {
-                             callbacks: {
-                                 title: function(context) {
-                                     return context[0].label;
-                                 },
-                                 label: function(context) {
-                                     const rank = context.parsed.y;
-                                     let label = context.dataset.label || '';
-                                     if (label) {
-                                         label += ': ';
-                                     }
-                                     label += `Plats ${rank}`; 
-                                     
-                                     // Hämta den kumulativa scoren för detta hålet (för extra info i tooltip)
-                                     const cumulativeScores = playerScores[context.dataset.label].cumulative;
-                                     const holeIndex = context.dataIndex;
-                                     const cumulativeScore = cumulativeScores[holeIndex];
+    callbacks: {
+        title: function(context) {
+            return context[0].label;
+        },
+        label: function(context) {
+            const rank = context.parsed.y;
+            let label = context.dataset.label || '';
+            if (label) {
+                label += ': ';
+            }
+            label += `Plats ${rank}`; 
 
-                                     if (cumulativeScore !== undefined) {
-                                         label += ` (Slag: ${cumulativeScore})`;
-                                     }
+            // Ta bort " (Du)" från labeln för att hitta rätt spelarnamn i playerScores
+            const rawPlayerName = context.dataset.label ? context.dataset.label.replace(' (Du)', '') : '';
+            const playerData = playerScores[rawPlayerName];
 
-                                     return label;
-                                 }
-                             }
-                        }
+            // Kontrollera att playerData och cumulative existerar innan vi läser ur det
+            if (playerData && playerData.cumulative) {
+                const holeIndex = context.dataIndex;
+                const cumulativeScore = playerData.cumulative[holeIndex];
+
+                if (cumulativeScore !== undefined) {
+                    label += ` (Slag: ${cumulativeScore})`;
+                }
+            }
+
+            return label;
+        }
+    }
+}
                     },
                     scales: {
                         y: {
@@ -4432,247 +5190,102 @@ function saveManualResult() {
 // =========================================================
 
 function saveRatingDatabase() {
+    // Spara till samma nyckel som displayRatingDatabase läser från
     localStorage.setItem(
         'ratingDatabase',
         JSON.stringify(ratingDatabase)
     );
 }
 
-
 function addManualRatingData() {
+    const courseInput = document.getElementById('manualRatingCourse');
+    const layoutInput = document.getElementById('manualRatingLayout');
+    const holesInput = document.getElementById('manualRatingHoles');
+    const scoreInput = document.getElementById('manualRatingScore');
+    const ratingInput = document.getElementById('manualRatingValue');
+    const status = document.getElementById('manualRatingStatus');
 
-    const courseInput =
-        document.getElementById('manualRatingCourse');
+    const course = courseInput.value.trim();
 
-    const layoutInput =
-        document.getElementById('manualRatingLayout');
+const courseWords = course.split(/\s+/).filter(Boolean);
 
-    const holesInput =
-        document.getElementById('manualRatingHoles');
+if (courseWords.length !== 1) {
+    status.textContent = '⚠️ Ange endast banans namn med ett ord, t.ex. Hällby eller Vilsta.';
+    return;
+}
 
-    const scoreInput =
-        document.getElementById('manualRatingScore');
+const layout = layoutInput.value.trim();
+    const holes = Number(holesInput.value);
+    const score = Number(scoreInput.value);
+    const rating = Number(ratingInput.value);
 
-    const ratingInput =
-        document.getElementById('manualRatingValue');
+    if (!course) { status.textContent = 'Fyll i bana.'; return; }
+    if (!layout) { status.textContent = 'Fyll i layout.'; return; }
+    if (!holes || holes < 1) { status.textContent = 'Fyll i antal hål.'; return; }
+    if (!score || score < 1) { status.textContent = 'Fyll i score.'; return; }
+    if (!rating || rating < 1) { status.textContent = 'Fyll i PDGA Round Rating.'; return; }
 
-    const status =
-        document.getElementById('manualRatingStatus');
+    ratingDatabase = ratingDatabase.filter(entry => {
+        const isCourseMatch = isSameCourse(entry.course, course);
+        const isSameLayout = String(entry.layout || '').toLowerCase() === layout.toLowerCase();
+        const isSameHoles = Number(entry.holes) === holes;
+        const isSameScore = Number(entry.score) === score;
 
-
-    const course =
-        courseInput.value.trim();
-
-    const layout =
-        layoutInput.value.trim();
-
-    const holes =
-        Number(holesInput.value);
-
-    const score =
-        Number(scoreInput.value);
-
-    const rating =
-        Number(ratingInput.value);
-
-
-    if (!course) {
-        status.textContent = 'Fyll i bana.';
-        return;
-    }
-
-    if (!layout) {
-        status.textContent = 'Fyll i layout.';
-        return;
-    }
-
-    if (!holes || holes < 1) {
-        status.textContent = 'Fyll i antal hål.';
-        return;
-    }
-
-    if (!score || score < 1) {
-        status.textContent = 'Fyll i score.';
-        return;
-    }
-
-    if (!rating || rating < 1) {
-        status.textContent =
-            'Fyll i PDGA Round Rating.';
-        return;
-    }
-
-
-    /*
-     * Kontrollera dubblett i den befintliga
-     * ratingdatabasen.
-     */
-
-    const duplicate =
-        ratingDatabase.some(entry =>
-
-            String(entry.course || '')
-                .toLowerCase() ===
-            course.toLowerCase()
-
-            &&
-
-            String(entry.layout || '')
-                .toLowerCase() ===
-            layout.toLowerCase()
-
-            &&
-
-            Number(entry.holes) === holes
-
-            &&
-
-            Number(entry.score) === score
-
-            &&
-
-            Number(entry.rating) === rating
-        );
-
-
-    if (duplicate) {
-
-        status.textContent =
-            '⚠️ Denna rating finns redan i databasen.';
-
-        return;
-    }
-
-
-    /*
-     * Skapa ny ratingpost.
-     */
+        return !(isCourseMatch && isSameLayout && isSameHoles && isSameScore);
+    });
 
     const entry = {
-
-        id:
-            Date.now().toString() +
-            Math.random()
-                .toString(36)
-                .substring(2, 8),
-
+        id: Date.now().toString() + Math.random().toString(36).substring(2, 8),
         source: 'manual',
-
         course: course,
-
         layout: layout,
-
         holes: holes,
-
         score: score,
-
         rating: rating,
-
-        date:
-            new Date().toISOString()
+        date: new Date().toISOString()
     };
-
 
     ratingDatabase.push(entry);
 
-
-    /*
-     * Använd appens befintliga
-     * sparfunktion.
-     */
-
     saveRatingDatabase();
+    
+    // UPP DATERING: Kör om sammanfattningarna och rita om databasen
+    recalculateAllSummaries();
+    displayRatingDatabase();
 
-
-    /*
-     * Uppdatera listan på sidan.
-     */
-
-    renderRatingDatabase();
-
-
-    status.textContent =
-        '✅ Ratingen har sparats.';
-
-
-    /*
-     * Behåll bana, layout och antal hål.
-     * Töm bara score och rating så att
-     * flera resultat snabbt kan läggas in.
-     */
+    status.textContent = '✅ Ratingen har sparats och sammanfattningen har uppdaterats.';
 
     scoreInput.value = '';
-
     ratingInput.value = '';
 }
 function displayRatingDatabase() {
-
-    const container =
-        document.getElementById(
-            'ratingDatabaseDisplay'
-        );
-
+    const container = document.getElementById('ratingDatabaseDisplay');
     if (!container) return;
-
 
     let database = [];
 
     try {
-
-        database =
-            JSON.parse(
-                localStorage.getItem(
-                    'pdgaRatingDatabase'
-                ) || '[]'
-            );
-
-    } catch (error) {
-
-        console.error(
-            'Kunde inte läsa ratingdatabasen:',
-            error
+        database = typeof ratingDatabase !== 'undefined' ? ratingDatabase : JSON.parse(
+            localStorage.getItem('ratingDatabase') || '[]'
         );
-
+    } catch (error) {
+        console.error('Kunde inte läsa ratingdatabasen:', error);
         return;
     }
-
 
     if (!database.length) {
-
-        container.innerHTML =
-            '<p>Ingen ratingdata sparad ännu.</p>';
-
+        container.innerHTML = '<p>Ingen ratingdata sparad ännu.</p>';
         return;
     }
 
-
-    /*
-     * Sortera nyaste först.
-     */
-
-    database.sort((a, b) => {
-
-        return String(b.date || '')
-            .localeCompare(
-                String(a.date || '')
-            );
-
-    });
-
+    database.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
 
     let html = '';
 
-
     database.forEach((item, index) => {
-
-        const source =
-            item.source === 'pdga'
-                ? '🏆 PDGA'
-                : '✍️ Manuell';
-
+        const source = item.source === 'pdga' ? '🏆 PDGA' : '✍️ Manuell';
 
         html += `
-
             <div style="
                 display:flex;
                 justify-content:space-between;
@@ -4683,49 +5296,11 @@ function displayRatingDatabase() {
                 border:1px solid #ccc;
                 border-radius:6px;
             ">
-
                 <div>
-
-                    <strong>
-                        ${escapeHtml(
-                            item.course || ''
-                        )}
-                    </strong>
-
-                    <br>
-
-                    ${escapeHtml(
-                        item.layout || ''
-                    )}
-
-                    ·
-
-                    ${item.holes || ''} hål
-
-                    ·
-
-                    Score:
-
-                    <strong>
-                        ${item.score || ''}
-                    </strong>
-
-                    ·
-
-                    Rating:
-
-                    <strong>
-                        ${item.rating || ''}
-                    </strong>
-
-                    <br>
-
-                    <small>
-                        ${source}
-                    </small>
-
+                    <strong>${item.course || ''}</strong><br>
+                    ${item.layout || ''} · ${item.holes || ''} hål · Score: <strong>${item.score || ''}</strong> · Rating: <strong>${item.rating || ''}</strong><br>
+                    <small>${source}</small>
                 </div>
-
 
                 <button
                     type="button"
@@ -4734,12 +5309,9 @@ function displayRatingDatabase() {
                 >
                     🗑️
                 </button>
-
             </div>
-
         `;
     });
-
 
     container.innerHTML = html;
 }
@@ -4758,9 +5330,20 @@ function deleteRatingDatabaseEntry(id) {
             entry => entry.id !== id
         );
 
+    // 1. Spara ändringen i databasen
     saveRatingDatabase();
 
+    // 2. Rita om databastabellen/listan
     renderRatingDatabase();
+
+    // 3. Räkna om alla sammanfattningar så att tabellerna uppdateras direkt
+    try {
+        if (typeof recalculateAllSummaries === 'function') {
+            recalculateAllSummaries();
+        }
+    } catch (err) {
+        console.error('Kunde inte uppdatera sammanfattningen efter borttagning:', err);
+    }
 }
 
 
@@ -5074,101 +5657,68 @@ function analyzePastedPdgaResults() {
 
     }
 }
-function parsePastedPdgaResults(text) {
 
-    const lines = text
-        .replace(/\r/g, '')
-        .split('\n')
-        .map(line => line.trim())
-        .filter(Boolean);
+
+function parsePastedPdgaResults(text) {
 
     const results = [];
 
-    let currentDivision = '';
+    // =====================================================
+    // NORMALISERA TEXTEN
+    // =====================================================
 
-    let currentEvent = '';
-
-    let currentDate = '';
+    text = String(text || '')
+        .replace(/\r/g, '')
+        .replace(/\u00A0/g, ' ')
+        .replace(/\u200B/g, '')
+        .replace(/\*\*/g, '');
 
 
     // =====================================================
-    // HJÄLPFUNKTION
+    // KONTROLLERA ATT VI HAR EN MA-KLASS
     // =====================================================
 
-    function cleanCell(cell) {
+    const hasMA =
+        /\bMA[1-4]\b/i.test(text);
 
-        return cell
-            .replace(
-                /\[([^\]]+)\]\([^)]+\)/g,
-                '$1'
-            )
-            .replace(/\*\*/g, '')
-            .trim();
+    if (!hasMA) {
 
+        console.log(
+            'PDGA-import: Ingen MA1-MA4 hittades.'
+        );
+
+        return [];
     }
 
 
     // =====================================================
-    // LÄS ALLA RADER
+    // HÄMTA RAD FÖR RAD
+    // =====================================================
+
+    const lines =
+        text
+            .split('\n')
+            .map(line => line.trim())
+            .filter(Boolean);
+
+
+    let currentDivision = '';
+
+
+    // =====================================================
+    // GÅ IGENOM ALLA RADER
     // =====================================================
 
     for (const originalLine of lines) {
 
-        const line =
-            originalLine.trim();
+        let line =
+            originalLine
+                .replace(/\u00A0/g, ' ')
+                .trim();
 
 
         // =================================================
-        // TÄVLINGSNAMN
-        // =================================================
-
-        if (
-            !currentEvent &&
-            line &&
-            !line.includes('|') &&
-            !/^MA[1-4]\b/i.test(line) &&
-            !/^FA[1-4]\b/i.test(line)
-        ) {
-
-            /*
-             * Vi tar första rimliga rubriken
-             * som tävlingsnamn.
-             */
-
-            if (
-                line.length > 3 &&
-                line.length < 150 &&
-                !/^Date:/i.test(line) &&
-                !/^Datum:/i.test(line)
-            ) {
-
-                currentEvent =
-                    line;
-
-            }
-
-        }
-
-
-        // =================================================
-        // DATUM
-        // =================================================
-
-        const dateMatch =
-            line.match(
-                /(?:Date|Datum)\s*:\s*(.+)/i
-            );
-
-        if (dateMatch) {
-
-            currentDate =
-                dateMatch[1].trim();
-
-        }
-
-
-        // =================================================
-        // KLASS
+        // HITTA MA / FA
         // =================================================
 
         const divisionMatch =
@@ -5180,139 +5730,139 @@ function parsePastedPdgaResults(text) {
         if (divisionMatch) {
 
             currentDivision =
-                divisionMatch[1].toUpperCase();
+                divisionMatch[1]
+                    .toUpperCase();
 
             continue;
-
         }
 
 
         // =================================================
-        // FA SKA IGNORERAS
+        // IGNORERA FA
         // =================================================
 
         if (
-            /^FA[1-4]$/i.test(
+            /^FA[1-4]$/.test(
                 currentDivision
             )
         ) {
-
             continue;
-
         }
 
 
         // =================================================
-        // VI ÄR INTE I MA
+        // VI SKA BARA LÄSA MA
         // =================================================
 
         if (
-            !/^MA[1-4]$/i.test(
+            !/^MA[1-4]$/.test(
                 currentDivision
             )
         ) {
-
             continue;
-
         }
 
 
         // =================================================
-        // ENDAST TABELLRADER
+        // TA BORT MARKDOWN-LÄNKAR
+        //
+        // [Per Sjögren](https://...)
+        // blir:
+        //
+        // Per Sjögren
         // =================================================
 
-        if (
-            !line.includes('|')
-        ) {
-
-            continue;
-
-        }
+        line =
+            line.replace(
+                /\[([^\]]+)\]\([^)]+\)/g,
+                '$1'
+            );
 
 
         // =================================================
-        // DELA UPP TABELLRAD
+        // TA BORT | OCH GÖR ALLA KOLUMNGRÄNSER TILL MELLANRUM
         // =================================================
 
-        const cells =
+        line =
             line
-                .split('|')
-                .map(cleanCell)
-                .filter(Boolean);
+                .replace(/\|/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
 
 
-        /*
-         * En riktig spelarrad har exempelvis:
-         *
-         * 1
-         * 115.00
-         * Per Sjögren
-         * 188063
-         * 964
-         * -16
-         * 49
-         * 1024
-         * 52
-         * 995
-         * 54
-         * 975
-         * 155
-         */
+        // =================================================
+        // NU LETAR VI EFTER:
+        //
+        // placering
+        // poäng
+        // namn
+        // PDGA #
+        // player rating
+        // +/-
+        // score
+        // rating
+        //
+        // Exempel:
+        //
+        // 1 115.00 Per Sjögren 188063 964 -16 49 1024 ...
+        // =================================================
 
-        if (
-            cells.length < 8
-        ) {
+        const playerMatch =
+            line.match(
+                /^\s*(\d+)\s+[\d.]+\s+(.+?)\s+(\d{4,7})\s+(\d{3,4})\s+([+-]?\d+)\s+(.+)$/i
+            );
 
+
+        if (!playerMatch) {
             continue;
-
         }
 
-
-        // =================================================
-        // PLACERING
-        // =================================================
 
         const position =
             parseInt(
-                cells[0],
+                playerMatch[1],
                 10
             );
 
+
+        let name =
+            playerMatch[2]
+                .trim();
+
+
+        const pdgaNumber =
+            playerMatch[3];
+
+
+        const playerRating =
+            parseInt(
+                playerMatch[4],
+                10
+            );
+
+
+        const rest =
+            playerMatch[6];
+
+
+        // =================================================
+        // KONTROLLER
+        // =================================================
 
         if (
             !Number.isFinite(position) ||
             position < 1
         ) {
-
             continue;
-
         }
-
-
-        // =================================================
-        // NAMN
-        // =================================================
-
-        const name =
-            cells[2];
 
 
         if (
             !name ||
             name.length < 2
         ) {
-
             continue;
-
         }
-
-
-        // =================================================
-        // PDGA-NUMMER
-        // =================================================
-
-        const pdgaNumber =
-            cells[3];
 
 
         if (
@@ -5320,21 +5870,8 @@ function parsePastedPdgaResults(text) {
                 pdgaNumber
             )
         ) {
-
             continue;
-
         }
-
-
-        // =================================================
-        // SPELARRATING
-        // =================================================
-
-        const playerRating =
-            parseInt(
-                cells[4],
-                10
-            );
 
 
         if (
@@ -5342,154 +5879,142 @@ function parsePastedPdgaResults(text) {
             playerRating < 300 ||
             playerRating > 1200
         ) {
-
             continue;
-
         }
 
 
         // =================================================
-        // RONDER
+        // HÄMTA ALLA SIFFROR EFTER +/-
         //
-        // cells[5] = +/- 
+        // Per:
         //
-        // cells[6] = score
-        // cells[7] = Round Rating
+        // 49 1024 52 995 54 975 155
         //
-        // cells[8] = score
-        // cells[9] = Round Rating
+        // Vi tar par:
         //
-        // osv.
+        // 49 / 1024
+        // 52 / 995
+        // 54 / 975
+        //
+        // 155 är totalen och ignoreras.
         // =================================================
 
-        const rounds = [];
+        const numbers =
+            rest.match(
+                /\b\d+\b/g
+            );
+
+
+        if (
+            !numbers ||
+            numbers.length < 2
+        ) {
+            continue;
+        }
+
+
+        let roundNumber = 0;
 
 
         for (
-            let i = 6;
-            i + 1 < cells.length;
+            let i = 0;
+            i + 1 < numbers.length;
             i += 2
         ) {
 
             const score =
                 parseInt(
-                    cells[i],
+                    numbers[i],
                     10
                 );
 
 
-            const roundRating =
+            const rating =
                 parseInt(
-                    cells[i + 1],
+                    numbers[i + 1],
                     10
                 );
 
 
-            /*
-             * 999 betyder normalt DNF/
-             * ej spelad rond.
-             */
+            // =============================================
+            // 999 = DNF / ej spelad
+            // =============================================
 
             if (
                 !Number.isFinite(score) ||
                 score <= 0 ||
                 score >= 900
             ) {
-
                 continue;
-
             }
 
 
             if (
-                !Number.isFinite(roundRating) ||
-                roundRating < 300 ||
-                roundRating > 1200
+                !Number.isFinite(rating) ||
+                rating < 300 ||
+                rating > 1200
             ) {
-
                 continue;
-
             }
 
 
-            rounds.push({
+            roundNumber++;
+
+
+            results.push({
+
+                id:
+                    Date.now()
+                        .toString() +
+                    Math.random()
+                        .toString(36)
+                        .substring(2, 8),
+
+                name:
+                    name,
+
+                pdgaNumber:
+                    pdgaNumber,
+
+                division:
+                    currentDivision,
+
+                course:
+                    '',
+
+                layout:
+                    '',
+
+                holes:
+                    18,
 
                 score:
                     score,
 
                 rating:
-                    roundRating
+                    rating,
+
+                round:
+                    roundNumber,
+
+                event:
+                    '',
+
+                date:
+                    '',
+
+                source:
+                    'pdga-paste'
 
             });
 
         }
 
-
-        // =================================================
-        // INGA GILTIGA RONDER
-        // =================================================
-
-        if (
-            !rounds.length
-        ) {
-
-            continue;
-
-        }
-
-
-        // =================================================
-        // SPARA VARJE ROND
-        // =================================================
-
-        rounds.forEach(
-            (round, index) => {
-
-                results.push({
-
-                    name:
-                        name,
-
-                    pdgaNumber:
-                        pdgaNumber,
-
-                    division:
-                        currentDivision,
-
-                    course:
-                        '',
-
-                    layout:
-                        '',
-
-                    holes:
-                        18,
-
-                    score:
-                        round.score,
-
-                    rating:
-                        round.rating,
-
-                    round:
-                        index + 1,
-
-                    event:
-                        currentEvent,
-
-                    date:
-                        currentDate
-
-                });
-
-            }
-        );
-
     }
 
 
     // =====================================================
-    // DUBBLETTKONTROLL
+    // TA BORT DUBLETTER
     // =====================================================
 
     const unique = [];
@@ -5498,7 +6023,7 @@ function parsePastedPdgaResults(text) {
     results.forEach(
         result => {
 
-            const duplicate =
+            const exists =
                 unique.some(
                     existing =>
 
@@ -5524,12 +6049,14 @@ function parsePastedPdgaResults(text) {
                         existing.rating ===
                         result.rating
 
+                        &&
+
+                        existing.division ===
+                        result.division
                 );
 
 
-            if (
-                !duplicate
-            ) {
+            if (!exists) {
 
                 unique.push(
                     result
@@ -5538,6 +6065,13 @@ function parsePastedPdgaResults(text) {
             }
 
         }
+    );
+
+
+    console.log(
+        'PDGA-import:',
+        unique.length,
+        'ratingresultat hittades'
     );
 
 
@@ -5614,139 +6148,36 @@ function renderPastedPdgaPreview(results) {
     preview.innerHTML =
         html;
 }
+
 function savePastedPdgaResults() {
 
     if (
-        !Array.isArray(
-            pendingPastedPdgaResults
-        ) ||
+        !Array.isArray(pendingPastedPdgaResults) ||
         !pendingPastedPdgaResults.length
     ) {
-
         return;
     }
 
 
-    let added = 0;
+    // =====================================================
+    // HÄMTA BANA OCH ANTAL HÅL
+    // =====================================================
 
-    let duplicates = 0;
+    const courseInput =
+        document.getElementById('pdgaCourse');
 
+    const holesInput =
+        document.getElementById('pdgaHoles');
 
-    pendingPastedPdgaResults.forEach(
-        result => {
+    const course =
+        courseInput
+            ? courseInput.value.trim()
+            : '';
 
-            const duplicate =
-                ratingDatabase.some(
-                    entry =>
-
-                        String(
-                            entry.course || ''
-                        ).toLowerCase() ===
-                        String(
-                            result.course || ''
-                        ).toLowerCase()
-
-                        &&
-
-                        String(
-                            entry.layout || ''
-                        ).toLowerCase() ===
-                        String(
-                            result.layout || ''
-                        ).toLowerCase()
-
-                        &&
-
-                        Number(
-                            entry.holes
-                        ) ===
-                        Number(
-                            result.holes
-                        )
-
-                        &&
-
-                        Number(
-                            entry.score
-                        ) ===
-                        Number(
-                            result.score
-                        )
-
-                        &&
-
-                        Number(
-                            entry.rating
-                        ) ===
-                        Number(
-                            result.rating
-                        )
-
-                        &&
-
-                        String(
-                            entry.event || ''
-                        ).toLowerCase() ===
-                        String(
-                            result.event || ''
-                        ).toLowerCase()
-                );
-
-
-            if (duplicate) {
-
-                duplicates++;
-
-                return;
-
-            }
-
-
-            ratingDatabase.push({
-
-                id:
-                    Date.now().toString() +
-                    Math.random()
-                        .toString(36)
-                        .substring(2, 8),
-
-                source:
-                    'pdga-paste',
-
-                course:
-                    result.course,
-
-                layout:
-                    result.layout,
-
-                holes:
-                    result.holes,
-
-                score:
-                    result.score,
-
-                rating:
-                    result.rating,
-
-                event:
-                    result.event,
-
-                date:
-                    result.date
-
-            });
-
-
-            added++;
-
-        }
-    );
-
-
-    saveRatingDatabase();
-
-    renderRatingDatabase();
-
+    const holes =
+        holesInput
+            ? Number(holesInput.value)
+            : 18;
 
     const status =
         document.getElementById(
@@ -5754,25 +6185,333 @@ function savePastedPdgaResults() {
         );
 
 
+    // =====================================================
+    // KONTROLLERA BANA
+    // =====================================================
+
+    if (!course) {
+
+        status.textContent =
+            '⚠️ Fyll i bana innan du sparar resultatet.';
+
+        return;
+    }
+
+
+    // =====================================================
+    // KONTROLLERA ANTAL HÅL
+    // =====================================================
+
+    if (
+        !Number.isFinite(holes) ||
+        holes < 1 ||
+        holes > 36
+    ) {
+
+        status.textContent =
+            '⚠️ Ange ett giltigt antal hål (1–36).';
+
+        return;
+    }
+
+
+    let added = 0;
+    let replaced = 0;
+
+
+    // =====================================================
+    // SPARA RESULTATEN
+    //
+    // ERSÄTT GAMLA POSTER = samma:
+    // BANA (via smart namnmatchning)
+    // ANTAL HÅL
+    // SCORE
+    // =====================================================
+
+    pendingPastedPdgaResults.forEach(result => {
+
+        const newScore = Number(result.score);
+
+        // 1. Räkna om vi kommer ersätta någon gammal post med samma score (med smart matchning)
+        const hadOldEntry = ratingDatabase.some(entry =>
+            isSameCourse(entry.course, course) &&
+            Number(entry.holes) === holes &&
+            Number(entry.score) === newScore
+        );
+
+        if (hadOldEntry) {
+            replaced++;
+        }
+
+        // 2. Ta bort alla äldre poster med samma bana (smart matchning), hål och score
+        ratingDatabase = ratingDatabase.filter(entry => {
+            const isCourseMatch = isSameCourse(entry.course, course);
+            const isSameHoles = Number(entry.holes) === holes;
+            const isSameScore = Number(entry.score) === newScore;
+
+            // Returnera false för att rensa bort den gamla raden
+            return !(isCourseMatch && isSameHoles && isSameScore);
+        });
+
+
+        // =================================================
+        // NY RATINGPOST
+        // =================================================
+
+        ratingDatabase.push({
+
+            id:
+                Date.now().toString() +
+                Math.random()
+                    .toString(36)
+                    .substring(2, 8),
+
+            source:
+                'pdga-paste',
+
+            name:
+                result.name || '',
+
+            pdgaNumber:
+                result.pdgaNumber || '',
+
+            division:
+                result.division || '',
+
+            course:
+                course,
+
+            layout:
+                result.layout || '',
+
+            holes:
+                holes,
+
+            score:
+                result.score,
+
+            rating:
+                result.rating,
+
+            round:
+                result.round || '',
+
+            event:
+                result.event || '',
+
+            date:
+                result.date || ''
+
+        });
+
+
+        added++;
+
+    });
+
+
+    // =====================================================
+    // SPARA OCH UPPDATERA
+    // =====================================================
+
+    saveRatingDatabase();
+
+    // UPPDATERING: Kör om sammanfattningarna och rita om vyn direkt!
+    if (typeof recalculateAllSummaries === 'function') {
+        recalculateAllSummaries();
+    }
+    if (typeof displayRatingDatabase === 'function') {
+        displayRatingDatabase();
+    }
+    if (typeof renderRatingDatabase === 'function') {
+        renderRatingDatabase();
+    }
+
+
+    // =====================================================
+    // STATUS
+    // =====================================================
+
     status.textContent =
         `✅ ${added} ratingresultat sparades.` +
         (
-            duplicates
-                ? ` ${duplicates} dubbletter hoppades över.`
+            replaced
+                ? ` (${replaced} äldre ratingar för samma kast ersattes).`
                 : ''
         );
 
 
-    pendingPastedPdgaResults =
-        [];
+    // =====================================================
+    // TÖM IMPORTEN
+    // =====================================================
+
+    pendingPastedPdgaResults = [];
 
 
-    document.getElementById(
-        'pdgaSaveButton'
-    ).style.display =
-        'none';
+    const saveButton =
+        document.getElementById(
+            'pdgaSaveButton'
+        );
+
+    if (saveButton) {
+
+        saveButton.style.display =
+            'none';
+
+    }
+
 }
 
+function isSameCourse(name1, name2) {
+    if (!name1 || !name2) return false;
+
+    const getFirstWord = (str) => {
+        return String(str)
+            .trim()
+            .toLowerCase()
+            .split(/\s+/)[0]
+            .replace(/[^a-z0-9åäö]/g, '');
+    };
+
+    const c1 = getFirstWord(name1);
+    const c2 = getFirstWord(name2);
+
+    return c1 === c2;
+}
+// 1. Skapa och ladda ner backup-fil
+// 1. Skapa och ladda ner backup-fil (inklusive spelarnamn)
+// 1. Skapa och ladda ner backup-fil med HELA din lokala databas
+function createBackup() {
+    const dataToSave = {
+        // Alla nycklar från localStorage och globala variabler
+        savedResults: typeof savedResults !== 'undefined' ? savedResults : JSON.parse(localStorage.getItem('savedResults') || '[]'),
+        savedSummaries: typeof savedSummaries !== 'undefined' ? savedSummaries : JSON.parse(localStorage.getItem('savedSummaries') || '{}'),
+        ratingDatabase: typeof ratingDatabase !== 'undefined' ? ratingDatabase : JSON.parse(localStorage.getItem('ratingDatabase') || '[]'),
+        fileHashes: typeof fileHashes !== 'undefined' ? fileHashes : JSON.parse(localStorage.getItem('fileHashes') || '{}'),
+        holeStats: JSON.parse(localStorage.getItem('holeStats') || '{}'),
+        pdgaRatingStats: JSON.parse(localStorage.getItem('pdgaRatingStats') || '{}'),
+        currentOverallRating: localStorage.getItem('currentOverallRating'),
+        playerName: typeof playerName !== 'undefined' ? playerName : localStorage.getItem('playerName'),
+        
+        timestamp: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(dataToSave, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `backup_discgolf_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+
+    localStorage.setItem('lastBackupDate', new Date().toISOString());
+    updateBackupStatus();
+}
+
+// 2. Återställ ALLT från din backup-fil
+function restoreBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!confirm("Är du säker på att du vill återställa? Nuvarande sparade resultat och databas skrivs över.")) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            // Återställ alla nycklar i localStorage om de finns i filen
+            if (importedData.savedResults) {
+                localStorage.setItem('savedResults', JSON.stringify(importedData.savedResults));
+            }
+            if (importedData.savedSummaries) {
+                localStorage.setItem('savedSummaries', JSON.stringify(importedData.savedSummaries));
+            }
+            if (importedData.ratingDatabase) {
+                localStorage.setItem('ratingDatabase', JSON.stringify(importedData.ratingDatabase));
+            }
+            if (importedData.fileHashes) {
+                localStorage.setItem('fileHashes', JSON.stringify(importedData.fileHashes));
+            }
+            if (importedData.holeStats) {
+                localStorage.setItem('holeStats', JSON.stringify(importedData.holeStats));
+            }
+            if (importedData.pdgaRatingStats) {
+                localStorage.setItem('pdgaRatingStats', JSON.stringify(importedData.pdgaRatingStats));
+            }
+            if (importedData.currentOverallRating) {
+                localStorage.setItem('currentOverallRating', importedData.currentOverallRating);
+            }
+            if (importedData.playerName) {
+                localStorage.setItem('playerName', importedData.playerName);
+            }
+
+            alert("Återställning lyckades! Sidan laddas om med all din data.");
+            location.reload();
+        } catch (err) {
+            alert("Det gick inte att läsa filen. Se till att det är en giltig backup-fil.");
+        }
+    };
+    reader.readAsText(file);
+}
+
+// 3. Uppdatera status-indikatorn och varnar om det gått för lång tid
+function updateBackupStatus() {
+    const statusEl = document.getElementById('backup-status');
+    if (!statusEl) return;
+
+    const lastBackup = localStorage.getItem('lastBackupDate');
+
+    if (!lastBackup) {
+        statusEl.innerHTML = '<span style="color: #e74c3c; font-weight: bold;">⚠️ Ingen backup gjord ännu!</span>';
+        return;
+    }
+
+    const lastDate = new Date(lastBackup);
+    const now = new Date();
+    const diffTime = Math.abs(now - lastDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+        statusEl.innerHTML = '<span style="color: #27ae60;">✅ Backup gjord idag</span>';
+    } else if (diffDays <= 14) {
+        statusEl.innerHTML = `<span style="color: #27ae60;">✅ Senaste backup: ${diffDays} dag(ar) sedan</span>`;
+    } else {
+        // Varning om det gått mer än 14 dagar
+        statusEl.innerHTML = `<span style="color: #e67e22; font-weight: bold;">⚠️ Dags för backup! (${diffDays} dagar sen)</span>`;
+    }
+}
+
+// Kör statuskontrollen automatiskt när sidan laddas
+document.addEventListener('DOMContentLoaded', updateBackupStatus);
+function recalculateAllSummaries() {
+    if (!Array.isArray(savedResults) || !savedResults.length) {
+        return;
+    }
+
+    // Hämta alla unika banor från sparade resultat
+    const courses = new Set();
+
+    savedResults.forEach(result => {
+        if (!result || !result.data || !Array.isArray(result.data.players)) {
+            return;
+        }
+
+        result.data.players.forEach(player => {
+            if (player && player[1]) {
+                courses.add(player[1]);
+            }
+        });
+    });
+
+    // Räkna om sammanfattningen för varje bana
+    courses.forEach(courseName => {
+        recalculateSummaryForCourse(courseName);
+    });
+}
     </script>
 </body>
 </html>
