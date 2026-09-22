@@ -450,7 +450,10 @@
     <option value="" selected>Välj statistik</option>
     <option value="pdga">📈 PDGA Rating över tid</option>
     <option value="monthly">📅 Rating per månad</option>
-    <option value="holes">🕳️ Hålstatistik</option>
+    <option value="opponents">📊 Resultat mot motståndare</option>
+	<option value="opponentProgress">📈 Utveckling mot motståndare</option>
+	<option value="pdgaOpponent">⭐ PDGA-rating mot motståndare</option>
+	<option value="holes">🕳️ Hålstatistik</option>
 </select>
 <select id="holeStatsCourseSelect"
         onchange="updateRatingChart()"
@@ -460,7 +463,7 @@
 
         </div>
 
-        <canvas id="ratingChart"></canvas>
+        <canvas id="ratingChart" style="display: none;"></canvas>
 
     </div>
 
@@ -7471,6 +7474,37 @@ function updateRatingChart() {
     }
 
     // =====================================================
+    // 🧹 TA BORT GAMMAL MOTSTÅNDARSTATISTIK
+    // =====================================================
+const oldOpponentStats =
+    document.getElementById('opponentStatsContainer');
+
+if (oldOpponentStats) {
+    oldOpponentStats.remove();
+}
+
+const oldOpponentProgress =
+    document.getElementById('opponentProgressContainer');
+
+if (oldOpponentProgress) {
+    oldOpponentProgress.remove();
+}
+
+const oldPdgaOpponent =
+    document.getElementById('pdgaOpponentContainer');
+
+if (oldPdgaOpponent) {
+    oldPdgaOpponent.remove();
+}
+
+const oldPdgaOpponentSummary =
+    document.getElementById('pdgaOpponentSummary');
+
+if (oldPdgaOpponentSummary) {
+    oldPdgaOpponentSummary.remove();
+}
+	
+    // =====================================================
     // VÄLJ "VÄLJ STATISTIK"
     // =====================================================
     if (select && select.value === '') {
@@ -7481,15 +7515,19 @@ function updateRatingChart() {
         }
 
         canvas.style.display = 'none';
-
         canvas.parentElement.style.height = 'auto';
 
         if (courseSelect) {
             courseSelect.style.display = 'none';
+            courseSelect.value = '';
         }
 
         return;
     }
+
+    // Statistik är vald
+    canvas.style.display = 'block';
+    canvas.parentElement.style.height = 'auto';
 
     // =====================================================
     // VISA / DÖLJ BANVÄLJARE
@@ -7501,8 +7539,6 @@ function updateRatingChart() {
             courseSelect.style.display =
                 'inline-block';
 
-            // Fyll banväljaren
-            // endast när Hålstatistik används
             populateHoleStatsCourseSelect();
 
         } else {
@@ -7532,7 +7568,6 @@ function updateRatingChart() {
                 ? courseSelect.value
                 : '';
 
-        // Ingen bana vald ännu
         if (!selectedCourse) {
 
             canvas.style.display = 'none';
@@ -7626,6 +7661,9 @@ function updateRatingChart() {
         }
 
         canvas.style.display = 'block';
+        canvas.style.visibility = 'visible';
+        canvas.parentElement.style.display = 'block';
+        canvas.parentElement.style.height = 'auto';
 
         const ctx =
             canvas.getContext('2d');
@@ -7721,6 +7759,1374 @@ function updateRatingChart() {
         return;
     }
 
+    // =====================================================
+    // 📈 UTVECKLING MOT MOTSTÅNDARE
+    // =====================================================
+    if (
+        select &&
+        select.value === 'opponentProgress'
+    ) {
+
+        // -------------------------------------------------
+        // HJÄLPFUNKTION FÖR PDGA-RATING
+        // -------------------------------------------------
+        function getPdgaRatingForPlayer(
+            scoreRow,
+            course,
+            holes
+        ) {
+
+            if (!scoreRow) {
+                return null;
+            }
+
+            const score =
+                Number(scoreRow[5]);
+
+            if (!Number.isFinite(score)) {
+                return null;
+            }
+
+            let finalPdgaRating =
+                null;
+
+            // ---------------------------------------------
+            // 1. MANUELL / OFFICIELL PDGA-RATING
+            // ---------------------------------------------
+            if (
+                typeof ratingDatabase !== 'undefined' &&
+                Array.isArray(ratingDatabase)
+            ) {
+
+                const matchingRatings =
+                    ratingDatabase.filter(
+                        entry => {
+
+                            const dbCourse =
+                                String(
+                                    entry.course ||
+                                    entry.courseName ||
+                                    entry.Bana ||
+                                    ''
+                                )
+                                .replace(/"/g, '')
+                                .trim();
+
+                            const sameCourse =
+                                isSameCourse(
+                                    dbCourse,
+                                    course
+                                );
+
+                            const sameHoles =
+                                Number(
+                                    entry.holes ||
+                                    entry.Hål
+                                ) === holes;
+
+                            const sameScore =
+                                Number(
+                                    entry.score ||
+                                    entry.Kast ||
+                                    entry.Resultat
+                                ) === score;
+
+                            const hasValidRating =
+                                Number.isFinite(
+                                    Number(
+                                        entry.rating
+                                    )
+                                ) &&
+                                Number(
+                                    entry.rating
+                                ) > 0;
+
+                            return (
+                                sameCourse &&
+                                sameHoles &&
+                                sameScore &&
+                                hasValidRating
+                            );
+                        }
+                    );
+
+                if (
+                    matchingRatings.length > 0
+                ) {
+
+                    matchingRatings.sort(
+                        (a, b) =>
+                            String(
+                                b.date || ''
+                            ).localeCompare(
+                                String(
+                                    a.date || ''
+                                )
+                            )
+                    );
+
+                    const rawRating =
+                        Number(
+                            matchingRatings[0].rating
+                        );
+
+                    if (
+                        Number.isFinite(
+                            rawRating
+                        ) &&
+                        rawRating > 0
+                    ) {
+
+                        finalPdgaRating =
+                            rawRating;
+                    }
+                }
+            }
+
+            // ---------------------------------------------
+            // 2. UDISC → PDGA
+            // ---------------------------------------------
+            if (
+                finalPdgaRating === null
+            ) {
+
+                const directUdiscRating =
+                    Number(scoreRow[7]);
+
+                if (
+                    Number.isFinite(
+                        directUdiscRating
+                    ) &&
+                    directUdiscRating > 0
+                ) {
+
+                    if (
+                        directUdiscRating < 400
+                    ) {
+
+                        finalPdgaRating =
+                            (-0.0065 *
+                                (
+                                    directUdiscRating *
+                                    directUdiscRating
+                                )
+                            ) +
+                            (4.8259 *
+                                directUdiscRating
+                            ) +
+                            206.48;
+
+                    } else {
+
+                        finalPdgaRating =
+                            directUdiscRating;
+                    }
+                }
+            }
+
+            if (
+                finalPdgaRating !== null &&
+                Number.isFinite(
+                    finalPdgaRating
+                )
+            ) {
+
+                return Number(
+                    finalPdgaRating.toFixed(2)
+                );
+            }
+
+            return null;
+        }
+		
+		    
+
+        // -------------------------------------------------
+        // HITTA ALLA MOTSTÅNDARE
+        // -------------------------------------------------
+        const opponentNamesSet =
+            new Set();
+
+        savedResults.forEach(result => {
+
+            if (!result || !result.data) {
+                return;
+            }
+
+            const players =
+                Array.isArray(
+                    result.data.players
+                )
+                    ? result.data.players
+                    : [];
+
+            const myScore =
+                players.find(
+                    p => p && p[0] === playerName
+                );
+
+            if (!myScore) {
+                return;
+            }
+
+            players.forEach(player => {
+
+                if (
+                    !player ||
+                    !player[0]
+                ) {
+                    return;
+                }
+
+                const name =
+                    String(
+                        player[0]
+                    ).trim();
+
+                if (
+                    name &&
+                    name !== playerName
+                ) {
+
+                    opponentNamesSet.add(
+                        name
+                    );
+                }
+            });
+        });
+
+        const opponentNames =
+            Array.from(
+                opponentNamesSet
+            ).sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b,
+                        'sv'
+                    )
+            );
+
+        // -------------------------------------------------
+        // SKAPA VÄLJ MOTSTÅNDARE
+        // -------------------------------------------------
+        const container =
+            document.createElement('div');
+
+        container.id =
+            'opponentProgressContainer';
+
+        container.style.marginBottom =
+            '15px';
+
+        const label =
+            document.createElement('label');
+
+        label.textContent =
+            'Välj motståndare: ';
+
+        label.style.fontWeight =
+            'bold';
+
+        const opponentSelect =
+            document.createElement('select');
+
+        opponentSelect.id =
+            'opponentProgressSelect';
+
+        opponentSelect.style.marginLeft =
+            '8px';
+
+        opponentSelect.style.padding =
+            '6px';
+
+        const defaultOption =
+            document.createElement('option');
+
+        defaultOption.value = '';
+
+        defaultOption.textContent =
+            'Välj spelare';
+
+        opponentSelect.appendChild(
+            defaultOption
+        );
+
+        opponentNames.forEach(
+            opponentName => {
+
+                const option =
+                    document.createElement('option');
+
+                option.value =
+                    opponentName;
+
+                option.textContent =
+                    opponentName;
+
+                opponentSelect.appendChild(
+                    option
+                );
+            }
+        );
+
+        container.appendChild(label);
+        container.appendChild(opponentSelect);
+
+        // Lägg väljaren ovanför diagrammet
+        canvas.parentElement.insertBefore(
+            container,
+            canvas
+        );
+
+        // -------------------------------------------------
+        // INGEN MOTSTÅNDARE VALD ÄN
+        // -------------------------------------------------
+        if (!opponentNames.length) {
+
+            canvas.style.display =
+                'none';
+
+            const message =
+                document.createElement('p');
+
+            message.textContent =
+                'Inga gemensamma rundor med andra spelare hittades.';
+
+            message.style.marginTop =
+                '10px';
+
+            container.appendChild(
+                message
+            );
+
+            return;
+        }
+
+        // -------------------------------------------------
+        // FUNKTION SOM BYGGER DIAGRAMMET
+        // -------------------------------------------------
+        function drawOpponentProgress(
+            selectedOpponent
+        ) {
+
+            if (!selectedOpponent) {
+
+                canvas.style.display =
+                    'none';
+
+                return;
+            }
+
+            const progressData = [];
+
+            savedResults.forEach(
+                result => {
+
+                    if (
+                        !result ||
+                        !result.data
+                    ) {
+                        return;
+                    }
+
+                    const players =
+                        Array.isArray(
+                            result.data.players
+                        )
+                            ? result.data.players
+                            : [];
+
+                    const myScore =
+                        players.find(
+                            p =>
+                                p &&
+                                p[0] ===
+                                    playerName
+                        );
+
+                    const opponentScore =
+                        players.find(
+                            p =>
+                                p &&
+                                p[0] ===
+                                    selectedOpponent
+                        );
+
+                    // Måste ha spelat samma runda
+                    if (
+                        !myScore ||
+                        !opponentScore
+                    ) {
+                        return;
+                    }
+
+                    const course =
+                        String(
+                            myScore[1] || ''
+                        ).trim();
+
+                    const date =
+                        myScore[3] ||
+                        result.data.date ||
+                        result.date ||
+                        '';
+
+                    let holes =
+                        Number(
+                            result.data.holeCount ||
+                            result.data.holes ||
+                            result.holes ||
+                            (
+                                Array.isArray(
+                                    result.data.par
+                                ) &&
+                                result.data.par.length > 8
+                                    ? result.data.par.length - 8
+                                    : 18
+                            )
+                        );
+
+                    if (
+                        !Number.isFinite(
+                            holes
+                        ) ||
+                        holes < 1
+                    ) {
+                        holes = 18;
+                    }
+
+                    const myRating =
+                        getPdgaRatingForPlayer(
+                            myScore,
+                            course,
+                            holes
+                        );
+
+                    const opponentRating =
+                        getPdgaRatingForPlayer(
+                            opponentScore,
+                            course,
+                            holes
+                        );
+
+                    // Vi behöver rating för båda
+                    if (
+                        myRating === null ||
+                        opponentRating === null
+                    ) {
+                        return;
+                    }
+
+                    progressData.push({
+
+                        date:
+                            String(
+                                date || ''
+                            ),
+
+                        myRating:
+                            myRating,
+
+                        opponentRating:
+                            opponentRating
+                    });
+                }
+            );
+
+            progressData.sort(
+                (a, b) =>
+                    a.date.localeCompare(
+                        b.date
+                    )
+            );
+
+            if (!progressData.length) {
+
+                canvas.style.display =
+                    'none';
+
+                return;
+            }
+
+            canvas.style.display =
+                'block';
+
+            canvas.style.visibility =
+                'visible';
+
+            canvas.parentElement.style.height =
+                'auto';
+
+            const labels =
+                progressData.map(
+                    round =>
+                        String(
+                            round.date || ''
+                        ).split(' ')[0]
+                );
+
+            const myRatings =
+                progressData.map(
+                    round =>
+                        round.myRating
+                );
+
+            const opponentRatings =
+                progressData.map(
+                    round =>
+                        round.opponentRating
+                );
+
+            const ctx =
+                canvas.getContext('2d');
+
+            window.ratingChartInstance =
+                new Chart(ctx, {
+
+                    type: 'line',
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    playerName,
+
+                                data:
+                                    myRatings,
+
+                                borderWidth:
+                                    2,
+
+                                tension:
+                                    0.2,
+
+                                fill:
+                                    false,
+
+                                pointRadius:
+                                    4
+                            },
+
+                            {
+
+                                label:
+                                    selectedOpponent,
+
+                                data:
+                                    opponentRatings,
+
+                                borderWidth:
+                                    2,
+
+                                tension:
+                                    0.2,
+
+                                fill:
+                                    false,
+
+                                pointRadius:
+                                    4
+                            }
+                        ]
+                    },
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    true
+                            },
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function(context) {
+
+                                            return `${
+                                                context.dataset.label
+                                            }: ${
+                                                context.parsed.y
+                                            }`;
+                                        }
+                                }
+                            }
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                title: {
+
+                                    display:
+                                        true,
+
+                                    text:
+                                        'Datum'
+                                }
+                            },
+
+                            y: {
+
+                                title: {
+
+                                    display:
+                                        true,
+
+                                    text:
+                                        'PDGA Rating'
+                                }
+                            }
+                        }
+                    }
+                });
+        }
+
+        // -------------------------------------------------
+        // NÄR MAN VÄLJER MOTSTÅNDARE
+        // -------------------------------------------------
+        opponentSelect.addEventListener(
+            'change',
+            function() {
+
+                if (
+                    window.ratingChartInstance
+                ) {
+
+                    window.ratingChartInstance.destroy();
+
+                    window.ratingChartInstance =
+                        null;
+                }
+
+                drawOpponentProgress(
+                    this.value
+                );
+            }
+        );
+
+        // Diagrammet är dolt tills spelare väljs
+        canvas.style.display =
+            'none';
+
+        return;
+    }
+// =====================================================
+    // ⭐ PDGA-RATING MOT MOTSTÅNDARE
+    // =====================================================
+    if (select && select.value === 'pdgaOpponent') {
+
+        function getPdgaRatingForPlayer(scoreRow, course, holes) {
+
+            if (!scoreRow) return null;
+
+            const score = Number(scoreRow[5]);
+
+            if (!Number.isFinite(score)) return null;
+
+            // -------------------------------------------------
+            // 1. Försök först hitta manuell/officiell PDGA-rating
+            // -------------------------------------------------
+            let databaseMatches = [];
+
+            if (Array.isArray(ratingDatabase)) {
+                databaseMatches = ratingDatabase.filter(r => {
+
+                    if (!r) return false;
+
+                    const dbCourse =
+                        r.course ??
+                        r.courseName ??
+                        r.Bana ??
+                        '';
+
+                    const dbHoles =
+                        Number(
+                            r.holes ??
+                            r.Hål ??
+                            r.holeCount ??
+                            0
+                        );
+
+                    const dbScore =
+                        Number(
+                            r.score ??
+                            r.Kast ??
+                            r.Resultat ??
+                            0
+                        );
+
+                    const dbRating =
+                        Number(
+                            r.rating ??
+                            r.PDGA ??
+                            r.pdgaRating ??
+                            0
+                        );
+
+                    return (
+                        isSameCourse(dbCourse, course) &&
+                        dbHoles === Number(holes) &&
+                        dbScore === score &&
+                        Number.isFinite(dbRating) &&
+                        dbRating > 0
+                    );
+                });
+            }
+
+            if (databaseMatches.length) {
+
+                // Om flera finns – använd den senaste
+                databaseMatches.sort((a, b) => {
+
+                    const dateA = new Date(
+                        a.date ||
+                        a.StartDate ||
+                        a.startDate ||
+                        0
+                    );
+
+                    const dateB = new Date(
+                        b.date ||
+                        b.StartDate ||
+                        b.startDate ||
+                        0
+                    );
+
+                    return dateB - dateA;
+                });
+
+                const rating = Number(
+                    databaseMatches[0].rating ??
+                    databaseMatches[0].PDGA ??
+                    databaseMatches[0].pdgaRating
+                );
+
+                if (Number.isFinite(rating) && rating > 0) {
+                    return Number(rating.toFixed(2));
+                }
+            }
+
+            // -------------------------------------------------
+            // 2. Om ingen manuell rating finns:
+            //    använd RoundRating
+            // -------------------------------------------------
+            let roundRating = Number(scoreRow[7]);
+
+            if (!Number.isFinite(roundRating) || roundRating <= 0) {
+                return null;
+            }
+
+            // UDisc-rating → PDGA-rating
+            if (roundRating < 400) {
+
+                roundRating =
+                    (-0.0065 * (roundRating * roundRating)) +
+                    (4.8259 * roundRating) +
+                    206.48;
+            }
+
+            if (!Number.isFinite(roundRating) || roundRating <= 0) {
+                return null;
+            }
+
+            return Number(roundRating.toFixed(2));
+        }
+
+
+        // -------------------------------------------------
+        // Hitta alla motståndare som spelat tillsammans
+        // -------------------------------------------------
+        const opponents = new Set();
+
+        savedResults.forEach(result => {
+
+            if (
+                !result ||
+                !result.data ||
+                !Array.isArray(result.data.players)
+            ) {
+                return;
+            }
+
+            const players = result.data.players;
+
+            const me = players.find(
+                p => p && p[0] === playerName
+            );
+
+            if (!me) return;
+
+            players.forEach(p => {
+
+                if (
+                    p &&
+                    p[0] &&
+                    p[0] !== playerName
+                ) {
+                    opponents.add(p[0]);
+                }
+            });
+        });
+
+
+        // -------------------------------------------------
+        // Skapa väljare
+        // -------------------------------------------------
+        const container = document.createElement('div');
+
+        container.id = 'pdgaOpponentContainer';
+
+        container.style.marginBottom = '15px';
+
+        container.innerHTML = `
+            <label for="pdgaOpponentSelect">
+                ⭐ Välj motståndare:
+            </label>
+            <select id="pdgaOpponentSelect">
+                <option value="">Välj spelare</option>
+            </select>
+        `;
+
+        const opponentSelect =
+            container.querySelector('#pdgaOpponentSelect');
+
+
+        Array.from(opponents)
+            .sort((a, b) =>
+                a.localeCompare(b, 'sv')
+            )
+            .forEach(name => {
+
+                const option =
+                    document.createElement('option');
+
+                option.value = name;
+                option.textContent = name;
+
+                opponentSelect.appendChild(option);
+            });
+
+
+        // Lägg väljaren ovanför diagrammet
+        canvas.parentElement.insertBefore(
+            container,
+            canvas
+        );
+
+
+        canvas.style.display = 'none';
+
+
+        // -------------------------------------------------
+        // Om inga motståndare finns
+        // -------------------------------------------------
+        if (!opponents.size) {
+
+            const message =
+                document.createElement('div');
+
+            message.textContent =
+                'Inga gemensamma rundor med andra spelare hittades.';
+
+            container.appendChild(message);
+
+            return;
+        }
+
+
+        // -------------------------------------------------
+        // Rita PDGA-rating mot vald motståndare
+        // -------------------------------------------------
+        function drawPdgaOpponent(selectedOpponent) {
+
+            if (!selectedOpponent) {
+
+                canvas.style.display = 'none';
+
+                return;
+            }
+
+
+            const progressData = [];
+
+
+            savedResults.forEach(result => {
+
+                if (
+                    !result ||
+                    !result.data ||
+                    !Array.isArray(result.data.players)
+                ) {
+                    return;
+                }
+
+                const players =
+                    result.data.players;
+
+
+                const me = players.find(
+                    p => p && p[0] === playerName
+                );
+
+                const opponent = players.find(
+                    p => p && p[0] === selectedOpponent
+                );
+
+
+                // Båda måste finnas i samma runda
+                if (!me || !opponent) {
+                    return;
+                }
+
+
+                const course =
+                    me[1] ||
+                    result.data.courseName ||
+                    '';
+
+
+                const date =
+                    me[3] ||
+                    result.data.startDate ||
+                    '';
+
+
+                // Antal hål
+                let holes = 0;
+
+                for (let i = 8; i < me.length; i++) {
+
+                    const value = me[i];
+
+                    if (
+                        value !== '' &&
+                        value !== null &&
+                        value !== undefined &&
+                        !isNaN(Number(value))
+                    ) {
+                        holes++;
+                    }
+                }
+
+
+                // Om vi inte hittar hålen från spelarraden
+                // försöker vi från result.data
+                if (!holes) {
+
+                    holes =
+                        Number(
+                            result.data.holes ||
+                            result.data.holeCount ||
+                            0
+                        );
+                }
+
+
+                if (!holes) return;
+
+
+                const myRating =
+                    getPdgaRatingForPlayer(
+                        me,
+                        course,
+                        holes
+                    );
+
+
+                const opponentRating =
+                    getPdgaRatingForPlayer(
+                        opponent,
+                        course,
+                        holes
+                    );
+
+
+                // Endast rundor där båda har rating
+                if (
+                    myRating === null ||
+                    opponentRating === null
+                ) {
+                    return;
+                }
+
+
+                progressData.push({
+                    date: date,
+                    myRating: myRating,
+                    opponentRating: opponentRating
+                });
+            });
+
+
+            // -------------------------------------------------
+            // Sortera äldst → nyast
+            // -------------------------------------------------
+            progressData.sort((a, b) => {
+
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+
+                return dateA - dateB;
+            });
+
+
+            // -------------------------------------------------
+            // Ingen data
+            // -------------------------------------------------
+            if (!progressData.length) {
+
+                canvas.style.display = 'none';
+
+                const oldMessage =
+                    container.querySelector(
+                        '.pdgaOpponentMessage'
+                    );
+
+                if (oldMessage) {
+                    oldMessage.remove();
+                }
+
+
+                const message =
+                    document.createElement('div');
+
+                message.className =
+                    'pdgaOpponentMessage';
+
+                message.textContent =
+                    'Det finns inga gemensamma rundor där båda har en PDGA-rating.';
+
+                container.appendChild(message);
+
+                return;
+            }
+
+
+            // Ta bort eventuellt gammalt meddelande
+            const oldMessage =
+                container.querySelector(
+                    '.pdgaOpponentMessage'
+                );
+
+            if (oldMessage) {
+                oldMessage.remove();
+            }
+
+
+            canvas.style.display = 'block';
+
+
+            // -------------------------------------------------
+            // Diagram
+            // -------------------------------------------------
+            const labels =
+                progressData.map(item => {
+
+                    const d =
+                        new Date(item.date);
+
+                    if (isNaN(d)) {
+                        return item.date;
+                    }
+
+                    return d.toLocaleDateString(
+                        'sv-SE'
+                    );
+                });
+
+
+            const myRatings =
+                progressData.map(
+                    item => item.myRating
+                );
+
+
+            const opponentRatings =
+                progressData.map(
+                    item => item.opponentRating
+                );
+
+
+            window.ratingChartInstance =
+                new Chart(
+                    canvas.getContext('2d'),
+                    {
+                        type: 'line',
+
+                        data: {
+                            labels: labels,
+
+                            datasets: [
+
+                                {
+                                    label: playerName,
+
+                                    data: myRatings,
+
+                                    tension: 0.2,
+
+                                    fill: false,
+
+                                    pointRadius: 4
+                                },
+
+                                {
+                                    label: selectedOpponent,
+
+                                    data: opponentRatings,
+
+                                    tension: 0.2,
+
+                                    fill: false,
+
+                                    pointRadius: 4
+                                }
+
+                            ]
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio: false,
+
+                            plugins: {
+
+                                legend: {
+                                    display: true
+                                },
+
+                                tooltip: {
+
+                                    callbacks: {
+
+                                        label:
+                                            function(context) {
+
+                                                return (
+                                                    context.dataset.label +
+                                                    ': ' +
+                                                    Number(
+                                                        context.parsed.y
+                                                    ).toFixed(2)
+                                                );
+                                            }
+                                    }
+                                }
+                            },
+
+                            scales: {
+
+                                y: {
+
+                                    title: {
+                                        display: true,
+                                        text: 'PDGA Rating'
+                                    }
+                                },
+
+                                x: {
+
+                                    title: {
+                                        display: true,
+                                        text: 'Datum'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                );
+
+
+            // -------------------------------------------------
+            // Sammanfattning
+            // -------------------------------------------------
+            const myRatingsSum =
+                myRatings.reduce(
+                    (sum, value) =>
+                        sum + value,
+                    0
+                );
+
+
+            const opponentRatingsSum =
+                opponentRatings.reduce(
+                    (sum, value) =>
+                        sum + value,
+                    0
+                );
+
+
+            const myAverage =
+                myRatingsSum /
+                myRatings.length;
+
+
+            const opponentAverage =
+                opponentRatingsSum /
+                opponentRatings.length;
+
+
+            const myBest =
+                Math.max(...myRatings);
+
+
+            const opponentBest =
+                Math.max(...opponentRatings);
+
+
+            // Ta bort tidigare sammanfattning
+            const oldSummary =
+                document.getElementById(
+                    'pdgaOpponentSummary'
+                );
+
+            if (oldSummary) {
+                oldSummary.remove();
+            }
+
+
+            const summary =
+                document.createElement('div');
+
+            summary.id =
+                'pdgaOpponentSummary';
+
+
+            summary.style.marginTop = '20px';
+
+
+            summary.innerHTML = `
+                <h3>⭐ PDGA-rating mot ${selectedOpponent}</h3>
+
+                <table style="
+                    width:100%;
+                    border-collapse:collapse;
+                    margin-top:10px;
+                ">
+
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;padding:6px;">
+                                Statistik
+                            </th>
+
+                            <th style="text-align:center;padding:6px;">
+                                ${playerName}
+                            </th>
+
+                            <th style="text-align:center;padding:6px;">
+                                ${selectedOpponent}
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td style="padding:6px;">
+                                Snitt
+                            </td>
+
+                            <td style="text-align:center;padding:6px;">
+                                ${myAverage.toFixed(2)}
+                            </td>
+
+                            <td style="text-align:center;padding:6px;">
+                                ${opponentAverage.toFixed(2)}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding:6px;">
+                                Bästa rating
+                            </td>
+
+                            <td style="text-align:center;padding:6px;">
+                                ${myBest.toFixed(2)}
+                            </td>
+
+                            <td style="text-align:center;padding:6px;">
+                                ${opponentBest.toFixed(2)}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="padding:6px;">
+                                Gemensamma rundor
+                            </td>
+
+                            <td
+                                colspan="2"
+                                style="text-align:center;padding:6px;"
+                            >
+                                ${progressData.length}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            `;
+
+
+            canvas.parentElement.appendChild(
+                summary
+            );
+        }
+
+
+        // -------------------------------------------------
+        // Byt motståndare
+        // -------------------------------------------------
+        opponentSelect.addEventListener(
+            'change',
+            function() {
+
+                if (window.ratingChartInstance) {
+
+                    window.ratingChartInstance.destroy();
+
+                    window.ratingChartInstance = null;
+                }
+
+
+                const oldSummary =
+                    document.getElementById(
+                        'pdgaOpponentSummary'
+                    );
+
+                if (oldSummary) {
+                    oldSummary.remove();
+                }
+
+
+                drawPdgaOpponent(
+                    this.value
+                );
+            }
+        );
+
+
+        return;
+    }
     // =====================================================
     // HÄMTA AKTIVA SPELARENS RUNDOR
     // =====================================================
@@ -7960,6 +9366,317 @@ function updateRatingChart() {
     );
 
     if (!rounds.length) {
+        return;
+    }
+
+    // =====================================================
+    // 📊 RESULTAT MOT MOTSTÅNDARE
+    // =====================================================
+    if (
+        select &&
+        select.value === 'opponents'
+    ) {
+
+        canvas.style.display = 'none';
+        canvas.parentElement.style.height = 'auto';
+
+        const opponentData = {};
+
+        savedResults.forEach(result => {
+
+            if (!result || !result.data) {
+                return;
+            }
+
+            const players =
+                Array.isArray(
+                    result.data.players
+                )
+                    ? result.data.players
+                    : [];
+
+            const myScore =
+                players.find(
+                    p => p && p[0] === playerName
+                );
+
+            if (!myScore) {
+                return;
+            }
+
+            const myTotal =
+                Number(myScore[5]);
+
+            if (
+                !Number.isFinite(myTotal)
+            ) {
+                return;
+            }
+
+            players.forEach(player => {
+
+                if (
+                    !player ||
+                    !player[0]
+                ) {
+                    return;
+                }
+
+                const opponentName =
+                    String(
+                        player[0]
+                    ).trim();
+
+                if (
+                    !opponentName ||
+                    opponentName === playerName
+                ) {
+                    return;
+                }
+
+                const opponentTotal =
+                    Number(player[5]);
+
+                if (
+                    !Number.isFinite(
+                        opponentTotal
+                    )
+                ) {
+                    return;
+                }
+
+                if (
+                    !opponentData[
+                        opponentName
+                    ]
+                ) {
+
+                    opponentData[
+                        opponentName
+                    ] = {
+
+                        rounds: 0,
+
+                        myTotal: 0,
+
+                        opponentTotal: 0,
+
+                        meBetter: 0,
+
+                        opponentBetter: 0,
+
+                        ties: 0
+                    };
+                }
+
+                const stats =
+                    opponentData[
+                        opponentName
+                    ];
+
+                stats.rounds++;
+
+                stats.myTotal += myTotal;
+
+                stats.opponentTotal +=
+                    opponentTotal;
+
+                if (
+                    myTotal <
+                    opponentTotal
+                ) {
+
+                    stats.meBetter++;
+
+                } else if (
+                    myTotal >
+                    opponentTotal
+                ) {
+
+                    stats.opponentBetter++;
+
+                } else {
+
+                    stats.ties++;
+                }
+            });
+        });
+
+        const opponentNames =
+            Object.keys(
+                opponentData
+            ).sort(
+                (a, b) =>
+                    opponentData[b].rounds -
+                    opponentData[a].rounds
+            );
+
+        const container =
+            document.createElement('div');
+
+        container.id =
+            'opponentStatsContainer';
+
+        container.style.marginTop =
+            '20px';
+
+        const title =
+            document.createElement('h3');
+
+        title.textContent =
+            '📊 Resultat mot motståndare';
+
+        title.style.marginBottom =
+            '15px';
+
+        container.appendChild(title);
+
+        if (
+            !opponentNames.length
+        ) {
+
+            const message =
+                document.createElement('p');
+
+            message.textContent =
+                'Inga gemensamma rundor hittades.';
+
+            container.appendChild(
+                message
+            );
+
+        } else {
+
+            const table =
+                document.createElement('table');
+
+            table.style.width =
+                '100%';
+
+            table.style.borderCollapse =
+                'collapse';
+
+            table.style.marginTop =
+                '10px';
+
+            const header =
+                document.createElement('tr');
+
+            [
+                'Motståndare',
+                'Rundor',
+                'Ditt snitt',
+                'Motståndarens snitt',
+                'Skillnad',
+                'Du bättre',
+                'Motståndaren bättre',
+                'Lika'
+            ].forEach(text => {
+
+                const th =
+                    document.createElement('th');
+
+                th.textContent =
+                    text;
+
+                th.style.padding =
+                    '8px';
+
+                th.style.borderBottom =
+                    '2px solid #ccc';
+
+                th.style.textAlign =
+                    'center';
+
+                header.appendChild(th);
+            });
+
+            table.appendChild(header);
+
+            opponentNames.forEach(
+                opponentName => {
+
+                    const stats =
+                        opponentData[
+                            opponentName
+                        ];
+
+                    const myAverage =
+                        stats.myTotal /
+                        stats.rounds;
+
+                    const opponentAverage =
+                        stats.opponentTotal /
+                        stats.rounds;
+
+                    const difference =
+                        myAverage -
+                        opponentAverage;
+
+                    const row =
+                        document.createElement('tr');
+
+                    const values = [
+
+                        opponentName,
+
+                        stats.rounds,
+
+                        myAverage.toFixed(2),
+
+                        opponentAverage.toFixed(2),
+
+                        (
+                            difference > 0
+                                ? '+'
+                                : ''
+                        ) +
+                        difference.toFixed(2),
+
+                        stats.meBetter,
+
+                        stats.opponentBetter,
+
+                        stats.ties
+                    ];
+
+                    values.forEach(
+                        (value, index) => {
+
+                            const td =
+                                document.createElement('td');
+
+                            td.textContent =
+                                value;
+
+                            td.style.padding =
+                                '8px';
+
+                            td.style.textAlign =
+                                index === 0
+                                    ? 'left'
+                                    : 'center';
+
+                            td.style.borderBottom =
+                                '1px solid #ddd';
+
+                            row.appendChild(td);
+                        }
+                    );
+
+                    table.appendChild(row);
+                }
+            );
+
+            container.appendChild(
+                table
+            );
+        }
+
+        canvas.parentElement.appendChild(
+            container
+        );
+
         return;
     }
 
