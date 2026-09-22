@@ -704,7 +704,7 @@
             </div>
             <div id="dynamicCourseStats" style="display: none;">
                 <div class="top-box" id="holeAnalysisContainer">
-                    <h2>Bästa/Sämsta Hål (På vald bana)</h2>
+                    <h2>🏆 Ultimata Rundan – 📊 Medel & 🕒 Senaste rundan</h2>
                     <div id="holeAnalysisContent"></div>
                 </div>
 
@@ -3008,97 +3008,627 @@ if (!Number.isFinite(holes) || holes < 1) {
 
             return userHoleStats;
         }
-        function calculateCourseHoleAnalysis(courseName) {
-            const analysisContainer = document.getElementById('holeAnalysisContent');
-            analysisContainer.innerHTML = '';
-            
-            // NY FUNKTION: Översätter HoleX till Hål X
-            const translateHoleName = (name) => {
-                // Använder regex för att hitta Hole eller Hål följt av siffror
-                const match = name.match(/^(Hole|Hål)(\d+)$/i);
-                if (match) {
-                    return `Hål ${match[2]}`; // match[2] är siffran (1, 2, 3...)
-                }
-                return name; // Returnerar namnet oförändrat om det inte matchar
-            };
+        
 
-            const stats = calculateUserHoleStats(savedResults, courseName, playerName);
-            
-            if (Object.keys(stats).length === 0) {
-                analysisContainer.innerHTML = '<li>Ingen hålstatistik sparad för dig på denna bana.</li>';
-                return;
-            }
+function calculateCourseHoleAnalysis(courseName) {
+    const analysisContainer = document.getElementById('holeAnalysisContent');
 
-            const analysisList = [];
-            let parMap = {};
-            const resultWithPar = savedResults.find(r => r.data.players.some(p => p[1] === courseName));
-            
-            const holeRegex = /^(Hole|Hål)\d+$/; 
-            
-            if (resultWithPar) {
-                const header = resultWithPar.data.header;
-                const parRow = resultWithPar.data.par;
-                
-                const holeStartIndex = header.findIndex(h => holeRegex.test(h));
-                
-                if (holeStartIndex !== -1) {
-                    for (let i = holeStartIndex; i < header.length; i++) {
-                        const holeName = header[i];
-                        
-                        if (!holeRegex.test(holeName)) break; 
-                        
-                        if (parRow.length > i) {
-                             parMap[holeName] = parRow[i]; 
-                        }
-                    }
-                }
-            }
+    if (!analysisContainer) {
+        return;
+    }
 
-            Object.keys(stats).forEach(holeName => {
-                const holeStat = stats[holeName];
-                const totalDiff = holeStat.totalDiff;
-                const roundsPlayed = holeStat.roundsPlayed;
-                
-                if (roundsPlayed > 0) {
-                    const avgDiff = (totalDiff / roundsPlayed).toFixed(2);
-                    
-                    analysisList.push({
-                        name: holeName,
-                        diff: parseFloat(avgDiff),
-                        rounds: roundsPlayed,
-                        par: parMap[holeName] || 'N/A'
-                    });
-                }
-            });
+    analysisContainer.innerHTML = '';
 
-            // Sortera efter bäst till sämst diff (lägst diff = bäst)
-            analysisList.sort((a, b) => a.diff - b.diff);
-
-            const bestList = analysisList.slice(0, 3);
-            const worstList = analysisList.slice(-3).reverse();
-            
-            // --- HÄR ANVÄNDS ÖVERSÄTTNINGEN I UTMATNINGEN ---
-
-            if (bestList.length > 0) {
-                analysisContainer.innerHTML += `<li><strong>Bästa Hål (Ditt Medel Diff):</strong></li>`;
-                bestList.forEach(h => {
-                    const diffText = h.diff >= 0 ? `+${h.diff.toFixed(2)}` : h.diff.toFixed(2);
-                    const displayName = translateHoleName(h.name); // <--- ANVÄND ÖVERSÄTTNINGEN
-                    analysisContainer.innerHTML += `<li class="best-hole">${displayName} (Par ${h.par}): ${diffText} (${h.rounds} rundor)</li>`;
-                });
-            } else {
-                analysisContainer.innerHTML += `<li>Ingen hålstatistik att analysera.</li>`;
-            }
-
-            if (worstList.length > 0) {
-                analysisContainer.innerHTML += `<li><strong>Sämsta Hål (Ditt Medel Diff):</strong></li>`;
-                worstList.forEach(h => {
-                    const diffText = h.diff >= 0 ? `+${h.diff.toFixed(2)}` : h.diff.toFixed(2);
-                    const displayName = translateHoleName(h.name); // <--- ANVÄND ÖVERSÄTTNINGEN
-                    analysisContainer.innerHTML += `<li class="worst-hole">${displayName} (Par ${h.par}): ${diffText} (${h.rounds} rundor)</li>`;
-                });
-            }
+    // ---------------------------------------------------------
+    // HÄMTA ALLA RUNDOR FÖR DEN VALDA BANAN DÄR JAG SPELAT
+    // ---------------------------------------------------------
+    const courseResults = savedResults.filter(result => {
+        if (
+            !result ||
+            !result.data ||
+            !Array.isArray(result.data.players)
+        ) {
+            return false;
         }
+
+        return result.data.players.some(player =>
+            player &&
+            player[0] === playerName &&
+            isSameCourse(player[1], courseName)
+        );
+    });
+
+    if (!courseResults.length) {
+        analysisContainer.innerHTML = '<li>Ingen hålstatistik sparad för dig på denna bana.</li>';
+        return;
+    }
+
+
+    // ---------------------------------------------------------
+    // HITTA LÄNGSTA LAYOUTEN
+    // ---------------------------------------------------------
+    let mainLayout = null;
+    let maxHoles = 0;
+
+    courseResults.forEach(result => {
+        const header = Array.isArray(result.data.header)
+            ? result.data.header
+            : [];
+
+        const holes = header.filter(h =>
+            /^Hole\d+$/i.test(String(h))
+        );
+
+        if (holes.length > maxHoles) {
+            maxHoles = holes.length;
+            mainLayout = result;
+        }
+    });
+
+    if (!mainLayout || maxHoles === 0) {
+        analysisContainer.innerHTML = '<li>Kunde inte hitta någon giltig hållayout.</li>';
+        return;
+    }
+
+
+    // ---------------------------------------------------------
+    // HÅLEN I HUVUDLAYOUTEN
+    // ---------------------------------------------------------
+    const mainHeader = Array.isArray(mainLayout.data.header)
+        ? mainLayout.data.header
+        : [];
+
+    const mainHoleNames = mainHeader
+        .filter(h => /^Hole\d+$/i.test(String(h)))
+        .sort((a, b) => {
+            const numA = Number(String(a).replace(/Hole/i, ''));
+            const numB = Number(String(b).replace(/Hole/i, ''));
+            return numA - numB;
+        });
+
+
+    // ---------------------------------------------------------
+    // PAR FRÅN LÄNGSTA LAYOUTEN
+    // ---------------------------------------------------------
+    const mainParRow = Array.isArray(mainLayout.data.par)
+        ? mainLayout.data.par
+        : [];
+
+    const parByHole = {};
+
+    mainHoleNames.forEach(holeName => {
+        const index = mainHeader.indexOf(holeName);
+        if (index === -1) return;
+
+        const par = Number(mainParRow[index]);
+        if (Number.isFinite(par)) {
+            parByHole[holeName] = par;
+        }
+    });
+
+
+    // ---------------------------------------------------------
+    // HITTA BÄSTA RESULTATET PÅ VARJE HÅL
+    // ---------------------------------------------------------
+    const bestByHole = {};
+
+    mainHoleNames.forEach(holeName => {
+        let bestScore = Infinity;
+        let bestSource = null;
+
+        courseResults.forEach(result => {
+            const header = Array.isArray(result.data.header)
+                ? result.data.header
+                : [];
+
+            const player = result.data.players.find(p =>
+                p &&
+                p[0] === playerName &&
+                isSameCourse(p[1], courseName)
+            );
+
+            if (!player) return;
+
+            const holeIndex = header.findIndex(h =>
+                String(h).toLowerCase() === holeName.toLowerCase()
+            );
+
+            if (holeIndex === -1) return;
+
+            const score = Number(player[holeIndex]);
+
+            if (!Number.isFinite(score)) return;
+
+            if (score < bestScore) {
+                bestScore = score;
+                bestSource = {
+                    name: result.name,
+                    date: player[3],
+                    layout: player[2]
+                };
+            }
+        });
+
+        if (bestScore !== Infinity) {
+            bestByHole[holeName] = {
+                score: bestScore,
+                par: parByHole[holeName] ?? null,
+                source: bestSource
+            };
+        }
+    });
+
+
+    // ---------------------------------------------------------
+    // MEDEL + SENASTE RESULTAT PER HÅL
+    // ---------------------------------------------------------
+    const holeComparison = {};
+
+    mainHoleNames.forEach(holeName => {
+        holeComparison[holeName] = {
+            scores: [],
+            latestScore: null,
+            latestTime: -Infinity
+        };
+    });
+
+    courseResults.forEach(result => {
+        const header = Array.isArray(result.data.header)
+            ? result.data.header
+            : [];
+
+        const player = result.data.players.find(p =>
+            p &&
+            p[0] === playerName &&
+            isSameCourse(p[1], courseName)
+        );
+
+        if (!player) return;
+
+        mainHoleNames.forEach(holeName => {
+            const holeIndex = header.findIndex(h =>
+                String(h).toLowerCase() === holeName.toLowerCase()
+            );
+
+            if (holeIndex === -1) return;
+
+            const score = Number(player[holeIndex]);
+
+            if (!Number.isFinite(score)) return;
+
+            holeComparison[holeName].scores.push(score);
+
+            const dateText = String(player[3] || '');
+            const match = dateText.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2})(\d{2})$/);
+            let time = 0;
+
+            if (match) {
+                time = new Date(
+                    Number(match[1]),
+                    Number(match[2]) - 1,
+                    Number(match[3]),
+                    Number(match[4]),
+                    Number(match[5])
+                ).getTime();
+            } else {
+                const fallback = new Date(dateText);
+                if (!Number.isNaN(fallback.getTime())) {
+                    time = fallback.getTime();
+                }
+            }
+
+            if (time > holeComparison[holeName].latestTime) {
+                holeComparison[holeName].latestTime = time;
+                holeComparison[holeName].latestScore = score;
+            }
+        });
+    });
+
+
+    // ---------------------------------------------------------
+    // SUMMERA ULTIMATA RUNDAN
+    // ---------------------------------------------------------
+    let total = 0;
+    let parTotal = 0;
+
+    mainHoleNames.forEach(holeName => {
+        const hole = bestByHole[holeName];
+        if (!hole) return;
+
+        total += hole.score;
+        if (hole.par !== null) {
+            parTotal += hole.par;
+        }
+    });
+
+    const plusMinus = total - parTotal;
+    const diffText = plusMinus > 0 ? '+' + plusMinus : String(plusMinus);
+
+
+    // ---------------------------------------------------------
+    // ÖVRE DELEN (HEADER)
+    // ---------------------------------------------------------
+    let contentHTML = `
+        <div style="
+            text-align:center;
+            padding:5px 0 12px 0;
+            border-bottom:1px solid #eee;
+            margin-bottom:15px;
+        ">
+            <div style="
+                font-size:1.5em;
+                font-weight:bold;
+            ">
+                ${total} kast
+                <span style="font-size:0.8em;">
+                    (${diffText})
+                </span>
+            </div>
+
+            <div style="
+                color:#666;
+                font-size:0.9em;
+                margin-top:3px;
+            ">
+                Par ${parTotal}
+                · ${maxHoles} hål
+                · ${courseResults.length} sparade rundor
+            </div>
+
+            <div style="
+                color:#888;
+                font-size:0.8em;
+                margin-top:3px;
+            ">
+                Bästa möjliga kombination av alla sparade rundor
+            </div>
+        </div>
+    `;
+
+
+    // ---------------------------------------------------------
+    // 🏆 HÅLRESULTAT (BÄSTA RESULTAT)
+    // ---------------------------------------------------------
+    contentHTML += `
+        <div>
+            <div style="
+                font-weight:bold;
+                font-size:1em;
+                margin-bottom:8px;
+            ">
+                🏆 Ultimata Rundan
+            </div>
+
+            <div style="
+                display:grid;
+                grid-template-columns:
+                    repeat(${mainHoleNames.length}, minmax(45px, 1fr))
+                    minmax(55px, 1fr)
+                    minmax(45px, 1fr);
+                gap:4px;
+                text-align:center;
+                overflow-x:auto;
+            ">
+    `;
+
+    // Hålnummer
+    mainHoleNames.forEach(holeName => {
+        const holeNumber = holeName.replace(/^Hole/i, '');
+        contentHTML += `
+            <div style="font-size:0.75em; color:#666;">
+                Hål ${holeNumber}
+            </div>
+        `;
+    });
+
+    contentHTML += `
+        <div style="font-size:0.75em; color:#666; font-weight:bold;">Total</div>
+        <div style="font-size:0.75em; color:#666; font-weight:bold;">+/-</div>
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns:
+                repeat(${mainHoleNames.length}, minmax(45px, 1fr))
+                minmax(55px, 1fr)
+                minmax(45px, 1fr);
+            gap:4px;
+            text-align:center;
+            margin-top:3px;
+            overflow-x:auto;
+        ">
+    `;
+
+    // Resultat per hål
+    mainHoleNames.forEach(holeName => {
+        const hole = bestByHole[holeName];
+        let scoreText = '-';
+
+        if (hole) {
+            const diff = hole.par !== null ? hole.score - hole.par : null;
+            let diffTextHole = '';
+
+            if (diff !== null) {
+                diffTextHole = diff > 0 ? '+' + diff : String(diff);
+            }
+
+            scoreText = `
+                ${hole.score}
+                ${
+                    diff !== null
+                        ? `<span style="
+                            display:block;
+                            font-size:0.7em;
+                            font-weight:normal;
+                            color:${
+                                diff < 0
+                                    ? '#28a745'
+                                    : diff > 0
+                                        ? '#dc3545'
+                                        : '#888'
+                            };
+                        ">
+                            ${diffTextHole}
+                        </span>`
+                        : ''
+                }
+            `;
+        }
+
+        contentHTML += `
+            <div style="font-weight:bold; font-size:0.9em;">
+                ${scoreText}
+            </div>
+        `;
+    });
+
+    contentHTML += `
+            <div style="font-weight:bold; font-size:0.9em; border-left:1px solid #ddd;">
+                ${total}
+            </div>
+            <div style="font-weight:bold; font-size:0.9em;">
+                ${diffText}
+            </div>
+        </div>
+    </div>
+    `;
+
+
+    // ---------------------------------------------------------
+    // 📊 MITT MEDEL
+    // ---------------------------------------------------------
+    contentHTML += `
+        <div style="
+            padding-top:12px;
+            margin-top:15px;
+            border-top:2px solid #eee;
+        ">
+            <div style="
+                font-weight:bold;
+                font-size:1em;
+                margin-bottom:8px;
+            ">
+                📊 Mitt medel
+            </div>
+
+            <div style="
+                display:grid;
+                grid-template-columns:
+                    repeat(${mainHoleNames.length}, minmax(45px, 1fr))
+                    minmax(55px, 1fr)
+                    minmax(45px, 1fr);
+                gap:4px;
+                text-align:center;
+                overflow-x:auto;
+            ">
+    `;
+
+    // Hålnummer
+    mainHoleNames.forEach(holeName => {
+        const holeNumber = holeName.replace(/^Hole/i, '');
+        contentHTML += `
+            <div style="font-size:0.75em; color:#666;">
+                Hål ${holeNumber}
+            </div>
+        `;
+    });
+
+    contentHTML += `
+        <div style="font-size:0.75em; color:#666; font-weight:bold;">Total</div>
+        <div style="font-size:0.75em; color:#666; font-weight:bold;">+/-</div>
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns:
+                repeat(${mainHoleNames.length}, minmax(45px, 1fr))
+                minmax(55px, 1fr)
+                minmax(45px, 1fr);
+            gap:4px;
+            text-align:center;
+            margin-top:3px;
+            overflow-x:auto;
+        ">
+    `;
+
+    // Resultat per hål (Medel)
+    let totalAverage = 0;
+    let totalAverageCount = 0;
+
+    mainHoleNames.forEach(holeName => {
+        const data = holeComparison[holeName];
+        let averageText = '-';
+
+        if (data && data.scores.length) {
+            const average = data.scores.reduce((sum, score) => sum + score, 0) / data.scores.length;
+            averageText = average.toFixed(1);
+
+            totalAverage += average;
+            totalAverageCount++;
+        }
+
+        contentHTML += `
+            <div style="font-weight:bold; font-size:0.9em;">
+                ${averageText}
+            </div>
+        `;
+    });
+
+    const totalAverageText = totalAverageCount ? totalAverage.toFixed(1) : '-';
+
+    let averagePlusMinusText = '-';
+    if (totalAverageCount && Number.isFinite(parTotal)) {
+        const averagePlusMinus = totalAverage - parTotal;
+        const roundedAveragePlusMinus = averagePlusMinus.toFixed(1);
+        averagePlusMinusText = averagePlusMinus > 0 ? `+${roundedAveragePlusMinus}` : roundedAveragePlusMinus;
+    }
+
+    contentHTML += `
+            <div style="font-weight:bold; font-size:0.9em; border-left:1px solid #ddd;">
+                ${totalAverageText}
+            </div>
+            <div style="font-weight:bold; font-size:0.9em;">
+                ${averagePlusMinusText}
+            </div>
+        </div>
+    </div>
+    `;
+
+
+    // ---------------------------------------------------------
+    // 🕒 SENASTE RUNDAN
+    // ---------------------------------------------------------
+    contentHTML += `
+        <div style="
+            padding-top:12px;
+            margin-top:15px;
+            border-top:2px solid #eee;
+        ">
+            <div style="
+                font-weight:bold;
+                font-size:1em;
+                margin-bottom:8px;
+            ">
+                🕒 Senaste rundan
+            </div>
+
+            <div style="
+                display:grid;
+                grid-template-columns:
+                    repeat(${mainHoleNames.length}, minmax(45px, 1fr))
+                    minmax(55px, 1fr)
+                    minmax(45px, 1fr);
+                gap:4px;
+                text-align:center;
+                overflow-x:auto;
+            ">
+    `;
+
+    // Hålnummer
+    mainHoleNames.forEach(holeName => {
+        const holeNumber = holeName.replace(/^Hole/i, '');
+        contentHTML += `
+            <div style="font-size:0.75em; color:#666;">
+                Hål ${holeNumber}
+            </div>
+        `;
+    });
+
+    contentHTML += `
+        <div style="font-size:0.75em; color:#666; font-weight:bold;">Total</div>
+        <div style="font-size:0.75em; color:#666; font-weight:bold;">+/-</div>
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns:
+                repeat(${mainHoleNames.length}, minmax(45px, 1fr))
+                minmax(55px, 1fr)
+                minmax(45px, 1fr);
+            gap:4px;
+            text-align:center;
+            margin-top:3px;
+            overflow-x:auto;
+        ">
+    `;
+
+    // Resultat per hål (Senaste)
+    let latestTotal = 0;
+    let latestTotalCount = 0;
+
+    mainHoleNames.forEach(holeName => {
+        const data = holeComparison[holeName];
+        let latestText = '-';
+
+        if (
+            data &&
+            data.latestScore !== null &&
+            data.scores.length
+        ) {
+            const average = data.scores.reduce((sum, score) => sum + score, 0) / data.scores.length;
+            const difference = data.latestScore - average;
+            const roundedDifference = difference.toFixed(1);
+
+            const diffText = difference > 0 ? `+${roundedDifference}` : roundedDifference;
+
+            latestText = `
+                ${data.latestScore}
+                <span style="
+                    display:block;
+                    font-size:0.7em;
+                    font-weight:normal;
+                    color:${
+                        difference > 0
+                            ? '#dc3545'
+                            : difference < 0
+                                ? '#28a745'
+                                : '#888'
+                    };
+                ">
+                    ${diffText}
+                </span>
+            `;
+
+            latestTotal += data.latestScore;
+            latestTotalCount++;
+        }
+
+        contentHTML += `
+            <div style="font-weight:bold; font-size:0.9em;">
+                ${latestText}
+            </div>
+        `;
+    });
+
+    let latestPlusMinusText = '-';
+    if (latestTotalCount && Number.isFinite(parTotal)) {
+        const latestPlusMinus = latestTotal - parTotal;
+        latestPlusMinusText = latestPlusMinus > 0 ? `+${latestPlusMinus}` : String(latestPlusMinus);
+    }
+
+    contentHTML += `
+            <div style="font-weight:bold; font-size:0.9em; border-left:1px solid #ddd;">
+                ${latestTotalCount ? latestTotal : '-'}
+            </div>
+            <div style="font-weight:bold; font-size:0.9em;">
+                ${latestPlusMinusText}
+            </div>
+        </div>
+    </div>
+    `;
+
+    // ---------------------------------------------------------
+    // RENDERA ALLT I CONTAINER
+    // ---------------------------------------------------------
+    analysisContainer.innerHTML = contentHTML;
+}
+
+
+
+
+    
+
+
 
         function calculateCourseHeadToHead(courseName) {
             const listContainer = document.getElementById('courseHeadToHeadList');
