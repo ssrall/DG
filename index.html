@@ -637,6 +637,12 @@
             <div id="manualRatingStatus" style="margin-top:8px;"></div>
         </div>
     </details>
+<!-- 3. DCR-ANKARE --> <details style="text-align: left; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;"> <summary style="cursor:pointer; font-size:18px; font-weight:bold; text-align:left;"> ⚓ Lägg till DCR-ankare </summary> <div style="margin-top:15px; padding:10px 5px;"> <!-- Välj redan sparad bana/layout --> <label for="dcrCourseSelect"> Välj bana/layout </label> <select id="dcrCourseSelect" style="width:100%; box-sizing:border-box; margin-top:8px;" > <option value=""> -- Välj bana/layout -- </option> </select> <!-- DCR-ankare --> <label for="dcrAnchorValue" style="display:block; margin-top:15px;" > DCR-ankare </label> <input type="number" id="dcrAnchorValue" value="1000" min="1" max="1200" step="1" style="width:100%; box-sizing:border-box;" > <!-- Tre bästa resultat --> <div style="margin-top:15px;"> <strong>Tre bästa resultat</strong> </div> <input type="number" id="dcrResult1" placeholder="Resultat 1" min="1" style="width:100%; box-sizing:border-box; margin-top:8px;" > <input type="number" id="dcrResult2" placeholder="Resultat 2" min="1" style="width:100%; box-sizing:border-box; margin-top:8px;" > <input type="number" id="dcrResult3" placeholder="Resultat 3" min="1" style="width:100%; box-sizing:border-box; margin-top:8px;" > <!-- Spara --> <button type="button" onclick="saveDcrAnchor()" style="margin-top:12px;" > ⚓ Spara DCR-ankare </button> <!-- Status --> <div id="dcrAnchorStatus"
+    style="margin-top:8px;" ></div> <div
+    id="dcrAnchorDisplay"
+    style="margin-top:10px;"
+></div></div> </details>
+
 
     <!-- 3. VISA SPARAD RATINGDATABAS -->
     <details style="text-align: left;">
@@ -806,6 +812,12 @@ if (playerName && !players.includes(playerName)) {
 
 		let ratingDatabase =
     JSON.parse(localStorage.getItem('ratingDatabase')) || [];
+	
+	let dcrAnchors =
+    JSON.parse(localStorage.getItem('dcrAnchors')) || [];
+
+renderDcrAnchors();
+	
 let csvLoaded = false;
 let currentCsvData = null;
 let pendingCsvData = [];
@@ -2197,6 +2209,11 @@ const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(
             pdgaHeader.textContent = 'PDGA';
             pdgaHeader.onclick = () => sortTable(data.header.length); 
             tr.appendChild(pdgaHeader);
+			
+			const dcrHeader = document.createElement('th');
+			dcrHeader.textContent = 'DCR';
+			dcrHeader.onclick = () => sortTable(data.header.length);
+			tr.appendChild(dcrHeader);
 
             headerRowElement.appendChild(tr);
             table.appendChild(headerRowElement);
@@ -2215,6 +2232,10 @@ const avgRating = roundsWithRating > 0 ? (sumRating / roundsWithRating).toFixed(
             emptyPdgaPar.textContent = '';
             parRowElement.appendChild(emptyPdgaPar);
             tbody.appendChild(parRowElement);
+			
+			const emptyDcrPar = document.createElement('td');
+			emptyDcrPar.textContent = '';
+			parRowElement.appendChild(emptyDcrPar);
 
             // Sorterade spelare
             const sortedPlayers = data.players.slice().sort((a, b) => parseFloat(a[5]) - parseFloat(b[5]));
@@ -2308,7 +2329,35 @@ if (match) {
 
                 row.appendChild(pdgaCell);
 
-                
+                const dcrCell = document.createElement('td');
+
+let dcrValue = null;
+
+const dcrCourse = cells[1];
+const dcrLayout = cells[2];
+const dcrPlayerScore = Number(cells[5]);
+
+const dcrHoles =
+    data.par.length - holeStartIndex;
+
+if (
+    Number.isFinite(dcrPlayerScore) &&
+    Number.isFinite(dcrHoles) &&
+    dcrHoles > 0
+) {
+    dcrValue = calculateDCR(
+        dcrCourse,
+        dcrLayout,
+        dcrHoles,
+        dcrPlayerScore
+    );
+}
+
+dcrCell.textContent =
+    dcrValue !== null ? dcrValue : '';
+
+row.appendChild(dcrCell);
+				
                 tbody.appendChild(row);
             });
 
@@ -2360,6 +2409,54 @@ if (match) {
 
             table.appendChild(tbody);
         }
+		function calculateDCR(course, layout, holes, playerScore) {
+
+    console.log('DCR TEST:', {
+        course,
+        layout,
+        holes,
+        playerScore,
+        anchors: dcrAnchors
+    });
+
+    const anchor = dcrAnchors.find(entry =>
+        String(entry.course).trim().toLowerCase() ===
+            String(course).trim().toLowerCase() &&
+        String(entry.layout).trim().toLowerCase() ===
+            String(layout).trim().toLowerCase() &&
+        Number(entry.holes) === Number(holes)
+    );
+
+    // Inget DCR-ankare för denna bana/layout
+    if (!anchor) {
+        return null;
+    }
+
+    // De tre resultat som användes för ankaret
+    if (!Array.isArray(anchor.results) || anchor.results.length !== 3) {
+        return null;
+    }
+
+    const results = anchor.results.map(Number);
+
+    if (results.some(score => !Number.isFinite(score))) {
+        return null;
+    }
+
+    // SSA = medelvärdet av de tre bästa resultaten
+    const ssa =
+        results.reduce((sum, score) => sum + score, 0) / 3;
+
+    // Ratingpoäng per kast, anpassat efter antal hål
+    const pointsPerThrow = 10 * (18 / Number(holes));
+
+    // DCR
+    const dcr =
+        Number(anchor.anchor) -
+        (Number(playerScore) - ssa) * pointsPerThrow;
+
+    return Math.round(dcr);
+}
         
         function sortTable(columnIndex) {
             const table = document.getElementById('csvTable');
@@ -6326,6 +6423,7 @@ function renderRatingDatabase() {
         initManualResultForm();
         calculateOverallPDGA();
 		renderRatingDatabase();
+		renderDcrAnchors();
         calculateAndDisplayTopPlayers();
         precalculateHoleStats();
         displayStaticBestResults();
@@ -7360,6 +7458,8 @@ function updateBackupStatus() {
 
 // Kör statuskontrollen automatiskt när sidan laddas
 document.addEventListener('DOMContentLoaded', updateBackupStatus);
+
+document.addEventListener('DOMContentLoaded', populateDcrCourseSelect);
 function recalculateAllSummaries() {
     if (!Array.isArray(savedResults) || !savedResults.length) {
         return;
@@ -10078,6 +10178,383 @@ function populateHoleStatsCourseSelect() {
         select.value =
             matchingCourse;
     }
+}
+// =========================================================
+// DCR – ANKARE
+// =========================================================
+
+
+function saveDcrAnchor() {
+    const anchor = Number(
+        document.getElementById('dcrAnchorValue').value
+    );
+
+    const result1 = Number(
+        document.getElementById('dcrResult1').value
+    );
+
+    const result2 = Number(
+        document.getElementById('dcrResult2').value
+    );
+
+    const result3 = Number(
+        document.getElementById('dcrResult3').value
+    );
+
+    const courseSelect =
+        document.getElementById('dcrCourseSelect');
+
+    const status =
+        document.getElementById('dcrAnchorStatus');
+
+
+    // Hämta vald bana/layout
+    if (!courseSelect || !courseSelect.value) {
+        status.textContent =
+            '⚠️ Välj bana/layout först.';
+        return;
+    }
+
+    let selected;
+
+    try {
+        selected = JSON.parse(courseSelect.value);
+    } catch (error) {
+        console.error('Kunde inte läsa vald bana/layout:', error);
+
+        status.textContent =
+            '⚠️ Kunde inte läsa vald bana/layout.';
+        return;
+    }
+
+
+    // Kontrollera att allt är ifyllt
+    if (
+        !Number.isFinite(anchor) ||
+        !Number.isFinite(result1) ||
+        !Number.isFinite(result2) ||
+        !Number.isFinite(result3)
+    ) {
+        status.textContent =
+            '⚠️ Fyll i DCR-ankaret och alla tre resultaten.';
+        return;
+    }
+
+
+    // SSA från de tre bästa resultaten
+    const ssa =
+        (result1 + result2 + result3) / 3;
+
+
+    // Läs befintliga DCR-ankare
+    let anchors = [];
+
+    try {
+        anchors = JSON.parse(
+            localStorage.getItem('dcrAnchors') || '[]'
+        );
+    } catch (error) {
+        console.error('Kunde inte läsa DCR-ankare:', error);
+        anchors = [];
+    }
+
+
+    // Kontrollera om det redan finns ett ankare
+    // för exakt samma bana + layout + antal hål
+    const existingIndex = anchors.findIndex(item =>
+        item.course === selected.course &&
+        item.layout === selected.layout &&
+        Number(item.holes) === Number(selected.holes)
+    );
+
+
+    const dcrData = {
+        id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
+
+        course: selected.course,
+        layout: selected.layout,
+        holes: Number(selected.holes),
+
+        anchor: anchor,
+
+        results: [
+            result1,
+            result2,
+            result3
+        ],
+
+        ssa: ssa,
+
+        date: new Date().toISOString()
+    };
+
+
+    // Om samma bana/layout redan finns:
+    // uppdatera det befintliga ankaret
+    if (existingIndex !== -1) {
+        anchors[existingIndex] = dcrData;
+    } else {
+        anchors.push(dcrData);
+    }
+
+
+    // Spara
+    localStorage.setItem(
+        'dcrAnchors',
+        JSON.stringify(anchors)
+    );
+
+
+    // Uppdatera global variabel om den finns
+    if (typeof dcrAnchors !== 'undefined') {
+        dcrAnchors.length = 0;
+        dcrAnchors.push(...anchors);
+    }
+
+
+    status.innerHTML =
+        `✅ DCR-ankare sparat för <strong>${selected.course} – ${selected.layout}</strong>.<br>` +
+        `SSA: ${ssa.toFixed(2)}`;
+
+
+    // Uppdatera listan över sparade ankare
+    displayDcrAnchors();
+}
+
+
+function renderDcrAnchors() {
+
+    const container =
+        document.getElementById(
+            'dcrAnchorDisplay'
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = '';
+
+
+    if (
+        !Array.isArray(dcrAnchors) ||
+        !dcrAnchors.length
+    ) {
+        container.innerHTML =
+            '<p>Inga DCR-ankare sparade ännu.</p>';
+
+        return;
+    }
+
+
+    const sorted =
+        [...dcrAnchors].sort((a, b) =>
+            String(a.course || '')
+                .localeCompare(
+                    String(b.course || ''),
+                    'sv'
+                )
+        );
+
+
+    sorted.forEach(entry => {
+
+        const div =
+            document.createElement('div');
+
+        div.style.border =
+            '1px solid #ddd';
+
+        div.style.borderRadius =
+            '8px';
+
+        div.style.padding =
+            '10px';
+
+        div.style.marginBottom =
+            '8px';
+
+
+        div.innerHTML = `
+
+            <strong>
+                ${entry.course}
+            </strong>
+
+            <br>
+
+            ${entry.layout}
+
+            · ${entry.holes} hål
+
+            · DCR-ankare:
+            <strong>
+                ${entry.anchor}
+            </strong>
+
+            <br>
+
+            <button
+                type="button"
+                onclick="deleteDcrAnchor('${entry.id}')"
+                style="margin-top:6px;"
+            >
+                🗑️ Ta bort
+            </button>
+
+        `;
+
+
+        container.appendChild(div);
+
+    });
+}
+
+function deleteDcrAnchor(id) {
+
+    const entry =
+        dcrAnchors.find(
+            item => String(item.id) === String(id)
+        );
+
+    if (!entry) {
+        console.error('DCR-ankare hittades inte:', id);
+        return;
+    }
+
+    if (
+        !confirm(
+            `Vill du ta bort DCR-ankaret för ${entry.course} – ${entry.layout}?`
+        )
+    ) {
+        return;
+    }
+
+    dcrAnchors =
+        dcrAnchors.filter(
+            item => String(item.id) !== String(id)
+        );
+
+    // Spara den uppdaterade listan direkt
+    localStorage.setItem(
+        'dcrAnchors',
+        JSON.stringify(dcrAnchors)
+    );
+
+    // Rita om listan
+    renderDcrAnchors();
+}
+
+
+
+function populateDcrCourseSelect() {
+    const select = document.getElementById('dcrCourseSelect');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">-- Välj bana/layout --</option>';
+
+    let savedResults = [];
+
+    try {
+        savedResults = JSON.parse(
+            localStorage.getItem('savedResults') || '[]'
+        );
+    } catch (error) {
+        console.error('Kunde inte läsa savedResults:', error);
+        return;
+    }
+
+    const seen = new Set();
+    const courses = [];
+
+    savedResults.forEach(result => {
+        const data = result.data;
+
+        if (!data) return;
+
+        const players = Array.isArray(data.players)
+            ? data.players
+            : [];
+
+        if (!players.length) return;
+
+        const firstPlayer = players[0];
+
+        const course = String(firstPlayer[1] || '').trim();
+        const layout = String(firstPlayer[2] || '').trim();
+
+        if (!course || !layout) return;
+
+        // Hitta antal hål dynamiskt från headern
+        const header = Array.isArray(data.header)
+            ? data.header
+            : [];
+
+        const holeCount = header.filter(h =>
+            /^Hole\d+$/i.test(String(h))
+        ).length;
+
+        if (!holeCount) return;
+
+        const key = `${course}|${layout}|${holeCount}`;
+
+        // Undvik dubbletter
+        if (seen.has(key)) return;
+        seen.add(key);
+
+        courses.push({
+            course: course,
+            layout: layout,
+            holes: holeCount
+        });
+    });
+
+    // Sortera först på bana, sedan på layout, sedan antal hål
+    courses.sort((a, b) => {
+        const courseCompare = a.course.localeCompare(
+            b.course,
+            'sv',
+            { sensitivity: 'base' }
+        );
+
+        if (courseCompare !== 0) {
+            return courseCompare;
+        }
+
+        const layoutCompare = a.layout.localeCompare(
+            b.layout,
+            'sv',
+            { sensitivity: 'base' }
+        );
+
+        if (layoutCompare !== 0) {
+            return layoutCompare;
+        }
+
+        return a.holes - b.holes;
+    });
+
+    // Lägg till sorterade alternativ
+    courses.forEach(item => {
+        const option = document.createElement('option');
+
+        option.value = JSON.stringify({
+            course: item.course,
+            layout: item.layout,
+            holes: item.holes
+        });
+
+        option.textContent =
+            `${item.course} – ${item.layout} – ${item.holes} hål`;
+
+        select.appendChild(option);
+    });
+
+    console.log(
+        'DCR: hittade',
+        courses.length,
+        'unika bana/layout-kombinationer'
+    );
 }
 
 
