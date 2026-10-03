@@ -10579,5 +10579,114 @@ function saveCourseJsonFromTextarea(courseName) {
     }
 }
     </script>
+	<!-- =====================================================
+     SQLITE WASM TEST
+     Detta är endast ett test.
+     Ingen befintlig localStorage-data ändras.
+     ===================================================== -->
+
+<script type="module">
+
+    import sqlite3InitModule
+        from "https://cdn.jsdelivr.net/npm/@sqlite.org/sqlite-wasm@3.53.4-build1/+esm";
+
+    let sqlite3;
+    let sqliteDb;
+
+    async function initSQLiteTest() {
+
+        try {
+
+            console.log("=================================");
+            console.log("SQLite WASM startar...");
+            console.log("=================================");
+
+            // Starta SQLite WASM
+            sqlite3 = await sqlite3InitModule();
+
+            console.log(
+                "SQLite version:",
+                sqlite3.version.libVersion
+            );
+
+            // Skapa en temporär testdatabas
+            // Vi sparar INGET av din riktiga data ännu.
+            sqliteDb = new sqlite3.oo1.DB(
+                "/test.sqlite3",
+                "ct"
+            );
+
+            console.log("SQLite databas skapad.");
+
+            // Skapa testtabell
+            sqliteDb.exec(`
+                CREATE TABLE IF NOT EXISTS test (
+                    id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL
+                );
+            `);
+
+            console.log("Testtabell skapad.");
+
+            // Rensa eventuell gammal testdata
+            sqliteDb.exec(`
+                DELETE FROM test;
+            `);
+
+            // Lägg in testdata
+            sqliteDb.exec({
+                sql: `
+                    INSERT INTO test (name)
+                    VALUES ('Jonas');
+                `
+            });
+
+            console.log("Testdata sparad.");
+
+            // Läs tillbaka
+            const result = [];
+
+            sqliteDb.exec({
+                sql: `
+                    SELECT id, name
+                    FROM test;
+                `,
+                rowMode: "object",
+                resultRows: result
+            });
+
+            console.log("Resultat från SQLite:", result);
+
+            console.log("=================================");
+            console.log("✅ SQLITE WASM FUNGERAR");
+            console.log("=================================");
+
+            // Gör funktionen tillgänglig från F12 Console
+            window.sqliteDb = sqliteDb;
+            window.sqlite3 = sqlite3;
+
+            return result;
+
+        } catch (error) {
+
+            console.error(
+                "❌ SQLite FEL:",
+                error
+            );
+
+            console.error(
+                "Meddelande:",
+                error.message
+            );
+        }
+    }
+
+    // Gör testfunktionen tillgänglig från Console
+    window.testSQLite = initSQLiteTest;
+
+    // Starta automatiskt
+    initSQLiteTest();
+
+</script>
 </body>
 </html>
