@@ -14932,6 +14932,34 @@ async function importBaseDiscsFromJSON() {
         throw new Error("SQLite-databasen är inte öppen.");
     }
 
+    // Ingen fetch från JSON när HTML-filen öppnas direkt lokalt.
+    if (window.location.protocol === "file:") {
+        console.info("ℹ️ Lokal fil: diskimport hoppas över.");
+        return;
+    }
+
+    // Ändra versionen när du vill importera en ny version av discs.json.
+    const importVersion = "1";
+
+    // Egen tabell för importstatus, utan att ändra befintliga tabeller.
+    window.sqliteDb.exec(`
+        CREATE TABLE IF NOT EXISTS app_import_status (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )
+    `);
+
+    // Hoppa över hela importen om denna version redan är importerad.
+    const savedVersion = window.sqliteDb.selectValue(
+        `SELECT value FROM app_import_status WHERE key = ?`,
+        ["base_discs_version"]
+    );
+
+    if (savedVersion === importVersion) {
+        console.log("✅ Diskregistret är redan importerat. Hoppar över.");
+        return;
+    }
+
     const response = await fetch("./discs.json");
 
     if (!response.ok) {
@@ -14950,10 +14978,7 @@ async function importBaseDiscsFromJSON() {
     let skipped = 0;
 
     for (const disc of discs) {
-        if (
-            !disc.brand ||
-            !disc.name
-        ) {
+        if (!disc.brand || !disc.name) {
             skipped++;
             continue;
         }
@@ -14991,14 +15016,22 @@ async function importBaseDiscsFromJSON() {
         added++;
     }
 
+    // Spara markeringen först när hela importen är färdig.
+    window.sqliteDb.exec({
+        sql: `
+            INSERT OR REPLACE INTO app_import_status (key, value)
+            VALUES (?, ?)
+        `,
+        bind: ["base_discs_version", importVersion]
+    });
+
     console.log("✅ Diskimport klar", {
         totalt: discs.length,
         tillagda: added,
         redan_fanns_eller_hoppades_over: skipped
     });
-
-    return { totalt: discs.length, tillagda: added, hoppadeOver: skipped };
 }
+
 window.importBaseDiscsFromJSON = importBaseDiscsFromJSON;
 async function createDatabaseSchema() {
     if (!window.sqliteDb) {
