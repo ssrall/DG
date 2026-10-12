@@ -16905,7 +16905,7 @@ window.renderLiveHole = function () {
     if (!overview) {
         overview = document.createElement("div");
         overview.id = "liveHoleOverview";
-        overview.style.cssText = "margin:16px 0;";
+        overview.style.cssText = "margin:8px 0;";
         container.parentNode.insertBefore(overview, container);
     }
 
@@ -16920,14 +16920,14 @@ window.renderLiveHole = function () {
 
     const overviewTitle = document.createElement("div");
     overviewTitle.style.cssText =
-        "font-weight:bold;margin-bottom:10px;font-size:16px;";
+        "font-weight:bold;margin-bottom:6px;font-size:14px;";
     overviewTitle.textContent =
         `Hål klara: ${completedHoles.length} av ${round.holeOrder.length}`;
     overview.appendChild(overviewTitle);
 
     const holeGrid = document.createElement("div");
     holeGrid.style.cssText =
-        "display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;";
+        "display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;";
 
     round.holeOrder.forEach((hole, index) => {
         const done = completedHoles.includes(hole);
@@ -16942,7 +16942,7 @@ window.renderLiveHole = function () {
         );
 
         holeButton.style.cssText = `
-            min-height:44px;
+            min-height:36px;
             border-radius:8px;
             border:2px solid ${isCurrent ? "#2463eb" : done ? "#26834a" : "#ccc"};
             background:${done ? "#DDF4E4" : "#fff"};
@@ -16971,13 +16971,13 @@ window.renderLiveHole = function () {
 
         const card = document.createElement("div");
         card.style.cssText =
-            "border:1px solid #ddd;border-radius:12px;padding:14px;margin-bottom:12px;";
+            "border:1px solid #ddd;border-radius:9px;padding:9px;margin-bottom:8px;";
 
         
         const name = document.createElement("strong");
         name.textContent = player.name;
         name.style.cssText =
-            "display:block;font-size:20px;margin-bottom:6px;";
+            "display:block;font-size:17px;margin-bottom:4px;";
 
         // Personlig statistik för just den här spelaren och hålet.
         let personalAverage = "–";
@@ -17054,7 +17054,7 @@ window.renderLiveHole = function () {
 
         const statsLine = document.createElement("div");
         statsLine.style.cssText =
-            "font-size:13px;color:#475569;margin-bottom:12px;line-height:1.5;";
+            "font-size:12px;color:#475569;margin-bottom:7px;line-height:1.35;";
 
         statsLine.textContent =
             `Snitt: ${personalAverage} · Birdie: ${personalBirdie} · Fältets birdie: ${globalBirdie || "–"}`;
@@ -17068,11 +17068,11 @@ window.renderLiveHole = function () {
         minus.textContent = "−";
         minus.setAttribute("aria-label", `Minska kast för ${player.name}`);
         minus.style.cssText =
-            "width:56px;height:52px;font-size:26px;border-radius:10px;";
+            "width:46px;height:42px;font-size:23px;border-radius:8px;";
 
         const score = document.createElement("strong");
         score.style.cssText =
-            "font-size:32px;min-width:40px;text-align:center;";
+            "font-size:27px;min-width:32px;text-align:center;";
 
         const plus = document.createElement("button");
         plus.type = "button";
@@ -17085,11 +17085,11 @@ window.renderLiveHole = function () {
         parButton.type = "button";
         parButton.textContent = `Par (${currentPar})`;
         parButton.style.cssText =
-    "min-height:44px;padding:8px 16px;border-radius:8px;border:1px solid #aaa;background:#fff;color:#222;";
+    "min-height:36px;padding:6px 12px;border-radius:7px;border:1px solid #aaa;background:#fff;color:#222;font-size:13px;";
 
         const result = document.createElement("div");
         result.style.cssText =
-            "margin-top:12px;padding:12px;border-radius:8px;";
+            "margin-top:8px;padding:8px;border-radius:7px;";
 
         function updateScore(value) {
             player.scores[holeNumber] = value;
