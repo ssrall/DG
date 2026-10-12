@@ -6495,11 +6495,42 @@ const courseResults = allResults.filter(
             });
         }
         
-        function updateDynamicCourseStats(courseName) {
-            document.getElementById('dynamicCourseStats').style.display = 'grid';
-            calculateCourseHoleAnalysis(courseName);
-            calculateCourseHeadToHead(courseName);
-        }
+        
+
+function updateDynamicCourseStats(courseName) {
+    const dynamicCourseStats =
+        document.getElementById('dynamicCourseStats');
+
+    const holeProgressionChartContainer =
+        document.getElementById('holeProgressionChartContainer');
+
+    const holeAnalysisContainer =
+        document.getElementById('holeAnalysisContainer');
+
+    const headToHeadContainer =
+        document.getElementById('headToHeadContainer');
+
+    if (dynamicCourseStats) {
+        dynamicCourseStats.style.display = 'grid';
+    }
+
+    if (holeAnalysisContainer) {
+        holeAnalysisContainer.style.display = 'block';
+    }
+
+    if (headToHeadContainer) {
+        headToHeadContainer.style.display = 'block';
+    }
+
+    if (holeProgressionChartContainer) {
+        holeProgressionChartContainer.style.display = 'block';
+    }
+
+    calculateCourseHoleAnalysis(courseName);
+    calculateCourseHeadToHead(courseName);
+}
+
+
 
         // KORRIGERAD FUNKTION: Beräknar och ritar ut spelarnas rankning (placering) hål för hål
         function displayHoleProgressionChart(data) {
