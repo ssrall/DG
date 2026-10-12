@@ -8864,9 +8864,8 @@ function renderRatingDatabase() {
     });
 }
 function loadActivePlayerFromSQLite() {
-
     const result = sqliteDb.selectObjects(`
-        SELECT p.name
+        SELECT p.id, p.name
         FROM players p
         JOIN app_settings s
             ON s.key = 'active_player_id'
@@ -8875,13 +8874,17 @@ function loadActivePlayerFromSQLite() {
     `);
 
     if (result.length > 0) {
+        activePlayerId = Number(result[0].id);
         playerName = result[0].name;
     } else {
+        activePlayerId = null;
         playerName = null;
     }
 
     console.log("✅ Aktiv spelare från SQLite:", playerName);
+    console.log("✅ Aktivt spelar-ID:", activePlayerId);
 }
+
 function loadLoginStateFromSQLite() {
     const result = sqliteDb.selectObjects(`
         SELECT value
@@ -16551,6 +16554,7 @@ window.initLiveCourseSelector = function () {
 // Läser befintliga spelare från SQLite.
 // =====================================================
 
+
 window.initLivePlayers = function () {
     const list = document.getElementById("livePlayersList");
     const info = document.getElementById("livePlayersInfo");
@@ -16562,38 +16566,139 @@ window.initLivePlayers = function () {
     }
 
     const players = [];
+    const sharedRounds = new Map();
 
+    // Hämta alla spelare.
     window.sqliteDb.exec({
-        sql: "SELECT id, name FROM players ORDER BY name;",
+        sql: "SELECT id, name, is_user FROM players ORDER BY name;",
         rowMode: "object",
         callback: row => players.push(row)
     });
 
+    // Räkna gemensamma rundor med spelare som är markerade som användare.
+    window.sqliteDb.exec({
+        sql: `
+            SELECT
+                other.id AS player_id,
+                COUNT(DISTINCT mine.round_id) AS round_count
+            FROM round_players mine
+            JOIN players me
+                ON me.id = mine.player_id
+               AND me.is_user = 1
+            JOIN round_players theirs
+                ON theirs.round_id = mine.round_id
+               AND theirs.player_id != mine.player_id
+            JOIN players other
+                ON other.id = theirs.player_id
+            GROUP BY other.id;
+        `,
+        rowMode: "object",
+        callback: row => {
+            sharedRounds.set(
+                Number(row.player_id),
+                Number(row.round_count)
+            );
+        }
+    });
+
     list.replaceChildren();
 
-    players.forEach(player => {
+    // Sortera spelkamrater efter antal gemensamma rundor.
+    const rankedPlayers = [...players]
+    .sort((a, b) => {
+        const countA = sharedRounds.get(Number(a.id)) || 0;
+        const countB = sharedRounds.get(Number(b.id)) || 0;
+
+        return countB - countA ||
+            a.name.localeCompare(b.name, "sv");
+    });
+
+    const topFive = rankedPlayers.slice(0, 5);
+    const topFiveIds = new Set(
+        topFive.map(player => Number(player.id))
+    );
+
+    // Skapa en spelare med kryssruta.
+    function createPlayerLabel(player) {
         const label = document.createElement("label");
-        label.style.display = "flex";
-        label.style.alignItems = "center";
-        label.style.gap = "12px";
-        label.style.padding = "12px";
-        label.style.marginBottom = "8px";
-        label.style.border = "1px solid #ddd";
-        label.style.borderRadius = "8px";
+
+        label.style.cssText = `
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:9px 10px;
+            margin-bottom:6px;
+            border:1px solid #ddd;
+            border-radius:8px;
+            min-height:42px;
+            box-sizing:border-box;
+            cursor:pointer;
+        `;
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.value = String(player.id);
+        checkbox.checked =
+    Number(player.id) === Number(activePlayerId);
         checkbox.dataset.playerName = player.name;
-        checkbox.style.width = "22px";
-        checkbox.style.height = "22px";
+        checkbox.style.cssText = `
+            width:20px;
+            height:20px;
+            flex-shrink:0;
+            margin:0;
+        `;
 
         const name = document.createElement("span");
         name.textContent = player.name;
+        name.style.cssText = "overflow-wrap:anywhere;";
 
         label.append(checkbox, name);
-        list.appendChild(label);
+        return label;
+    }
+
+    // Visa de fem vanligaste direkt.
+    const frequentHeading = document.createElement("p");
+    frequentHeading.textContent = "⭐ Vanligaste spelkamraterna";
+    frequentHeading.style.cssText =
+        "margin:12px 0 8px;font-weight:bold;";
+
+    list.appendChild(frequentHeading);
+
+    topFive.forEach(player => {
+        list.appendChild(createPlayerLabel(player));
     });
+
+    // Lägg övriga spelare i en utfällbar lista.
+    const remainingPlayers = players
+        .filter(player => !topFiveIds.has(Number(player.id)))
+        .sort((a, b) => a.name.localeCompare(b.name, "sv"));
+
+    if (remainingPlayers.length > 0) {
+        const details = document.createElement("details");
+        details.style.marginTop = "10px";
+
+        const summary = document.createElement("summary");
+        summary.textContent =
+            `Visa fler spelare (${remainingPlayers.length})`;
+        summary.style.cssText = `
+            padding:11px;
+            border:1px solid #ddd;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+        `;
+
+        const remainingContainer = document.createElement("div");
+        remainingContainer.style.marginTop = "8px";
+
+        remainingPlayers.forEach(player => {
+            remainingContainer.appendChild(
+                createPlayerLabel(player)
+            );
+        });
+
+        details.append(summary, remainingContainer);
+        list.appendChild(details);
+    }
 
     function updateSelection() {
         const selected = list.querySelectorAll(
@@ -16602,40 +16707,44 @@ window.initLivePlayers = function () {
 
         info.textContent = `${selected.length} spelare valda.`;
         startButton.disabled = selected.length === 0;
-        startButton.style.opacity = selected.length ? "1" : "0.5";
+        startButton.style.opacity =
+            selected.length ? "1" : "0.5";
     }
 
     list.onchange = updateSelection;
     updateSelection();
 
     startButton.onclick = function () {
-    const selectedPlayers = [
-        ...list.querySelectorAll('input[type="checkbox"]:checked')
-    ].map(checkbox => ({
-        id: Number(checkbox.value),
-        name: checkbox.dataset.playerName
-    }));
+        const selectedPlayers = [
+            ...list.querySelectorAll(
+                'input[type="checkbox"]:checked'
+            )
+        ].map(checkbox => ({
+            id: Number(checkbox.value),
+            name: checkbox.dataset.playerName
+        }));
 
-    const layoutId = Number(
-        document.getElementById("liveLayoutSelect").value
-    );
+        const layoutId = Number(
+            document.getElementById("liveLayoutSelect").value
+        );
 
-    if (!layoutId || selectedPlayers.length === 0) {
-        info.textContent = "Välj en layout och minst en spelare.";
-        return;
-    }
+        if (!layoutId || selectedPlayers.length === 0) {
+            info.textContent =
+                "Välj en layout och minst en spelare.";
+            return;
+        }
 
-    console.log("Förberedd live-runda:", {
-        layoutId,
-        players: selectedPlayers
-    });
+        console.log("Förberedd live-runda:", {
+            layoutId,
+            players: selectedPlayers
+        });
 
-    window.startLiveRoundDraft(layoutId, selectedPlayers);
+        window.startLiveRoundDraft(layoutId, selectedPlayers);
 
-info.textContent =
-    `${selectedPlayers.length} spelare valda. ` +
-    "Poängregistreringen startas.";
-};
+        info.textContent =
+            `${selectedPlayers.length} spelare valda. ` +
+            "Poängregistreringen startas.";
+    };
 };
 // =====================================================
 // LIVE-POÄNGRÄKNARE: HÅLVY (LOKALT TEST, INGEN SPARNING)
@@ -17137,6 +17246,50 @@ document.getElementById("liveNextHole").onclick = function () {
     }
 };
 </script>
+<style>
+#liveScoringView {
+    padding: 8px !important;
+}
 
+#liveScoringView h1 {
+    font-size: 23px;
+    margin: 4px 0 6px;
+}
+
+#liveScoringView h2 {
+    font-size: 18px;
+    margin: 8px 0 4px;
+}
+
+#liveScoringView p {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+#liveScoringView #liveCourseSelect,
+#liveScoringView #liveLayoutSelect {
+    padding: 9px !important;
+    margin: 4px 0 10px !important;
+    font-size: 14px;
+}
+
+#liveScoringView #liveLayoutInfo {
+    padding: 8px;
+    margin: 8px 0;
+    font-size: 13px;
+}
+
+#liveScoringView #livePlayersSection {
+    margin-top: 12px !important;
+}
+
+#liveScoringView #liveStartRoundButton {
+    padding: 11px !important;
+    margin-top: 6px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+}
+</style>
 </body>
 </html>
