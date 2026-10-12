@@ -1829,11 +1829,11 @@
 
 <div id="liveHoleSection" style="display:none; margin-top:24px;">
 
-    <div style="text-align:center; margin-bottom:20px;">
-        <div style="font-size:14px; color:#666;">AKTUELLT HÅL</div>
-        <div id="liveHoleNumber" style="font-size:56px; font-weight:bold;">1</div>
-        <div id="liveHolePar" style="font-size:20px;">Par 3</div>
-        <div id="liveHoleProgress" style="margin-top:8px;">Hål 1 av 18</div>
+    <div style="text-align:center; margin-bottom:8px;">
+        <div style="font-size:11px; color:#666;">AKTUELLT HÅL</div>
+<div id="liveHoleNumber" style="font-size:28px; font-weight:bold;">1</div>
+<div id="liveHolePar" style="font-size:15px;">Par 3</div>
+<div id="liveHoleProgress" style="margin-top:2px; font-size:12px;">Hål 1 av 18</div>
     </div>
 
     <div id="liveHoleOverview" style="margin:16px 0;"></div>
@@ -16909,62 +16909,73 @@ window.renderLiveHole = function () {
         container.parentNode.insertBefore(overview, container);
     }
 
-    const completedHoles = round.holeOrder.filter(hole =>
-        round.players.length > 0 &&
-        round.players.every(player =>
-            player.scores[hole] !== undefined
-        )
+    
+const completedHoles = round.holeOrder.filter(hole =>
+    round.players.length > 0 &&
+    round.players.every(player =>
+        player.scores[hole] !== undefined
+    )
+);
+
+overview.replaceChildren();
+
+overview.style.cssText = "margin:8px 0;";
+
+const holeGrid = document.createElement("div");
+holeGrid.style.cssText =
+    "display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;";
+
+// Visa två hål: föregående och aktuellt.
+// Vid rundstart visas hål 1 och hål 2.
+const startIndex = round.currentIndex === 0
+    ? 0
+    : round.currentIndex - 1;
+
+const endIndex = Math.min(
+    startIndex + 2,
+    round.holeOrder.length
+);
+
+for (let index = startIndex; index < endIndex; index++) {
+    const hole = round.holeOrder[index];
+    const done = completedHoles.includes(hole);
+    const isCurrent = index === round.currentIndex;
+
+    const holeButton = document.createElement("button");
+    holeButton.type = "button";
+    holeButton.textContent = done ? `✓ Hål ${hole}` : `Hål ${hole}`;
+
+    holeButton.setAttribute(
+        "aria-label",
+        `Hål ${hole}${done ? ", klart" : isCurrent ? ", aktuellt" : ""}`
     );
 
-    overview.replaceChildren();
-
-    const overviewTitle = document.createElement("div");
-    overviewTitle.style.cssText =
-        "font-weight:bold;margin-bottom:6px;font-size:14px;";
-    overviewTitle.textContent =
-        `Hål klara: ${completedHoles.length} av ${round.holeOrder.length}`;
-    overview.appendChild(overviewTitle);
-
-    const holeGrid = document.createElement("div");
-    holeGrid.style.cssText =
-        "display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;";
-
-    round.holeOrder.forEach((hole, index) => {
-        const done = completedHoles.includes(hole);
-        const isCurrent = index === round.currentIndex;
-
-        const holeButton = document.createElement("button");
-        holeButton.type = "button";
-        holeButton.textContent = done ? `✓ ${hole}` : `${hole}`;
-        holeButton.setAttribute(
-            "aria-label",
-            `Hål ${hole}${done ? ", klart" : ", inte klart"}`
-        );
-
-        holeButton.style.cssText = `
-            min-height:36px;
-            border-radius:8px;
-            border:2px solid ${isCurrent ? "#2463eb" : done ? "#26834a" : "#ccc"};
-            background:${done ? "#DDF4E4" : "#fff"};
-            color:${done ? "#176534" : "#222"};
-            font-size:16px;
-            font-weight:${isCurrent || done ? "bold" : "normal"};
-            ${isCurrent ? "outline:2px solid #2463eb;outline-offset:1px;" : ""}
-        `;
-
-        // Gå bara direkt till hål som redan är färdigregistrerade.
-        holeButton.disabled = !done && !isCurrent;
-
-        holeButton.onclick = function () {
-            if (!done) return;
-            round.currentIndex = index;
-            window.renderLiveHole();
+    holeButton.style.cssText = `
+        min-height:42px;
+        border-radius:8px;
+        border:2px solid ${
+            isCurrent ? "#2463eb" : done ? "#26834a" : "#ccc"
         };
+        background:${done ? "#DDF4E4" : "#fff"};
+        color:${done ? "#176534" : "#222"};
+        font-size:16px;
+        font-weight:${isCurrent || done ? "bold" : "normal"};
+        ${isCurrent ? "outline:2px solid #2463eb;outline-offset:1px;" : ""}
+    `;
 
-        holeGrid.appendChild(holeButton);
-    });
+    // Tillåt återgång till färdiga hål och val av aktuellt hål.
+    holeButton.disabled = !done && !isCurrent;
 
-    overview.appendChild(holeGrid);
+    holeButton.onclick = function () {
+        if (!done && !isCurrent) return;
+        round.currentIndex = index;
+        window.renderLiveHole();
+    };
+
+    holeGrid.appendChild(holeButton);
+}
+
+overview.appendChild(holeGrid);
 
     round.players.forEach(player => {
         if (!player.scores) player.scores = {};
@@ -16974,10 +16985,16 @@ window.renderLiveHole = function () {
             "border:1px solid #ddd;border-radius:9px;padding:9px;margin-bottom:8px;";
 
         
-        const name = document.createElement("strong");
-        name.textContent = player.name;
-        name.style.cssText =
-            "display:block;font-size:17px;margin-bottom:4px;";
+        const nameRow = document.createElement("div");
+nameRow.style.cssText =
+    "display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px;margin-bottom:4px;";
+
+const name = document.createElement("strong");
+name.textContent = player.name;
+name.style.cssText =
+    "font-size:17px;min-width:0;text-align:center;grid-column:2;";
+
+nameRow.appendChild(name);
 
         // Personlig statistik för just den här spelaren och hålet.
         let personalAverage = "–";
@@ -17123,7 +17140,7 @@ window.renderLiveHole = function () {
                 : "1px solid #aaa";
 
         row.append(minus, score, plus);
-		card.append(name, statsLine, row, parButton);
+		card.append(nameRow, statsLine, row, parButton);
 
         // Summera alla registrerade resultat.
         let totalStrokes = 0;
@@ -17171,12 +17188,17 @@ window.renderLiveHole = function () {
             };`;
 
         totalLine.textContent = playedHoles === 0
-            ? "Totalt: Inga registrerade hål"
-            : `Totalt: ${totalStrokes} kast · ${resultText}`;
+    ? "0 kast"
+    : `${resultText} · ${totalStrokes} kast`;
 
-        result.appendChild(totalLine);
-        card.appendChild(result);
-        container.appendChild(card);
+totalLine.style.cssText +=
+    "font-size:14px;margin:0;text-align:right;white-space:nowrap;";
+
+        totalLine.style.gridColumn = "3";
+totalLine.style.justifySelf = "end";
+
+nameRow.appendChild(totalLine);
+container.appendChild(card);
     });
 
     document.getElementById("livePreviousHole").disabled =
