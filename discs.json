@@ -1,0 +1,9842 @@
+[
+  {
+    "id": 662,
+    "brand": "Alfa Discs",
+    "name": "Apollo",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 663,
+    "brand": "Alfa Discs",
+    "name": "Cosmic",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 661,
+    "brand": "Alfa Discs",
+    "name": "Snoopy",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 317,
+    "brand": "Axiom",
+    "name": "Alias",
+    "speed": 5,
+    "glide": 4.5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 717,
+    "brand": "Axiom",
+    "name": "Alias OS",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 319,
+    "brand": "Axiom",
+    "name": "Clash",
+    "speed": 6.5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 100,
+    "brand": "Axiom",
+    "name": "Crave",
+    "speed": 6,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 827,
+    "brand": "Axiom",
+    "name": "Delirium",
+    "speed": 14.5,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 97,
+    "brand": "Axiom",
+    "name": "Envy",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 602,
+    "brand": "Axiom",
+    "name": "Exanity",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 966,
+    "brand": "Axiom",
+    "name": "Excite",
+    "speed": 14.5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 826,
+    "brand": "Axiom",
+    "name": "Exo",
+    "speed": 14.5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 101,
+    "brand": "Axiom",
+    "name": "Fireball",
+    "speed": 9,
+    "glide": 3.5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 223,
+    "brand": "Axiom",
+    "name": "Fission Crave",
+    "speed": 6.5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 98,
+    "brand": "Axiom",
+    "name": "Hex",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 971,
+    "brand": "Axiom",
+    "name": "Hydra",
+    "speed": 8,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 102,
+    "brand": "Axiom",
+    "name": "Insanity",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 686,
+    "brand": "Axiom",
+    "name": "Inspire",
+    "speed": 6.5,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 968,
+    "brand": "Axiom",
+    "name": "Instinct",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 970,
+    "brand": "Axiom",
+    "name": "Mayhem",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 972,
+    "brand": "Axiom",
+    "name": "Nomad",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Putter"
+  },
+  {
+    "id": 603,
+    "brand": "Axiom",
+    "name": "Panic",
+    "speed": 13,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 99,
+    "brand": "Axiom",
+    "name": "Paradox",
+    "speed": 5,
+    "glide": 4,
+    "turn": -4,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 967,
+    "brand": "Axiom",
+    "name": "Passion",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 819,
+    "brand": "Axiom",
+    "name": "Pitch",
+    "speed": 1,
+    "glide": 7,
+    "turn": -0.5,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 95,
+    "brand": "Axiom",
+    "name": "Pixel",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 96,
+    "brand": "Axiom",
+    "name": "Proxy",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 716,
+    "brand": "Axiom",
+    "name": "Proxy Soft",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 822,
+    "brand": "Axiom",
+    "name": "Pyro",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 320,
+    "brand": "Axiom",
+    "name": "Rhythm",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 973,
+    "brand": "Axiom",
+    "name": "Serum",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 969,
+    "brand": "Axiom",
+    "name": "Spell",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 323,
+    "brand": "Axiom",
+    "name": "Tantrum",
+    "speed": 14.5,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 513,
+    "brand": "Axiom",
+    "name": "Tempo",
+    "speed": 4,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Approach"
+  },
+  {
+    "id": 698,
+    "brand": "Axiom",
+    "name": "Tenacity",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 318,
+    "brand": "Axiom",
+    "name": "Theory",
+    "speed": 5,
+    "glide": 4,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 564,
+    "brand": "Axiom",
+    "name": "Thrill",
+    "speed": 11,
+    "glide": 3.5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 103,
+    "brand": "Axiom",
+    "name": "Time-Lapse",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 321,
+    "brand": "Axiom",
+    "name": "Trance",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 718,
+    "brand": "Axiom",
+    "name": "Vanish",
+    "speed": 11,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 222,
+    "brand": "Axiom",
+    "name": "Virus",
+    "speed": 9,
+    "glide": 5,
+    "turn": -3.5,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 823,
+    "brand": "Axiom",
+    "name": "Watermelon Hex",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 322,
+    "brand": "Axiom",
+    "name": "Wrath",
+    "speed": 9,
+    "glide": 4.5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 664,
+    "brand": "Birdie",
+    "name": "Marvel",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 666,
+    "brand": "Birdie",
+    "name": "Strike",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 665,
+    "brand": "Birdie",
+    "name": "Ultra",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 136,
+    "brand": "Clash Discs",
+    "name": "Berry",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 926,
+    "brand": "Clash Discs",
+    "name": "Biscuit",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 705,
+    "brand": "Clash Discs",
+    "name": "Butter",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 382,
+    "brand": "Clash Discs",
+    "name": "Candy",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 141,
+    "brand": "Clash Discs",
+    "name": "Cinnamon",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 140,
+    "brand": "Clash Discs",
+    "name": "Cookie",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 134,
+    "brand": "Clash Discs",
+    "name": "Fudge",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 142,
+    "brand": "Clash Discs",
+    "name": "Ginger",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 383,
+    "brand": "Clash Discs",
+    "name": "Guava",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 384,
+    "brand": "Clash Discs",
+    "name": "Lotus",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 138,
+    "brand": "Clash Discs",
+    "name": "Mango",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 135,
+    "brand": "Clash Discs",
+    "name": "Mint",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 137,
+    "brand": "Clash Discs",
+    "name": "Peach",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 864,
+    "brand": "Clash Discs",
+    "name": "Pepper",
+    "speed": 11,
+    "glide": 5,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 385,
+    "brand": "Clash Discs",
+    "name": "Peppermint",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 569,
+    "brand": "Clash Discs",
+    "name": "Plum",
+    "speed": 4,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Approach"
+  },
+  {
+    "id": 133,
+    "brand": "Clash Discs",
+    "name": "Popcorn",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 143,
+    "brand": "Clash Discs",
+    "name": "Salt",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 139,
+    "brand": "Clash Discs",
+    "name": "Soda",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 863,
+    "brand": "Clash Discs",
+    "name": "Spice",
+    "speed": 13,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 927,
+    "brand": "Clash Discs",
+    "name": "Tone",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 144,
+    "brand": "Clash Discs",
+    "name": "Vanilla",
+    "speed": 11,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 386,
+    "brand": "Clash Discs",
+    "name": "Wild Honey",
+    "speed": 12,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 637,
+    "brand": "Crosslap",
+    "name": "Credo",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 638,
+    "brand": "Crosslap",
+    "name": "Lucky",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 639,
+    "brand": "Crosslap",
+    "name": "Shadow",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 735,
+    "brand": "DGA",
+    "name": "Aftershock",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 170,
+    "brand": "DGA",
+    "name": "Banzai",
+    "speed": 8,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 165,
+    "brand": "DGA",
+    "name": "Blowfly",
+    "speed": 2,
+    "glide": 2,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 916,
+    "brand": "DGA",
+    "name": "Blowfly II",
+    "speed": 2,
+    "glide": 2,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 166,
+    "brand": "DGA",
+    "name": "Breaker",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 734,
+    "brand": "DGA",
+    "name": "Breaker Soft",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 917,
+    "brand": "DGA",
+    "name": "Gumball",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 507,
+    "brand": "DGA",
+    "name": "Hellfire",
+    "speed": 10,
+    "glide": 3,
+    "turn": 0,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 173,
+    "brand": "DGA",
+    "name": "Hurricane",
+    "speed": 12,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 737,
+    "brand": "DGA",
+    "name": "Hurricane OS",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 169,
+    "brand": "DGA",
+    "name": "Pipeline",
+    "speed": 8,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 918,
+    "brand": "DGA",
+    "name": "Quake",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 167,
+    "brand": "DGA",
+    "name": "Rift",
+    "speed": 5,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 172,
+    "brand": "DGA",
+    "name": "Rogue",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 171,
+    "brand": "DGA",
+    "name": "Sail",
+    "speed": 11,
+    "glide": 5,
+    "turn": -5,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 506,
+    "brand": "DGA",
+    "name": "Shockwave",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 168,
+    "brand": "DGA",
+    "name": "Squall",
+    "speed": 6,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 503,
+    "brand": "DGA",
+    "name": "Steady",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 504,
+    "brand": "DGA",
+    "name": "Steady BL",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 508,
+    "brand": "DGA",
+    "name": "Tempest",
+    "speed": 13,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 919,
+    "brand": "DGA",
+    "name": "Torrent",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 505,
+    "brand": "DGA",
+    "name": "Tremor",
+    "speed": 5,
+    "glide": 5,
+    "turn": -4,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 736,
+    "brand": "DGA",
+    "name": "Tsunami",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 255,
+    "brand": "Daredevil",
+    "name": "Beaver",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 260,
+    "brand": "Daredevil",
+    "name": "Big Bear",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 256,
+    "brand": "Daredevil",
+    "name": "Moose",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 258,
+    "brand": "Daredevil",
+    "name": "Swift Fox",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 259,
+    "brand": "Daredevil",
+    "name": "Timberwolf",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 257,
+    "brand": "Daredevil",
+    "name": "Walrus",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 254,
+    "brand": "Daredevil",
+    "name": "Woodbecker",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 784,
+    "brand": "Discmania",
+    "name": "Anax",
+    "speed": 10,
+    "glide": 6,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 786,
+    "brand": "Discmania",
+    "name": "Astronaut",
+    "speed": 12,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 91,
+    "brand": "Discmania",
+    "name": "CD1",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 379,
+    "brand": "Discmania",
+    "name": "CD2",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 778,
+    "brand": "Discmania",
+    "name": "CD3",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 94,
+    "brand": "Discmania",
+    "name": "Cloud Breaker",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 783,
+    "brand": "Discmania",
+    "name": "DD",
+    "speed": 11,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 93,
+    "brand": "Discmania",
+    "name": "DD1",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 380,
+    "brand": "Discmania",
+    "name": "DD2",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 92,
+    "brand": "Discmania",
+    "name": "DD3",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 220,
+    "brand": "Discmania",
+    "name": "Enigma",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 219,
+    "brand": "Discmania",
+    "name": "Essence",
+    "speed": 8,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 88,
+    "brand": "Discmania",
+    "name": "FD",
+    "speed": 7,
+    "glide": 6,
+    "turn": 0,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 701,
+    "brand": "Discmania",
+    "name": "FD1",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 378,
+    "brand": "Discmania",
+    "name": "FD2",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 89,
+    "brand": "Discmania",
+    "name": "FD3",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 889,
+    "brand": "Discmania",
+    "name": "Fox Spirit",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 777,
+    "brand": "Discmania",
+    "name": "Genius",
+    "speed": 7,
+    "glide": 5,
+    "turn": -4,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 776,
+    "brand": "Discmania",
+    "name": "Instinct",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 83,
+    "brand": "Discmania",
+    "name": "Link",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 84,
+    "brand": "Discmania",
+    "name": "Logic",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 85,
+    "brand": "Discmania",
+    "name": "MD1",
+    "speed": 5,
+    "glide": 6,
+    "turn": 0,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 376,
+    "brand": "Discmania",
+    "name": "MD2",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 86,
+    "brand": "Discmania",
+    "name": "MD3",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 377,
+    "brand": "Discmania",
+    "name": "MD4",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 87,
+    "brand": "Discmania",
+    "name": "MD5",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 774,
+    "brand": "Discmania",
+    "name": "Maestro",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 300,
+    "brand": "Discmania",
+    "name": "Magician",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 785,
+    "brand": "Discmania",
+    "name": "Majesty",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 299,
+    "brand": "Discmania",
+    "name": "Mentor",
+    "speed": 11,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 612,
+    "brand": "Discmania",
+    "name": "Mermaid",
+    "speed": 7,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 773,
+    "brand": "Discmania",
+    "name": "Method",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 553,
+    "brand": "Discmania",
+    "name": "Mind Flayer",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 217,
+    "brand": "Discmania",
+    "name": "Origin",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 81,
+    "brand": "Discmania",
+    "name": "P1",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 374,
+    "brand": "Discmania",
+    "name": "P1X",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 80,
+    "brand": "Discmania",
+    "name": "P2",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 375,
+    "brand": "Discmania",
+    "name": "P3",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 82,
+    "brand": "Discmania",
+    "name": "P3x",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 90,
+    "brand": "Discmania",
+    "name": "PD",
+    "speed": 10,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 381,
+    "brand": "Discmania",
+    "name": "PD2",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 779,
+    "brand": "Discmania",
+    "name": "PD3",
+    "speed": 11,
+    "glide": 3,
+    "turn": 0,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 888,
+    "brand": "Discmania",
+    "name": "Paradigm",
+    "speed": 12,
+    "glide": 6,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 297,
+    "brand": "Discmania",
+    "name": "Rainmaker",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 772,
+    "brand": "Discmania",
+    "name": "Razor Claw",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 775,
+    "brand": "Discmania",
+    "name": "Sea Serpent",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 295,
+    "brand": "Discmania",
+    "name": "Sensei",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 296,
+    "brand": "Discmania",
+    "name": "Shogun",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 221,
+    "brand": "Discmania",
+    "name": "Splice",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 298,
+    "brand": "Discmania",
+    "name": "Spore",
+    "speed": 1,
+    "glide": 7,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 886,
+    "brand": "Discmania",
+    "name": "Spring Ox",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 613,
+    "brand": "Discmania",
+    "name": "Sun Bird",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 780,
+    "brand": "Discmania",
+    "name": "TD",
+    "speed": 10,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 781,
+    "brand": "Discmania",
+    "name": "TD2",
+    "speed": 10,
+    "glide": 5,
+    "turn": -4,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 782,
+    "brand": "Discmania",
+    "name": "TDx",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 218,
+    "brand": "Discmania",
+    "name": "Tactic",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 885,
+    "brand": "Discmania",
+    "name": "Tailor",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 887,
+    "brand": "Discmania",
+    "name": "Vanguard",
+    "speed": 9,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 681,
+    "brand": "Discraft",
+    "name": " Crank SS",
+    "speed": 13,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 39,
+    "brand": "Discraft",
+    "name": "Anax",
+    "speed": 10,
+    "glide": 6,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 428,
+    "brand": "Discraft",
+    "name": "Archer",
+    "speed": 5,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 805,
+    "brand": "Discraft",
+    "name": "Athena",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 432,
+    "brand": "Discraft",
+    "name": "Avenger",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 40,
+    "brand": "Discraft",
+    "name": "Avenger SS",
+    "speed": 10,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 426,
+    "brand": "Discraft",
+    "name": "Banger GT",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 30,
+    "brand": "Discraft",
+    "name": "Buzzz",
+    "speed": 5,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 710,
+    "brand": "Discraft",
+    "name": "Buzzz GT",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 31,
+    "brand": "Discraft",
+    "name": "Buzzz OS",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 32,
+    "brand": "Discraft",
+    "name": "Buzzz SS",
+    "speed": 5,
+    "glide": 4,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 211,
+    "brand": "Discraft",
+    "name": "Captain's Raptor",
+    "speed": 9,
+    "glide": 3,
+    "turn": 1,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 810,
+    "brand": "Discraft",
+    "name": "Captains Raptor",
+    "speed": 9,
+    "glide": 3,
+    "turn": 1,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 422,
+    "brand": "Discraft",
+    "name": "Challenger",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 423,
+    "brand": "Discraft",
+    "name": "Challenger OS",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 677,
+    "brand": "Discraft",
+    "name": "Challenger SS",
+    "speed": 2,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 806,
+    "brand": "Discraft",
+    "name": "Cicada",
+    "speed": 7,
+    "glide": 6,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 34,
+    "brand": "Discraft",
+    "name": "Comet",
+    "speed": 4,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 434,
+    "brand": "Discraft",
+    "name": "Crank",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 814,
+    "brand": "Discraft",
+    "name": "Crank SS",
+    "speed": 13,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 597,
+    "brand": "Discraft",
+    "name": "Crush",
+    "speed": 11,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 678,
+    "brand": "Discraft",
+    "name": "Drone",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 27,
+    "brand": "Discraft",
+    "name": "Fierce",
+    "speed": 3,
+    "glide": 4,
+    "turn": -2,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 561,
+    "brand": "Discraft",
+    "name": "Flash",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 911,
+    "brand": "Discraft",
+    "name": "Flick",
+    "speed": 12,
+    "glide": 3,
+    "turn": 1,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 425,
+    "brand": "Discraft",
+    "name": "Focus",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 42,
+    "brand": "Discraft",
+    "name": "Force",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 693,
+    "brand": "Discraft",
+    "name": "Glide",
+    "speed": 6,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 711,
+    "brand": "Discraft",
+    "name": "Glide OS",
+    "speed": 6,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 813,
+    "brand": "Discraft",
+    "name": "Hades",
+    "speed": 12,
+    "glide": 6,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 43,
+    "brand": "Discraft",
+    "name": "Hadron",
+    "speed": 13,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 559,
+    "brand": "Discraft",
+    "name": "Hawk",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 38,
+    "brand": "Discraft",
+    "name": "Heat",
+    "speed": 9,
+    "glide": 6,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 804,
+    "brand": "Discraft",
+    "name": "Hornet",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 26,
+    "brand": "Discraft",
+    "name": "Luna",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 35,
+    "brand": "Discraft",
+    "name": "Machete",
+    "speed": 11,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 424,
+    "brand": "Discraft",
+    "name": "Magnet",
+    "speed": 2,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 615,
+    "brand": "Discraft",
+    "name": "Malta",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 807,
+    "brand": "Discraft",
+    "name": "Mantiss",
+    "speed": 8,
+    "glide": 4,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 431,
+    "brand": "Discraft",
+    "name": "Mantiz",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 33,
+    "brand": "Discraft",
+    "name": "Meteor",
+    "speed": 5,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 593,
+    "brand": "Discraft",
+    "name": "Meteor OS",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 594,
+    "brand": "Discraft",
+    "name": "Nebula",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 435,
+    "brand": "Discraft",
+    "name": "Nuke",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 436,
+    "brand": "Discraft",
+    "name": "Nuke OS",
+    "speed": 13,
+    "glide": 4,
+    "turn": 1,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 437,
+    "brand": "Discraft",
+    "name": "Nuke SS",
+    "speed": 13,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 912,
+    "brand": "Discraft",
+    "name": "Passage",
+    "speed": 12,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 212,
+    "brand": "Discraft",
+    "name": "Passion",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 811,
+    "brand": "Discraft",
+    "name": "Predator",
+    "speed": 10,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 560,
+    "brand": "Discraft",
+    "name": "Pulse",
+    "speed": 11,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 696,
+    "brand": "Discraft",
+    "name": "Punisher",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 591,
+    "brand": "Discraft",
+    "name": "Puttr",
+    "speed": 2,
+    "glide": 2,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 37,
+    "brand": "Discraft",
+    "name": "Raptor",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 557,
+    "brand": "Discraft",
+    "name": "Rattler",
+    "speed": 2,
+    "glide": 3,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 679,
+    "brand": "Discraft",
+    "name": "Reaper",
+    "speed": 8,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 558,
+    "brand": "Discraft",
+    "name": "Ringer",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Approach"
+  },
+  {
+    "id": 692,
+    "brand": "Discraft",
+    "name": "Ringer GT",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 25,
+    "brand": "Discraft",
+    "name": "Roach",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 210,
+    "brand": "Discraft",
+    "name": "Scorch",
+    "speed": 11,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 647,
+    "brand": "Discraft",
+    "name": "Soft Magnet",
+    "speed": 2,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 427,
+    "brand": "Discraft",
+    "name": "Sol",
+    "speed": 4,
+    "glide": 5,
+    "turn": -3,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 648,
+    "brand": "Discraft",
+    "name": "Squall",
+    "speed": 6,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 430,
+    "brand": "Discraft",
+    "name": "Stalker",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 429,
+    "brand": "Discraft",
+    "name": "Stratus",
+    "speed": 5,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 592,
+    "brand": "Discraft",
+    "name": "Stratus SS",
+    "speed": 5,
+    "glide": 5,
+    "turn": -4,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 815,
+    "brand": "Discraft",
+    "name": "Surge",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 712,
+    "brand": "Discraft",
+    "name": "Surge SS",
+    "speed": 11,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 433,
+    "brand": "Discraft",
+    "name": "Surgeon",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 680,
+    "brand": "Discraft",
+    "name": "Talon",
+    "speed": 8,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 909,
+    "brand": "Discraft",
+    "name": "Thrash",
+    "speed": 12,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 812,
+    "brand": "Discraft",
+    "name": "Thrasher",
+    "speed": 12,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 910,
+    "brand": "Discraft",
+    "name": "Tracker",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 695,
+    "brand": "Discraft",
+    "name": "Tracking",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 36,
+    "brand": "Discraft",
+    "name": "Undertaker",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 44,
+    "brand": "Discraft",
+    "name": "Venom",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 908,
+    "brand": "Discraft",
+    "name": "Vulture",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 803,
+    "brand": "Discraft",
+    "name": "Wasp",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 596,
+    "brand": "Discraft",
+    "name": "Wildcat",
+    "speed": 11,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 808,
+    "brand": "Discraft",
+    "name": "XL",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 809,
+    "brand": "Discraft",
+    "name": "XS",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 595,
+    "brand": "Discraft",
+    "name": "Xpress",
+    "speed": 8,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 41,
+    "brand": "Discraft",
+    "name": "Zeus",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 694,
+    "brand": "Discraft",
+    "name": "Zombee",
+    "speed": 6,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 649,
+    "brand": "Discraft",
+    "name": "Zombie",
+    "speed": 8,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 28,
+    "brand": "Discraft",
+    "name": "Zone",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 802,
+    "brand": "Discraft",
+    "name": "Zone GT",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 29,
+    "brand": "Discraft",
+    "name": "Zone OS",
+    "speed": 4,
+    "glide": 2,
+    "turn": 1,
+    "fade": 5,
+    "category": "Approach"
+  },
+  {
+    "id": 248,
+    "brand": "Divergent Discs",
+    "name": "Basilisk",
+    "speed": 12,
+    "glide": 6,
+    "turn": -5,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 243,
+    "brand": "Divergent Discs",
+    "name": "Golem",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Approach"
+  },
+  {
+    "id": 245,
+    "brand": "Divergent Discs",
+    "name": "Kapre",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 246,
+    "brand": "Divergent Discs",
+    "name": "Kraken",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 247,
+    "brand": "Divergent Discs",
+    "name": "Lawless",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 244,
+    "brand": "Divergent Discs",
+    "name": "Leviathan",
+    "speed": 5,
+    "glide": 4,
+    "turn": -4,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 636,
+    "brand": "Divergent Discs",
+    "name": "Naskape",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 242,
+    "brand": "Divergent Discs",
+    "name": "Nasket",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 658,
+    "brand": "Doomsday Discs",
+    "name": "Black Hole",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 928,
+    "brand": "Doomsday Discs",
+    "name": "Blackout",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 655,
+    "brand": "Doomsday Discs",
+    "name": "Bleak",
+    "speed": 2,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 659,
+    "brand": "Doomsday Discs",
+    "name": "Cataclysm",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 929,
+    "brand": "Doomsday Discs",
+    "name": "Crisis",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 656,
+    "brand": "Doomsday Discs",
+    "name": "Depth Charge",
+    "speed": 3,
+    "glide": 1,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 930,
+    "brand": "Doomsday Discs",
+    "name": "Desolation",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 657,
+    "brand": "Doomsday Discs",
+    "name": "Despair",
+    "speed": 5,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 931,
+    "brand": "Doomsday Discs",
+    "name": "Flathead Snake",
+    "speed": 5,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 932,
+    "brand": "Doomsday Discs",
+    "name": "Land Mine",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 660,
+    "brand": "Doomsday Discs",
+    "name": "Plague",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 934,
+    "brand": "Doomsday Discs",
+    "name": "Scarcity",
+    "speed": 10,
+    "glide": 6,
+    "turn": -3,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 933,
+    "brand": "Doomsday Discs",
+    "name": "Scope",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 935,
+    "brand": "Doomsday Discs",
+    "name": "Survival",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 936,
+    "brand": "Doomsday Discs",
+    "name": "Toxic Waste",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 937,
+    "brand": "Doomsday Discs",
+    "name": "Wasteland",
+    "speed": 12,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 845,
+    "brand": "Dynamic Discs",
+    "name": "Agent",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 370,
+    "brand": "Dynamic Discs",
+    "name": "Bounty",
+    "speed": 4,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 0.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 854,
+    "brand": "Dynamic Discs",
+    "name": "Captain",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 551,
+    "brand": "Dynamic Discs",
+    "name": "Convict",
+    "speed": 9,
+    "glide": 4,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 847,
+    "brand": "Dynamic Discs",
+    "name": "Culprit",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Approach"
+  },
+  {
+    "id": 857,
+    "brand": "Dynamic Discs",
+    "name": "Defender",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 367,
+    "brand": "Dynamic Discs",
+    "name": "Deputy",
+    "speed": 3,
+    "glide": 4,
+    "turn": -1.5,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 844,
+    "brand": "Dynamic Discs",
+    "name": "EMac Judge",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 288,
+    "brand": "Dynamic Discs",
+    "name": "EMac Truth",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 856,
+    "brand": "Dynamic Discs",
+    "name": "Enforcer",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 292,
+    "brand": "Dynamic Discs",
+    "name": "Escape",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 850,
+    "brand": "Dynamic Discs",
+    "name": "Evader",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 550,
+    "brand": "Dynamic Discs",
+    "name": "Evidence",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 849,
+    "brand": "Dynamic Discs",
+    "name": "Explorer",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 290,
+    "brand": "Dynamic Discs",
+    "name": "Felon",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 982,
+    "brand": "Dynamic Discs",
+    "name": "Flow",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 855,
+    "brand": "Dynamic Discs",
+    "name": "Freedom",
+    "speed": 14,
+    "glide": 5,
+    "turn": -2,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 848,
+    "brand": "Dynamic Discs",
+    "name": "Fugitive",
+    "speed": 5,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 1.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 372,
+    "brand": "Dynamic Discs",
+    "name": "Getaway",
+    "speed": 9,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 853,
+    "brand": "Dynamic Discs",
+    "name": "Grace",
+    "speed": 11,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 549,
+    "brand": "Dynamic Discs",
+    "name": "Guard",
+    "speed": 2,
+    "glide": 5,
+    "turn": 0,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 851,
+    "brand": "Dynamic Discs",
+    "name": "Honor",
+    "speed": 9,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 284,
+    "brand": "Dynamic Discs",
+    "name": "Judge",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 368,
+    "brand": "Dynamic Discs",
+    "name": "Justice",
+    "speed": 5,
+    "glide": 1,
+    "turn": 0.5,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 978,
+    "brand": "Dynamic Discs",
+    "name": "Marshal",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Putter"
+  },
+  {
+    "id": 291,
+    "brand": "Dynamic Discs",
+    "name": "Maverick",
+    "speed": 7,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 980,
+    "brand": "Dynamic Discs",
+    "name": "Mermaid",
+    "speed": 6,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 852,
+    "brand": "Dynamic Discs",
+    "name": "Musket",
+    "speed": 10,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 294,
+    "brand": "Dynamic Discs",
+    "name": "Raider",
+    "speed": 13,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 552,
+    "brand": "Dynamic Discs",
+    "name": "Renegade",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 373,
+    "brand": "Dynamic Discs",
+    "name": "Sheriff",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 286,
+    "brand": "Dynamic Discs",
+    "name": "Slammer",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 287,
+    "brand": "Dynamic Discs",
+    "name": "Sockeye",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 846,
+    "brand": "Dynamic Discs",
+    "name": "Sockibomb Slammer",
+    "speed": 3,
+    "glide": 1,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 979,
+    "brand": "Dynamic Discs",
+    "name": "Suspect",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 293,
+    "brand": "Dynamic Discs",
+    "name": "Trespass",
+    "speed": 12,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 369,
+    "brand": "Dynamic Discs",
+    "name": "Truth",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 371,
+    "brand": "Dynamic Discs",
+    "name": "Vandal",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 289,
+    "brand": "Dynamic Discs",
+    "name": "Verdict",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 285,
+    "brand": "Dynamic Discs",
+    "name": "Warden",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 981,
+    "brand": "Dynamic Discs",
+    "name": "Witness",
+    "speed": 8,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 628,
+    "brand": "EV-7",
+    "name": "Mobius",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 625,
+    "brand": "EV-7",
+    "name": "Penrose",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 626,
+    "brand": "EV-7",
+    "name": "Phi",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 627,
+    "brand": "EV-7",
+    "name": "Telos",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Putter"
+  },
+  {
+    "id": 651,
+    "brand": "Elevation",
+    "name": "Arowana",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 653,
+    "brand": "Elevation",
+    "name": "Basking Shark",
+    "speed": 6,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 654,
+    "brand": "Elevation",
+    "name": "Gecko",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 652,
+    "brand": "Elevation",
+    "name": "Interceptor",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 650,
+    "brand": "Elevation",
+    "name": "Koi",
+    "speed": 2,
+    "glide": 4,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 252,
+    "brand": "Finish Line",
+    "name": "Era",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 253,
+    "brand": "Finish Line",
+    "name": "Interval",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 249,
+    "brand": "Finish Line",
+    "name": "Pace",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 250,
+    "brand": "Finish Line",
+    "name": "Supersonic",
+    "speed": 3,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 251,
+    "brand": "Finish Line",
+    "name": "Torque",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 458,
+    "brand": "Gateway",
+    "name": "Apache",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 198,
+    "brand": "Gateway",
+    "name": "Apex",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 576,
+    "brand": "Gateway",
+    "name": "Assassin",
+    "speed": 9,
+    "glide": 6,
+    "turn": -1.5,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 859,
+    "brand": "Gateway",
+    "name": "Blaze",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 452,
+    "brand": "Gateway",
+    "name": "Chief",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 453,
+    "brand": "Gateway",
+    "name": "Chief OS",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 456,
+    "brand": "Gateway",
+    "name": "Demon",
+    "speed": 6,
+    "glide": 3,
+    "turn": 0,
+    "fade": 5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 196,
+    "brand": "Gateway",
+    "name": "Devil Hawk",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 861,
+    "brand": "Gateway",
+    "name": "Diablo",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 197,
+    "brand": "Gateway",
+    "name": "Element",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 459,
+    "brand": "Gateway",
+    "name": "Illusion",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 860,
+    "brand": "Gateway",
+    "name": "Journey",
+    "speed": 12,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 575,
+    "brand": "Gateway",
+    "name": "Karma",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 195,
+    "brand": "Gateway",
+    "name": "Magic",
+    "speed": 2,
+    "glide": 3,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 455,
+    "brand": "Gateway",
+    "name": "Mystic",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 730,
+    "brand": "Gateway",
+    "name": "Ninja",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 454,
+    "brand": "Gateway",
+    "name": "Prophecy",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 729,
+    "brand": "Gateway",
+    "name": "Samurai",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 451,
+    "brand": "Gateway",
+    "name": "Shaman",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 728,
+    "brand": "Gateway",
+    "name": "Slayer",
+    "speed": 12,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 457,
+    "brand": "Gateway",
+    "name": "Spear",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 862,
+    "brand": "Gateway",
+    "name": "Spirit",
+    "speed": 11,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 194,
+    "brand": "Gateway",
+    "name": "Voodoo",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 193,
+    "brand": "Gateway",
+    "name": "Warlock",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 858,
+    "brand": "Gateway",
+    "name": "Warspear",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 192,
+    "brand": "Gateway",
+    "name": "Wizard",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 468,
+    "brand": "Infinite Discs",
+    "name": "Alpaca",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 472,
+    "brand": "Infinite Discs",
+    "name": "Anubis",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 732,
+    "brand": "Infinite Discs",
+    "name": "Anubis OS",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 480,
+    "brand": "Infinite Discs",
+    "name": "Aztec",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 475,
+    "brand": "Infinite Discs",
+    "name": "Centurion",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 733,
+    "brand": "Infinite Discs",
+    "name": "Centurion SS",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 473,
+    "brand": "Infinite Discs",
+    "name": "Chariot",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 566,
+    "brand": "Infinite Discs",
+    "name": "Cohort",
+    "speed": 3.5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 478,
+    "brand": "Infinite Discs",
+    "name": "Dynasty",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 482,
+    "brand": "Infinite Discs",
+    "name": "Emperor",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 476,
+    "brand": "Infinite Discs",
+    "name": "Exodus",
+    "speed": 7,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 567,
+    "brand": "Infinite Discs",
+    "name": "Galleon",
+    "speed": 6,
+    "glide": 2,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 470,
+    "brand": "Infinite Discs",
+    "name": "Myth",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 731,
+    "brand": "Infinite Discs",
+    "name": "Myth Soft",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 481,
+    "brand": "Infinite Discs",
+    "name": "Pharaoh",
+    "speed": 13,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 474,
+    "brand": "Infinite Discs",
+    "name": "Ra",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 471,
+    "brand": "Infinite Discs",
+    "name": "Ruin",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 565,
+    "brand": "Infinite Discs",
+    "name": "Scarab",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 479,
+    "brand": "Infinite Discs",
+    "name": "Scepter",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 483,
+    "brand": "Infinite Discs",
+    "name": "Slab",
+    "speed": 12,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 568,
+    "brand": "Infinite Discs",
+    "name": "Slab OS",
+    "speed": 12,
+    "glide": 3,
+    "turn": 1,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 477,
+    "brand": "Infinite Discs",
+    "name": "Sphinx",
+    "speed": 9,
+    "glide": 6,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 469,
+    "brand": "Infinite Discs",
+    "name": "Tomb",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 879,
+    "brand": "Innova",
+    "name": "Aero",
+    "speed": 3,
+    "glide": 6,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 267,
+    "brand": "Innova",
+    "name": "Alien",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 801,
+    "brand": "Innova",
+    "name": "Ape",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 449,
+    "brand": "Innova",
+    "name": "Archangel",
+    "speed": 8,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 349,
+    "brand": "Innova",
+    "name": "Archon",
+    "speed": 11,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 346,
+    "brand": "Innova",
+    "name": "Atlas",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 518,
+    "brand": "Innova",
+    "name": "Avatar",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 787,
+    "brand": "Innova",
+    "name": "AviaX3",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 1,
+    "brand": "Innova",
+    "name": "Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 706,
+    "brand": "Innova",
+    "name": "Aviar Driver",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 2,
+    "brand": "Innova",
+    "name": "Aviar3",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 517,
+    "brand": "Innova",
+    "name": "AviarX3",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 447,
+    "brand": "Innova",
+    "name": "Banshee",
+    "speed": 7,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 19,
+    "brand": "Innova",
+    "name": "Beast",
+    "speed": 10,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 586,
+    "brand": "Innova",
+    "name": "Birdie",
+    "speed": 1,
+    "glide": 2,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 24,
+    "brand": "Innova",
+    "name": "Boss",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 587,
+    "brand": "Innova",
+    "name": "Bullfrog",
+    "speed": 3,
+    "glide": 1,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 339,
+    "brand": "Innova",
+    "name": "Bullseye Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 209,
+    "brand": "Innova",
+    "name": "Caiman",
+    "speed": 5.5,
+    "glide": 2,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 272,
+    "brand": "Innova",
+    "name": "Charger",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 444,
+    "brand": "Innova",
+    "name": "Cheetah",
+    "speed": 6,
+    "glide": 4,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 3,
+    "brand": "Innova",
+    "name": "Classic Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 674,
+    "brand": "Innova",
+    "name": "Classic Roc",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 205,
+    "brand": "Innova",
+    "name": "Colossus",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 645,
+    "brand": "Innova",
+    "name": "Colt",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 646,
+    "brand": "Innova",
+    "name": "Commander",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 442,
+    "brand": "Innova",
+    "name": "Coyote",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 690,
+    "brand": "Innova",
+    "name": "Cro",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 352,
+    "brand": "Innova",
+    "name": "Daedalus",
+    "speed": 13,
+    "glide": 6,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 521,
+    "brand": "Innova",
+    "name": "Dark Rebel",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 440,
+    "brand": "Innova",
+    "name": "Dart",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 21,
+    "brand": "Innova",
+    "name": "Destroyer",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 556,
+    "brand": "Innova",
+    "name": "Dominator",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 448,
+    "brand": "Innova",
+    "name": "Dragon",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 14,
+    "brand": "Innova",
+    "name": "Eagle",
+    "speed": 7,
+    "glide": 4,
+    "turn": -1,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 446,
+    "brand": "Innova",
+    "name": "Eagle-L",
+    "speed": 7,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 450,
+    "brand": "Innova",
+    "name": "FL",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 15,
+    "brand": "Innova",
+    "name": "Firebird",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 790,
+    "brand": "Innova",
+    "name": "Firefly",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 344,
+    "brand": "Innova",
+    "name": "Foxbat",
+    "speed": 5,
+    "glide": 6,
+    "turn": -1,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 9,
+    "brand": "Innova",
+    "name": "Gator",
+    "speed": 5,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 554,
+    "brand": "Innova",
+    "name": "Gator3",
+    "speed": 5,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 445,
+    "brand": "Innova",
+    "name": "Gazelle",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 270,
+    "brand": "Innova",
+    "name": "Gorgon",
+    "speed": 10,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 883,
+    "brand": "Innova",
+    "name": "Groove",
+    "speed": 13,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 269,
+    "brand": "Innova",
+    "name": "Hawkeye",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 880,
+    "brand": "Innova",
+    "name": "Hydra",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 268,
+    "brand": "Innova",
+    "name": "IT",
+    "speed": 7,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 438,
+    "brand": "Innova",
+    "name": "Invader",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 271,
+    "brand": "Innova",
+    "name": "Invictus",
+    "speed": 10,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 341,
+    "brand": "Innova",
+    "name": "JK Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 789,
+    "brand": "Innova",
+    "name": "JK Pro Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 794,
+    "brand": "Innova",
+    "name": "Jay",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 342,
+    "brand": "Innova",
+    "name": "KC Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 788,
+    "brand": "Innova",
+    "name": "KC Pro Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 791,
+    "brand": "Innova",
+    "name": "KC Pro Roc",
+    "speed": 4,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 350,
+    "brand": "Innova",
+    "name": "Katan",
+    "speed": 13,
+    "glide": 5,
+    "turn": -3,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 800,
+    "brand": "Innova",
+    "name": "Katana",
+    "speed": 13,
+    "glide": 5,
+    "turn": -3,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 443,
+    "brand": "Innova",
+    "name": "Kite",
+    "speed": 5,
+    "glide": 6,
+    "turn": -3,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 555,
+    "brand": "Innova",
+    "name": "Krait",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 10,
+    "brand": "Innova",
+    "name": "Leopard",
+    "speed": 6,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 11,
+    "brand": "Innova",
+    "name": "Leopard3",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 519,
+    "brand": "Innova",
+    "name": "Lion",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 675,
+    "brand": "Innova",
+    "name": "Lycan",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 8,
+    "brand": "Innova",
+    "name": "Mako3",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 798,
+    "brand": "Innova",
+    "name": "Mamba",
+    "speed": 11,
+    "glide": 6,
+    "turn": -5,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 526,
+    "brand": "Innova",
+    "name": "Max",
+    "speed": 11,
+    "glide": 3,
+    "turn": 0,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 264,
+    "brand": "Innova",
+    "name": "Mirage",
+    "speed": 3,
+    "glide": 4,
+    "turn": -3,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 348,
+    "brand": "Innova",
+    "name": "Monarch",
+    "speed": 10,
+    "glide": 5,
+    "turn": -4,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 523,
+    "brand": "Innova",
+    "name": "Monster",
+    "speed": 10,
+    "glide": 3,
+    "turn": 0,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 799,
+    "brand": "Innova",
+    "name": "Mystere",
+    "speed": 11,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 441,
+    "brand": "Innova",
+    "name": "Nova",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 18,
+    "brand": "Innova",
+    "name": "Orc",
+    "speed": 10,
+    "glide": 4,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 796,
+    "brand": "Innova",
+    "name": "Panther",
+    "speed": 5,
+    "glide": 4,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 4,
+    "brand": "Innova",
+    "name": "Pig",
+    "speed": 3,
+    "glide": 1,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 707,
+    "brand": "Innova",
+    "name": "Pig OS",
+    "speed": 3,
+    "glide": 1,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 261,
+    "brand": "Innova",
+    "name": "Polecat",
+    "speed": 1,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 343,
+    "brand": "Innova",
+    "name": "Rat",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Approach"
+  },
+  {
+    "id": 262,
+    "brand": "Innova",
+    "name": "Rhyno",
+    "speed": 2,
+    "glide": 1,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 208,
+    "brand": "Innova",
+    "name": "Roadrunner",
+    "speed": 9,
+    "glide": 5,
+    "turn": -4,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 6,
+    "brand": "Innova",
+    "name": "Roc",
+    "speed": 4,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 7,
+    "brand": "Innova",
+    "name": "Roc3",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 913,
+    "brand": "Innova",
+    "name": "RocX3",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 795,
+    "brand": "Innova",
+    "name": "Rollo",
+    "speed": 5,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 525,
+    "brand": "Innova",
+    "name": "SL",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 522,
+    "brand": "Innova",
+    "name": "Savannah",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 797,
+    "brand": "Innova",
+    "name": "Savant",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 884,
+    "brand": "Innova",
+    "name": "Scorpion",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 792,
+    "brand": "Innova",
+    "name": "Shark",
+    "speed": 4,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 793,
+    "brand": "Innova",
+    "name": "Shark3",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 23,
+    "brand": "Innova",
+    "name": "Shryke",
+    "speed": 13,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 207,
+    "brand": "Innova",
+    "name": "Sidewinder",
+    "speed": 9,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 266,
+    "brand": "Innova",
+    "name": "Spider",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 524,
+    "brand": "Innova",
+    "name": "Starfire",
+    "speed": 10,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 439,
+    "brand": "Innova",
+    "name": "Stud",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 708,
+    "brand": "Innova",
+    "name": "Super Stingray",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 520,
+    "brand": "Innova",
+    "name": "TL",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 206,
+    "brand": "Innova",
+    "name": "TL3",
+    "speed": 8,
+    "glide": 4,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 12,
+    "brand": "Innova",
+    "name": "TeeBird",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 709,
+    "brand": "Innova",
+    "name": "TeeBird Plus",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 13,
+    "brand": "Innova",
+    "name": "TeeBird3",
+    "speed": 8,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 676,
+    "brand": "Innova",
+    "name": "TeeDevil",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 527,
+    "brand": "Innova",
+    "name": "TeeRex",
+    "speed": 11,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 22,
+    "brand": "Innova",
+    "name": "Tern",
+    "speed": 12,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 17,
+    "brand": "Innova",
+    "name": "Thunderbird",
+    "speed": 9,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 5,
+    "brand": "Innova",
+    "name": "Toro",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Approach"
+  },
+  {
+    "id": 691,
+    "brand": "Innova",
+    "name": "VCobra",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 265,
+    "brand": "Innova",
+    "name": "VRoc",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 16,
+    "brand": "Innova",
+    "name": "Valkyrie",
+    "speed": 9,
+    "glide": 4,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 347,
+    "brand": "Innova",
+    "name": "Viking",
+    "speed": 9,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 589,
+    "brand": "Innova",
+    "name": "Viper",
+    "speed": 6,
+    "glide": 4,
+    "turn": 1,
+    "fade": 5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 351,
+    "brand": "Innova",
+    "name": "Vulcan",
+    "speed": 13,
+    "glide": 5,
+    "turn": -4,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 882,
+    "brand": "Innova",
+    "name": "Wahoo",
+    "speed": 12,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 588,
+    "brand": "Innova",
+    "name": "Wedge",
+    "speed": 3.5,
+    "glide": 3,
+    "turn": -3,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 263,
+    "brand": "Innova",
+    "name": "Whale",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 590,
+    "brand": "Innova",
+    "name": "Whippet",
+    "speed": 6,
+    "glide": 3,
+    "turn": 1,
+    "fade": 5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 881,
+    "brand": "Innova",
+    "name": "Wolf",
+    "speed": 4,
+    "glide": 6,
+    "turn": -4,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 345,
+    "brand": "Innova",
+    "name": "Wombat3",
+    "speed": 5,
+    "glide": 6,
+    "turn": -1,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 20,
+    "brand": "Innova",
+    "name": "Wraith",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 273,
+    "brand": "Innova",
+    "name": "XCaliber",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 614,
+    "brand": "Innova",
+    "name": "Xero",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 340,
+    "brand": "Innova",
+    "name": "Yeti Aviar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 983,
+    "brand": "Kastaplast",
+    "name": "Alva",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 45,
+    "brand": "Kastaplast",
+    "name": "Berg",
+    "speed": 1,
+    "glide": 1,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 46,
+    "brand": "Kastaplast",
+    "name": "Berg X",
+    "speed": 1,
+    "glide": 1,
+    "turn": 1,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 55,
+    "brand": "Kastaplast",
+    "name": "Falk",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 767,
+    "brand": "Kastaplast",
+    "name": "Gote",
+    "speed": 4,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 59,
+    "brand": "Kastaplast",
+    "name": "Grym",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 60,
+    "brand": "Kastaplast",
+    "name": "Grym X",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 61,
+    "brand": "Kastaplast",
+    "name": "Guld",
+    "speed": 13,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 461,
+    "brand": "Kastaplast",
+    "name": "Guld (First Run)",
+    "speed": 13,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 50,
+    "brand": "Kastaplast",
+    "name": "Göte",
+    "speed": 4,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 766,
+    "brand": "Kastaplast",
+    "name": "Järn",
+    "speed": 4.5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 727,
+    "brand": "Kastaplast",
+    "name": "Järn Soft",
+    "speed": 4.5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 984,
+    "brand": "Kastaplast",
+    "name": "Järn Z",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 49,
+    "brand": "Kastaplast",
+    "name": "Järv",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 56,
+    "brand": "Kastaplast",
+    "name": "Kaxe",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 877,
+    "brand": "Kastaplast",
+    "name": "Kaxe (Beadless)",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 227,
+    "brand": "Kastaplast",
+    "name": "Kaxe V2",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 57,
+    "brand": "Kastaplast",
+    "name": "Kaxe Z",
+    "speed": 6,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 62,
+    "brand": "Kastaplast",
+    "name": "Krut",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 54,
+    "brand": "Kastaplast",
+    "name": "Lots",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 52,
+    "brand": "Kastaplast",
+    "name": "Nord",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 770,
+    "brand": "Kastaplast",
+    "name": "Rask",
+    "speed": 14,
+    "glide": 3,
+    "turn": 0,
+    "fade": 5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 771,
+    "brand": "Kastaplast",
+    "name": "Rask Z",
+    "speed": 14,
+    "glide": 4,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 47,
+    "brand": "Kastaplast",
+    "name": "Reko",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 48,
+    "brand": "Kastaplast",
+    "name": "Reko X",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 460,
+    "brand": "Kastaplast",
+    "name": "Reko X (Soft)",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 878,
+    "brand": "Kastaplast",
+    "name": "Stig",
+    "speed": 6,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 53,
+    "brand": "Kastaplast",
+    "name": "Stål",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 51,
+    "brand": "Kastaplast",
+    "name": "Svea",
+    "speed": 5,
+    "glide": 6,
+    "turn": -3,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 769,
+    "brand": "Kastaplast",
+    "name": "Troll",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 58,
+    "brand": "Kastaplast",
+    "name": "Vass",
+    "speed": 12,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 768,
+    "brand": "Kastaplast",
+    "name": "Älva",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 759,
+    "brand": "Latitude 64",
+    "name": "Amber",
+    "speed": 11,
+    "glide": 6,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 70,
+    "brand": "Latitude 64",
+    "name": "Anchor",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 78,
+    "brand": "Latitude 64",
+    "name": "Ballista",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 79,
+    "brand": "Latitude 64",
+    "name": "Ballista Pro",
+    "speed": 14,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 741,
+    "brand": "Latitude 64",
+    "name": "Beetle",
+    "speed": 1,
+    "glide": 7,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 213,
+    "brand": "Latitude 64",
+    "name": "Bite",
+    "speed": 1,
+    "glide": 6,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 907,
+    "brand": "Latitude 64",
+    "name": "Bite (Dog Disc)",
+    "speed": 1,
+    "glide": 2,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 902,
+    "brand": "Latitude 64",
+    "name": "Blitz",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 216,
+    "brand": "Latitude 64",
+    "name": "Bolt",
+    "speed": 13,
+    "glide": 6,
+    "turn": -2,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 747,
+    "brand": "Latitude 64",
+    "name": "Brave",
+    "speed": 7,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 756,
+    "brand": "Latitude 64",
+    "name": "Bryce",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 274,
+    "brand": "Latitude 64",
+    "name": "Caliburn",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 739,
+    "brand": "Latitude 64",
+    "name": "Caltrop",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 276,
+    "brand": "Latitude 64",
+    "name": "Claymore",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 67,
+    "brand": "Latitude 64",
+    "name": "Compass",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 583,
+    "brand": "Latitude 64",
+    "name": "Core",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 585,
+    "brand": "Latitude 64",
+    "name": "Culprit",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Approach"
+  },
+  {
+    "id": 359,
+    "brand": "Latitude 64",
+    "name": "Culverin",
+    "speed": 9,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 762,
+    "brand": "Latitude 64",
+    "name": "Cutlass",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 353,
+    "brand": "Latitude 64",
+    "name": "Dagger",
+    "speed": 2,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 719,
+    "brand": "Latitude 64",
+    "name": "Dagger Soft",
+    "speed": 2,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 751,
+    "brand": "Latitude 64",
+    "name": "Diamond",
+    "speed": 8,
+    "glide": 6,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 72,
+    "brand": "Latitude 64",
+    "name": "Explorer",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 65,
+    "brand": "Latitude 64",
+    "name": "Faith",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 699,
+    "brand": "Latitude 64",
+    "name": "Falchion",
+    "speed": 9,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 742,
+    "brand": "Latitude 64",
+    "name": "Fire",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 360,
+    "brand": "Latitude 64",
+    "name": "Flow",
+    "speed": 11,
+    "glide": 6,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 720,
+    "brand": "Latitude 64",
+    "name": "Fuji",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 754,
+    "brand": "Latitude 64",
+    "name": "Fury",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 68,
+    "brand": "Latitude 64",
+    "name": "Fuse",
+    "speed": 5,
+    "glide": 6,
+    "turn": -1,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 355,
+    "brand": "Latitude 64",
+    "name": "Gauntlet",
+    "speed": 2,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Putter"
+  },
+  {
+    "id": 700,
+    "brand": "Latitude 64",
+    "name": "Gladiator",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 748,
+    "brand": "Latitude 64",
+    "name": "Glory",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 745,
+    "brand": "Latitude 64",
+    "name": "Gobi",
+    "speed": 6,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 75,
+    "brand": "Latitude 64",
+    "name": "Grace",
+    "speed": 11,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 77,
+    "brand": "Latitude 64",
+    "name": "Grand Strive",
+    "speed": 13,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 906,
+    "brand": "Latitude 64",
+    "name": "Grip",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 546,
+    "brand": "Latitude 64",
+    "name": "Halo",
+    "speed": 12,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 215,
+    "brand": "Latitude 64",
+    "name": "Havoc",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 74,
+    "brand": "Latitude 64",
+    "name": "Honor",
+    "speed": 9,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 64,
+    "brand": "Latitude 64",
+    "name": "Hope",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 755,
+    "brand": "Latitude 64",
+    "name": "Jade",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 900,
+    "brand": "Latitude 64",
+    "name": "Karakum",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 66,
+    "brand": "Latitude 64",
+    "name": "Keystone",
+    "speed": 2,
+    "glide": 5,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 722,
+    "brand": "Latitude 64",
+    "name": "Knight",
+    "speed": 14,
+    "glide": 6,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 543,
+    "brand": "Latitude 64",
+    "name": "Macana",
+    "speed": 2,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 356,
+    "brand": "Latitude 64",
+    "name": "Mace",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 749,
+    "brand": "Latitude 64",
+    "name": "Maul",
+    "speed": 7,
+    "glide": 7,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 899,
+    "brand": "Latitude 64",
+    "name": "Medius",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 354,
+    "brand": "Latitude 64",
+    "name": "Mercy",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 746,
+    "brand": "Latitude 64",
+    "name": "Mighty",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 764,
+    "brand": "Latitude 64",
+    "name": "Missilen",
+    "speed": 15,
+    "glide": 3,
+    "turn": -0.5,
+    "fade": 4.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 358,
+    "brand": "Latitude 64",
+    "name": "Musket",
+    "speed": 10,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 744,
+    "brand": "Latitude 64",
+    "name": "Pain",
+    "speed": 4,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 738,
+    "brand": "Latitude 64",
+    "name": "Peak",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 743,
+    "brand": "Latitude 64",
+    "name": "Pearl",
+    "speed": 4,
+    "glide": 6,
+    "turn": -4,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 753,
+    "brand": "Latitude 64",
+    "name": "Pioneer",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 901,
+    "brand": "Latitude 64",
+    "name": "Prion",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 63,
+    "brand": "Latitude 64",
+    "name": "Pure",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 765,
+    "brand": "Latitude 64",
+    "name": "Raketen",
+    "speed": 15,
+    "glide": 4,
+    "turn": -2,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 875,
+    "brand": "Latitude 64",
+    "name": "Rave",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 760,
+    "brand": "Latitude 64",
+    "name": "Recoil",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 545,
+    "brand": "Latitude 64",
+    "name": "Riot",
+    "speed": 11,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 76,
+    "brand": "Latitude 64",
+    "name": "Rive",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 71,
+    "brand": "Latitude 64",
+    "name": "River",
+    "speed": 7,
+    "glide": 7,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 740,
+    "brand": "Latitude 64",
+    "name": "Ruby",
+    "speed": 3,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 721,
+    "brand": "Latitude 64",
+    "name": "S2",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 73,
+    "brand": "Latitude 64",
+    "name": "Saint",
+    "speed": 9,
+    "glide": 7,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 752,
+    "brand": "Latitude 64",
+    "name": "Saint Pro",
+    "speed": 8,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 758,
+    "brand": "Latitude 64",
+    "name": "Sapphire",
+    "speed": 10,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 898,
+    "brand": "Latitude 64",
+    "name": "Sarek",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Putter"
+  },
+  {
+    "id": 214,
+    "brand": "Latitude 64",
+    "name": "Savant",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 874,
+    "brand": "Latitude 64",
+    "name": "Savior",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 689,
+    "brand": "Latitude 64",
+    "name": "Scythe",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 687,
+    "brand": "Latitude 64",
+    "name": "Sinus",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 905,
+    "brand": "Latitude 64",
+    "name": "Sinus AP",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 904,
+    "brand": "Latitude 64",
+    "name": "Sinus SP",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 584,
+    "brand": "Latitude 64",
+    "name": "Spark",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 275,
+    "brand": "Latitude 64",
+    "name": "Spike",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 763,
+    "brand": "Latitude 64",
+    "name": "Stiletto",
+    "speed": 13,
+    "glide": 2,
+    "turn": 1,
+    "fade": 6,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 357,
+    "brand": "Latitude 64",
+    "name": "Striker",
+    "speed": 8,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 903,
+    "brand": "Latitude 64",
+    "name": "Striker (Old Flight)",
+    "speed": 8,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 761,
+    "brand": "Latitude 64",
+    "name": "Strive",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 757,
+    "brand": "Latitude 64",
+    "name": "Sweep",
+    "speed": 9,
+    "glide": 6,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 876,
+    "brand": "Latitude 64",
+    "name": "Trident",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 69,
+    "brand": "Latitude 64",
+    "name": "Trust",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 688,
+    "brand": "Latitude 64",
+    "name": "Villain",
+    "speed": 12,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 544,
+    "brand": "Latitude 64",
+    "name": "Vision",
+    "speed": 8,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 750,
+    "brand": "Latitude 64",
+    "name": "XXX",
+    "speed": 7,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 643,
+    "brand": "Legacy",
+    "name": "Bad Boy",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 495,
+    "brand": "Legacy",
+    "name": "Bandit",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 497,
+    "brand": "Legacy",
+    "name": "Cannon",
+    "speed": 14,
+    "glide": 5,
+    "turn": -3,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 484,
+    "brand": "Legacy",
+    "name": "Clozer",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 486,
+    "brand": "Legacy",
+    "name": "Clutch",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 494,
+    "brand": "Legacy",
+    "name": "Enemy",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 490,
+    "brand": "Legacy",
+    "name": "Gauge",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 489,
+    "brand": "Legacy",
+    "name": "Ghost",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 485,
+    "brand": "Legacy",
+    "name": "Hunter",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 496,
+    "brand": "Legacy",
+    "name": "Outlaw",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 491,
+    "brand": "Legacy",
+    "name": "Patriot",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 642,
+    "brand": "Legacy",
+    "name": "Phenom",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 487,
+    "brand": "Legacy",
+    "name": "Prowler",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 641,
+    "brand": "Legacy",
+    "name": "Pursuit",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 498,
+    "brand": "Legacy",
+    "name": "Rampage",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 488,
+    "brand": "Legacy",
+    "name": "Recluse",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 492,
+    "brand": "Legacy",
+    "name": "Rival",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 640,
+    "brand": "Legacy",
+    "name": "Sharpshooter",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 493,
+    "brand": "Legacy",
+    "name": "Vandal",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 941,
+    "brand": "Lone Star Disc",
+    "name": "Alpha Cannibal",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 228,
+    "brand": "Lone Star Disc",
+    "name": "Armadillo",
+    "speed": 1,
+    "glide": 2,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 873,
+    "brand": "Lone Star Disc",
+    "name": "Bayo-Nette",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 388,
+    "brand": "Lone Star Disc",
+    "name": "Bayonet",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 957,
+    "brand": "Lone Star Disc",
+    "name": "Benny",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 867,
+    "brand": "Lone Star Disc",
+    "name": "Bluebonnet",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 573,
+    "brand": "Lone Star Disc",
+    "name": "Bowie",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 391,
+    "brand": "Lone Star Disc",
+    "name": "Brazos",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 570,
+    "brand": "Lone Star Disc",
+    "name": "Bull Frog",
+    "speed": 3,
+    "glide": 1,
+    "turn": 0,
+    "fade": 2,
+    "category": "Approach"
+  },
+  {
+    "id": 942,
+    "brand": "Lone Star Disc",
+    "name": "Bull Snake",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 230,
+    "brand": "Lone Star Disc",
+    "name": "Bullpup",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 238,
+    "brand": "Lone Star Disc",
+    "name": "Chupacabra",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 232,
+    "brand": "Lone Star Disc",
+    "name": "Copperhead",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Approach"
+  },
+  {
+    "id": 535,
+    "brand": "Lone Star Disc",
+    "name": "Curl",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 869,
+    "brand": "Lone Star Disc",
+    "name": "Delta-1",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 571,
+    "brand": "Lone Star Disc",
+    "name": "Desperado",
+    "speed": 5,
+    "glide": 4,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 389,
+    "brand": "Lone Star Disc",
+    "name": "Dos X",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 236,
+    "brand": "Lone Star Disc",
+    "name": "Frenzy",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 872,
+    "brand": "Lone Star Disc",
+    "name": "Frio",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 390,
+    "brand": "Lone Star Disc",
+    "name": "Guadalupe",
+    "speed": 7,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 231,
+    "brand": "Lone Star Disc",
+    "name": "Harpoon",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Approach"
+  },
+  {
+    "id": 387,
+    "brand": "Lone Star Disc",
+    "name": "Jackrabbit",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 943,
+    "brand": "Lone Star Disc",
+    "name": "Lariat",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 234,
+    "brand": "Lone Star Disc",
+    "name": "Lone Wolf",
+    "speed": 5,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 871,
+    "brand": "Lone Star Disc",
+    "name": "Mad Cat",
+    "speed": 9,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 237,
+    "brand": "Lone Star Disc",
+    "name": "Maddox",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 235,
+    "brand": "Lone Star Disc",
+    "name": "Middleman",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 868,
+    "brand": "Lone Star Disc",
+    "name": "Middler",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 534,
+    "brand": "Lone Star Disc",
+    "name": "Mockingbird",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 241,
+    "brand": "Lone Star Disc",
+    "name": "Nimitz",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 229,
+    "brand": "Lone Star Disc",
+    "name": "Penny Putter",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 870,
+    "brand": "Lone Star Disc",
+    "name": "Pioneer",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 233,
+    "brand": "Lone Star Disc",
+    "name": "Texas Ranger",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 574,
+    "brand": "Lone Star Disc",
+    "name": "The Dome",
+    "speed": 13,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 239,
+    "brand": "Lone Star Disc",
+    "name": "Tumbleweed",
+    "speed": 10,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 944,
+    "brand": "Lone Star Disc",
+    "name": "Vector",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 572,
+    "brand": "Lone Star Disc",
+    "name": "Walker",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 240,
+    "brand": "Lone Star Disc",
+    "name": "Warbird",
+    "speed": 12,
+    "glide": 6,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 601,
+    "brand": "MVP",
+    "name": "Amp",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 325,
+    "brand": "MVP",
+    "name": "Anode",
+    "speed": 2.5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 713,
+    "brand": "MVP",
+    "name": "Anode Soft",
+    "speed": 2.5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 324,
+    "brand": "MVP",
+    "name": "Atom",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 682,
+    "brand": "MVP",
+    "name": "Axis",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 337,
+    "brand": "MVP",
+    "name": "Catalyst",
+    "speed": 13,
+    "glide": 5.5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 820,
+    "brand": "MVP",
+    "name": "Compass",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 821,
+    "brand": "MVP",
+    "name": "Deflector",
+    "speed": 5,
+    "glide": 3.5,
+    "turn": 0,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 514,
+    "brand": "MVP",
+    "name": "Detour",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 825,
+    "brand": "MVP",
+    "name": "Dimension",
+    "speed": 14.5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 963,
+    "brand": "MVP",
+    "name": "Energy",
+    "speed": 11,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 328,
+    "brand": "MVP",
+    "name": "Entropy",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 714,
+    "brand": "MVP",
+    "name": "Entropy OS",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Approach"
+  },
+  {
+    "id": 959,
+    "brand": "MVP",
+    "name": "Envy",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 104,
+    "brand": "MVP",
+    "name": "Glitch",
+    "speed": 1,
+    "glide": 7,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 961,
+    "brand": "MVP",
+    "name": "Hex",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 685,
+    "brand": "MVP",
+    "name": "Impulse",
+    "speed": 9,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 334,
+    "brand": "MVP",
+    "name": "Inertia",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 326,
+    "brand": "MVP",
+    "name": "Ion",
+    "speed": 2.5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Putter"
+  },
+  {
+    "id": 329,
+    "brand": "MVP",
+    "name": "Matrix",
+    "speed": 5,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 335,
+    "brand": "MVP",
+    "name": "Motion",
+    "speed": 9,
+    "glide": 3.5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 965,
+    "brand": "MVP",
+    "name": "Nitro",
+    "speed": 11,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 817,
+    "brand": "MVP",
+    "name": "Nomad",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1.5,
+    "category": "Putter"
+  },
+  {
+    "id": 824,
+    "brand": "MVP",
+    "name": "Octane",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 818,
+    "brand": "MVP",
+    "name": "Ohm",
+    "speed": 2,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 226,
+    "brand": "MVP",
+    "name": "Orbital",
+    "speed": 11,
+    "glide": 5,
+    "turn": -4.5,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 964,
+    "brand": "MVP",
+    "name": "Panic",
+    "speed": 14.5,
+    "glide": 5,
+    "turn": 0.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 562,
+    "brand": "MVP",
+    "name": "Particle",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Approach"
+  },
+  {
+    "id": 617,
+    "brand": "MVP",
+    "name": "Phase",
+    "speed": 11,
+    "glide": 3.5,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 110,
+    "brand": "MVP",
+    "name": "Photon",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 816,
+    "brand": "MVP",
+    "name": "Pixel",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 958,
+    "brand": "MVP",
+    "name": "Proxy",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 106,
+    "brand": "MVP",
+    "name": "Reactor",
+    "speed": 5,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 1.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 715,
+    "brand": "MVP",
+    "name": "Relativity",
+    "speed": 14.5,
+    "glide": 5.5,
+    "turn": -3,
+    "fade": 1.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 331,
+    "brand": "MVP",
+    "name": "Relay",
+    "speed": 6,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 332,
+    "brand": "MVP",
+    "name": "Resistor",
+    "speed": 6.5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 333,
+    "brand": "MVP",
+    "name": "Servant",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 616,
+    "brand": "MVP",
+    "name": "Servo",
+    "speed": 6.5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 599,
+    "brand": "MVP",
+    "name": "Shock",
+    "speed": 8,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 563,
+    "brand": "MVP",
+    "name": "Signal",
+    "speed": 6,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 327,
+    "brand": "MVP",
+    "name": "Spin",
+    "speed": 2.5,
+    "glide": 4,
+    "turn": -2,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 962,
+    "brand": "MVP",
+    "name": "Surge",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 600,
+    "brand": "MVP",
+    "name": "Switch",
+    "speed": 6,
+    "glide": 4,
+    "turn": -1.5,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 960,
+    "brand": "MVP",
+    "name": "Tangent",
+    "speed": 4,
+    "glide": 4,
+    "turn": -0.5,
+    "fade": 0.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 598,
+    "brand": "MVP",
+    "name": "Tangents",
+    "speed": 5,
+    "glide": 4,
+    "turn": -0.5,
+    "fade": 0.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 330,
+    "brand": "MVP",
+    "name": "Tanget",
+    "speed": 5,
+    "glide": 4.5,
+    "turn": -0.5,
+    "fade": 0.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 338,
+    "brand": "MVP",
+    "name": "Teleport",
+    "speed": 14.5,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 684,
+    "brand": "MVP",
+    "name": "Tensor",
+    "speed": 5,
+    "glide": 3.5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 225,
+    "brand": "MVP",
+    "name": "Terra",
+    "speed": 8,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 224,
+    "brand": "MVP",
+    "name": "Tesla",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 516,
+    "brand": "MVP",
+    "name": "Time-Lapse",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 515,
+    "brand": "MVP",
+    "name": "Trail",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 107,
+    "brand": "MVP",
+    "name": "Uplink",
+    "speed": 5,
+    "glide": 5,
+    "turn": -3,
+    "fade": 0.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 683,
+    "brand": "MVP",
+    "name": "Vector",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 697,
+    "brand": "MVP",
+    "name": "Vertex",
+    "speed": 5,
+    "glide": 5,
+    "turn": -3,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 108,
+    "brand": "MVP",
+    "name": "Volt",
+    "speed": 8,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 105,
+    "brand": "MVP",
+    "name": "Watt",
+    "speed": 2,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 109,
+    "brand": "MVP",
+    "name": "Wave",
+    "speed": 11,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 336,
+    "brand": "MVP",
+    "name": "Zenith",
+    "speed": 11,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 200,
+    "brand": "Millennium",
+    "name": "Aurora MS",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 202,
+    "brand": "Millennium",
+    "name": "Draco",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 609,
+    "brand": "Millennium",
+    "name": "EXP1",
+    "speed": 7,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 203,
+    "brand": "Millennium",
+    "name": "Falcon",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 672,
+    "brand": "Millennium",
+    "name": "Helios",
+    "speed": 8,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 201,
+    "brand": "Millennium",
+    "name": "JLS",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 607,
+    "brand": "Millennium",
+    "name": "Maurus",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 670,
+    "brand": "Millennium",
+    "name": "Mortar",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 199,
+    "brand": "Millennium",
+    "name": "Omega",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 605,
+    "brand": "Millennium",
+    "name": "Omega Big Bead",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 610,
+    "brand": "Millennium",
+    "name": "Orion LF",
+    "speed": 9,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 611,
+    "brand": "Millennium",
+    "name": "Orion LS",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 608,
+    "brand": "Millennium",
+    "name": "Polaris LS",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 673,
+    "brand": "Millennium",
+    "name": "Quasar",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 204,
+    "brand": "Millennium",
+    "name": "Scorpius",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 671,
+    "brand": "Millennium",
+    "name": "Solstice",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 669,
+    "brand": "Millennium",
+    "name": "Tachyon 1.1",
+    "speed": 3,
+    "glide": 2,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 606,
+    "brand": "Millennium",
+    "name": "Tank",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 403,
+    "brand": "Mint Discs",
+    "name": "Alpha",
+    "speed": 8,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 400,
+    "brand": "Mint Discs",
+    "name": "Bobcat",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 397,
+    "brand": "Mint Discs",
+    "name": "Bullet",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 405,
+    "brand": "Mint Discs",
+    "name": "Freetail",
+    "speed": 10,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 406,
+    "brand": "Mint Discs",
+    "name": "Goat",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 404,
+    "brand": "Mint Discs",
+    "name": "Grackle",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 402,
+    "brand": "Mint Discs",
+    "name": "Jackalope",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 399,
+    "brand": "Mint Discs",
+    "name": "Lasso",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Approach"
+  },
+  {
+    "id": 922,
+    "brand": "Mint Discs",
+    "name": "Lobster",
+    "speed": 5,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 401,
+    "brand": "Mint Discs",
+    "name": "Mustang",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 923,
+    "brand": "Mint Discs",
+    "name": "Peace Train",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 924,
+    "brand": "Mint Discs",
+    "name": "Phoenix",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 398,
+    "brand": "Mint Discs",
+    "name": "Profit",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 925,
+    "brand": "Mint Discs",
+    "name": "UFO",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 501,
+    "brand": "Neptune Discs",
+    "name": "Kraken",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 502,
+    "brand": "Neptune Discs",
+    "name": "Leviathan",
+    "speed": 10,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 499,
+    "brand": "Neptune Discs",
+    "name": "Mako",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 500,
+    "brand": "Neptune Discs",
+    "name": "Nautilus",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 305,
+    "brand": "Prodigy",
+    "name": "A1",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 121,
+    "brand": "Prodigy",
+    "name": "A2",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 122,
+    "brand": "Prodigy",
+    "name": "A3",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 306,
+    "brand": "Prodigy",
+    "name": "A4",
+    "speed": 4,
+    "glide": 3,
+    "turn": -1,
+    "fade": 2,
+    "category": "Approach"
+  },
+  {
+    "id": 618,
+    "brand": "Prodigy",
+    "name": "A5",
+    "speed": 4,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Approach"
+  },
+  {
+    "id": 529,
+    "brand": "Prodigy",
+    "name": "Archive",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 533,
+    "brand": "Prodigy",
+    "name": "D Max",
+    "speed": 13,
+    "glide": 6,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 621,
+    "brand": "Prodigy",
+    "name": "D Model OS",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 622,
+    "brand": "Prodigy",
+    "name": "D Model S",
+    "speed": 13,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 623,
+    "brand": "Prodigy",
+    "name": "D Model US",
+    "speed": 13,
+    "glide": 6,
+    "turn": -3,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 132,
+    "brand": "Prodigy",
+    "name": "D1",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 726,
+    "brand": "Prodigy",
+    "name": "D1 Max",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 130,
+    "brand": "Prodigy",
+    "name": "D2",
+    "speed": 12,
+    "glide": 6,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 839,
+    "brand": "Prodigy",
+    "name": "D2 Max",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 532,
+    "brand": "Prodigy",
+    "name": "D2 Pro",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 131,
+    "brand": "Prodigy",
+    "name": "D3",
+    "speed": 12,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 840,
+    "brand": "Prodigy",
+    "name": "D3 Max",
+    "speed": 12,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 315,
+    "brand": "Prodigy",
+    "name": "D4",
+    "speed": 12,
+    "glide": 6,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 316,
+    "brand": "Prodigy",
+    "name": "D5",
+    "speed": 12,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 704,
+    "brand": "Prodigy",
+    "name": "D6",
+    "speed": 12,
+    "glide": 6,
+    "turn": -4,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 465,
+    "brand": "Prodigy",
+    "name": "F Model OS",
+    "speed": 10,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 466,
+    "brand": "Prodigy",
+    "name": "F Model S",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 467,
+    "brand": "Prodigy",
+    "name": "F Model US",
+    "speed": 10,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 310,
+    "brand": "Prodigy",
+    "name": "F1",
+    "speed": 7,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 128,
+    "brand": "Prodigy",
+    "name": "F2",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 725,
+    "brand": "Prodigy",
+    "name": "F2 V2",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 311,
+    "brand": "Prodigy",
+    "name": "F3",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 127,
+    "brand": "Prodigy",
+    "name": "F5",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 312,
+    "brand": "Prodigy",
+    "name": "F7",
+    "speed": 7,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 620,
+    "brand": "Prodigy",
+    "name": "F9",
+    "speed": 8,
+    "glide": 6,
+    "turn": -3,
+    "fade": 0.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 126,
+    "brand": "Prodigy",
+    "name": "FX-2",
+    "speed": 9,
+    "glide": 4,
+    "turn": -1,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 703,
+    "brand": "Prodigy",
+    "name": "FX-2 OS",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 578,
+    "brand": "Prodigy",
+    "name": "FX-3",
+    "speed": 9,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 579,
+    "brand": "Prodigy",
+    "name": "FX-4",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 530,
+    "brand": "Prodigy",
+    "name": "Feedback",
+    "speed": 9,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 313,
+    "brand": "Prodigy",
+    "name": "H1 V2",
+    "speed": 11,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 914,
+    "brand": "Prodigy",
+    "name": "H2 V2",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 129,
+    "brand": "Prodigy",
+    "name": "H3 V2",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 314,
+    "brand": "Prodigy",
+    "name": "H4 V2",
+    "speed": 11,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 644,
+    "brand": "Prodigy",
+    "name": "H5",
+    "speed": 9,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 463,
+    "brand": "Prodigy",
+    "name": "M Model OS",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 464,
+    "brand": "Prodigy",
+    "name": "M Model US",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 307,
+    "brand": "Prodigy",
+    "name": "M1",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 123,
+    "brand": "Prodigy",
+    "name": "M2",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 702,
+    "brand": "Prodigy",
+    "name": "M2 V2",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 308,
+    "brand": "Prodigy",
+    "name": "M3",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 724,
+    "brand": "Prodigy",
+    "name": "M3 V2",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 124,
+    "brand": "Prodigy",
+    "name": "M4",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 619,
+    "brand": "Prodigy",
+    "name": "M4 V2",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 309,
+    "brand": "Prodigy",
+    "name": "M5",
+    "speed": 5,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 577,
+    "brand": "Prodigy",
+    "name": "MX-1",
+    "speed": 5,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Midrange"
+  },
+  {
+    "id": 838,
+    "brand": "Prodigy",
+    "name": "MX-2",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 125,
+    "brand": "Prodigy",
+    "name": "Mx-3",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 462,
+    "brand": "Prodigy",
+    "name": "P Model OS",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 303,
+    "brand": "Prodigy",
+    "name": "P Model S",
+    "speed": 3,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 304,
+    "brand": "Prodigy",
+    "name": "P Model US",
+    "speed": 3,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 118,
+    "brand": "Prodigy",
+    "name": "PA-1",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 301,
+    "brand": "Prodigy",
+    "name": "PA-2",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 117,
+    "brand": "Prodigy",
+    "name": "PA-3",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 723,
+    "brand": "Prodigy",
+    "name": "PA-3 Soft",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 302,
+    "brand": "Prodigy",
+    "name": "PA-4",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 119,
+    "brand": "Prodigy",
+    "name": "PA-5",
+    "speed": 3,
+    "glide": 4,
+    "turn": -2,
+    "fade": 0.5,
+    "category": "Putter"
+  },
+  {
+    "id": 120,
+    "brand": "Prodigy",
+    "name": "PX-3",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 528,
+    "brand": "Prodigy",
+    "name": "Recon",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 915,
+    "brand": "Prodigy",
+    "name": "Reverb",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 531,
+    "brand": "Prodigy",
+    "name": "Shadowfax",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 841,
+    "brand": "Prodigy",
+    "name": "X3",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 842,
+    "brand": "Prodigy",
+    "name": "X4",
+    "speed": 12,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 843,
+    "brand": "Prodigy",
+    "name": "X5",
+    "speed": 12,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 536,
+    "brand": "Prodiscus",
+    "name": "Jokeri",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Approach"
+  },
+  {
+    "id": 541,
+    "brand": "Prodiscus",
+    "name": "LASERi",
+    "speed": 9,
+    "glide": 4,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 542,
+    "brand": "Prodiscus",
+    "name": "Legenda",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 539,
+    "brand": "Prodiscus",
+    "name": "Midari",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 540,
+    "brand": "Prodiscus",
+    "name": "STARi",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 537,
+    "brand": "Prodiscus",
+    "name": "Sparta",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 538,
+    "brand": "Prodiscus",
+    "name": "Sulevi",
+    "speed": 5,
+    "glide": 4,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 415,
+    "brand": "RPM Discs",
+    "name": "Kahu",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 410,
+    "brand": "RPM Discs",
+    "name": "Kea",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 412,
+    "brand": "RPM Discs",
+    "name": "Kotuku",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 409,
+    "brand": "RPM Discs",
+    "name": "Magpie",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 413,
+    "brand": "RPM Discs",
+    "name": "Pekapeka",
+    "speed": 9,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 411,
+    "brand": "RPM Discs",
+    "name": "Piwakawaka",
+    "speed": 5,
+    "glide": 6,
+    "turn": -3,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 408,
+    "brand": "RPM Discs",
+    "name": "Ruru",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 414,
+    "brand": "RPM Discs",
+    "name": "Tara Iti",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 407,
+    "brand": "RPM Discs",
+    "name": "Tui",
+    "speed": 3,
+    "glide": 4,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 421,
+    "brand": "Remix",
+    "name": "Behemoth",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 416,
+    "brand": "Remix",
+    "name": "Eldritch",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 420,
+    "brand": "Remix",
+    "name": "Gladius",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 419,
+    "brand": "Remix",
+    "name": "Rumble",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 418,
+    "brand": "Remix",
+    "name": "Sparta",
+    "speed": 6,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 417,
+    "brand": "Remix",
+    "name": "Torpedo",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 161,
+    "brand": "Streamline",
+    "name": "Ascend",
+    "speed": 6,
+    "glide": 5,
+    "turn": -3,
+    "fade": 0.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 974,
+    "brand": "Streamline",
+    "name": "Ascent",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 160,
+    "brand": "Streamline",
+    "name": "Drift",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 158,
+    "brand": "Streamline",
+    "name": "Echo",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 624,
+    "brand": "Streamline",
+    "name": "Flare",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 976,
+    "brand": "Streamline",
+    "name": "Grackle",
+    "speed": 7,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 164,
+    "brand": "Streamline",
+    "name": "Jet",
+    "speed": 11,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 162,
+    "brand": "Streamline",
+    "name": "Lift",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 156,
+    "brand": "Streamline",
+    "name": "Pilot",
+    "speed": 2,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 975,
+    "brand": "Streamline",
+    "name": "Pivot",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 977,
+    "brand": "Streamline",
+    "name": "Range",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 159,
+    "brand": "Streamline",
+    "name": "Runway",
+    "speed": 5,
+    "glide": 4.5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Midrange"
+  },
+  {
+    "id": 157,
+    "brand": "Streamline",
+    "name": "Stabilizer",
+    "speed": 3,
+    "glide": 3.5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Putter"
+  },
+  {
+    "id": 163,
+    "brand": "Streamline",
+    "name": "Trace",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 146,
+    "brand": "Thought Space Athletics",
+    "name": "Altar",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 604,
+    "brand": "Thought Space Athletics",
+    "name": "Alter",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 393,
+    "brand": "Thought Space Athletics",
+    "name": "Anima",
+    "speed": 10.5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 154,
+    "brand": "Thought Space Athletics",
+    "name": "Animus",
+    "speed": 11,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 920,
+    "brand": "Thought Space Athletics",
+    "name": "Aura",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 394,
+    "brand": "Thought Space Athletics",
+    "name": "Coalesce",
+    "speed": 9,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 153,
+    "brand": "Thought Space Athletics",
+    "name": "Construct",
+    "speed": 10,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 866,
+    "brand": "Thought Space Athletics",
+    "name": "Crux",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 921,
+    "brand": "Thought Space Athletics",
+    "name": "Ethos",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 149,
+    "brand": "Thought Space Athletics",
+    "name": "Mana",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 151,
+    "brand": "Thought Space Athletics",
+    "name": "Mantra",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 145,
+    "brand": "Thought Space Athletics",
+    "name": "Muse",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 396,
+    "brand": "Thought Space Athletics",
+    "name": "Nerve Alter",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 152,
+    "brand": "Thought Space Athletics",
+    "name": "Omen",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 148,
+    "brand": "Thought Space Athletics",
+    "name": "Pathfinder",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 392,
+    "brand": "Thought Space Athletics",
+    "name": "Pneuma",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 865,
+    "brand": "Thought Space Athletics",
+    "name": "Praxis",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 155,
+    "brand": "Thought Space Athletics",
+    "name": "Synapse",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 147,
+    "brand": "Thought Space Athletics",
+    "name": "Temple",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 150,
+    "brand": "Thought Space Athletics",
+    "name": "Votanim",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 395,
+    "brand": "Thought Space Athletics",
+    "name": "Votum",
+    "speed": 8.5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 939,
+    "brand": "Trash Panda",
+    "name": "Dune",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 0,
+    "category": "Midrange"
+  },
+  {
+    "id": 938,
+    "brand": "Trash Panda",
+    "name": "Inner Core",
+    "speed": 2,
+    "glide": 4,
+    "turn": -1,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 940,
+    "brand": "Trash Panda",
+    "name": "Ozone",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 509,
+    "brand": "Viking Discs",
+    "name": "Armor",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 177,
+    "brand": "Viking Discs",
+    "name": "Axe",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 180,
+    "brand": "Viking Discs",
+    "name": "Barbarian",
+    "speed": 7,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 181,
+    "brand": "Viking Discs",
+    "name": "Berserker",
+    "speed": 10,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 179,
+    "brand": "Viking Discs",
+    "name": "Cosmos",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 945,
+    "brand": "Viking Discs",
+    "name": "Dragon",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 511,
+    "brand": "Viking Discs",
+    "name": "Firefin",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 510,
+    "brand": "Viking Discs",
+    "name": "Ground Rune",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 175,
+    "brand": "Viking Discs",
+    "name": "Knife",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 176,
+    "brand": "Viking Discs",
+    "name": "Loki",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 178,
+    "brand": "Viking Discs",
+    "name": "Nordic Warrior",
+    "speed": 4,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 182,
+    "brand": "Viking Discs",
+    "name": "Ragnarok",
+    "speed": 11,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 174,
+    "brand": "Viking Discs",
+    "name": "Rune",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 183,
+    "brand": "Viking Discs",
+    "name": "Thunder God Thor",
+    "speed": 14,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 512,
+    "brand": "Viking Discs",
+    "name": "Valhalla",
+    "speed": 12,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 830,
+    "brand": "Westside Discs",
+    "name": "Ahti",
+    "speed": 9,
+    "glide": 3,
+    "turn": 0,
+    "fade": 4,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 833,
+    "brand": "Westside Discs",
+    "name": "Anhinga",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 361,
+    "brand": "Westside Discs",
+    "name": "Anvil",
+    "speed": 4,
+    "glide": 2,
+    "turn": 0,
+    "fade": 4,
+    "category": "Approach"
+  },
+  {
+    "id": 581,
+    "brand": "Westside Discs",
+    "name": "Bard",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 281,
+    "brand": "Westside Discs",
+    "name": "Bear",
+    "speed": 8,
+    "glide": 6,
+    "turn": -0.5,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 834,
+    "brand": "Westside Discs",
+    "name": "Boatman",
+    "speed": 11,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 582,
+    "brand": "Westside Discs",
+    "name": "Catapult",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 547,
+    "brand": "Westside Discs",
+    "name": "Crown",
+    "speed": 2,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 282,
+    "brand": "Westside Discs",
+    "name": "Destiny",
+    "speed": 14,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 831,
+    "brand": "Westside Discs",
+    "name": "Fortress",
+    "speed": 10,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 362,
+    "brand": "Westside Discs",
+    "name": "Gatekeeper",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 836,
+    "brand": "Westside Discs",
+    "name": "Giant",
+    "speed": 13,
+    "glide": 5,
+    "turn": 0,
+    "fade": 3.5,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 111,
+    "brand": "Westside Discs",
+    "name": "Harp",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 115,
+    "brand": "Westside Discs",
+    "name": "Hatchet",
+    "speed": 9,
+    "glide": 6,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 895,
+    "brand": "Westside Discs",
+    "name": "Hiisi",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 894,
+    "brand": "Westside Discs",
+    "name": "Isäntä",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 897,
+    "brand": "Westside Discs",
+    "name": "Kannel",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 283,
+    "brand": "Westside Discs",
+    "name": "King",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 896,
+    "brand": "Westside Discs",
+    "name": "Laulaja",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 548,
+    "brand": "Westside Discs",
+    "name": "Longbowman",
+    "speed": 9,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2.5,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 112,
+    "brand": "Westside Discs",
+    "name": "Maiden",
+    "speed": 3,
+    "glide": 4,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 893,
+    "brand": "Westside Discs",
+    "name": "Miekka",
+    "speed": 12,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 832,
+    "brand": "Westside Discs",
+    "name": "Northman",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 279,
+    "brand": "Westside Discs",
+    "name": "Pine",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 892,
+    "brand": "Westside Discs",
+    "name": "Pohjan Poika",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 835,
+    "brand": "Westside Discs",
+    "name": "Queen",
+    "speed": 14,
+    "glide": 5,
+    "turn": -3,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 365,
+    "brand": "Westside Discs",
+    "name": "Sampo",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 363,
+    "brand": "Westside Discs",
+    "name": "Seer",
+    "speed": 7,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 277,
+    "brand": "Westside Discs",
+    "name": "Shield",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 829,
+    "brand": "Westside Discs",
+    "name": "Sling",
+    "speed": 3,
+    "glide": 3,
+    "turn": -1,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 366,
+    "brand": "Westside Discs",
+    "name": "Sorcerer",
+    "speed": 13,
+    "glide": 6,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 364,
+    "brand": "Westside Discs",
+    "name": "Stag",
+    "speed": 8,
+    "glide": 6,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 580,
+    "brand": "Westside Discs",
+    "name": "Swan 1",
+    "speed": 3,
+    "glide": 3,
+    "turn": -2.5,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 278,
+    "brand": "Westside Discs",
+    "name": "Swan 1 Reborn",
+    "speed": 3,
+    "glide": 3,
+    "turn": -2.5,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 828,
+    "brand": "Westside Discs",
+    "name": "Swan 2",
+    "speed": 3,
+    "glide": 3,
+    "turn": -2.5,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 116,
+    "brand": "Westside Discs",
+    "name": "Sword",
+    "speed": 12,
+    "glide": 5,
+    "turn": -0.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 891,
+    "brand": "Westside Discs",
+    "name": "Tuonelan Joutsen",
+    "speed": 3,
+    "glide": 3,
+    "turn": -2.5,
+    "fade": 0,
+    "category": "Putter"
+  },
+  {
+    "id": 280,
+    "brand": "Westside Discs",
+    "name": "Tursas",
+    "speed": 5,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 114,
+    "brand": "Westside Discs",
+    "name": "Underworld",
+    "speed": 7,
+    "glide": 6,
+    "turn": -3,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 890,
+    "brand": "Westside Discs",
+    "name": "VIP Air King",
+    "speed": 14,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 113,
+    "brand": "Westside Discs",
+    "name": "Warship",
+    "speed": 5,
+    "glide": 6,
+    "turn": 0,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 837,
+    "brand": "Westside Discs",
+    "name": "World",
+    "speed": 14,
+    "glide": 4,
+    "turn": 0,
+    "fade": 4,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 635,
+    "brand": "Wild Discs",
+    "name": "Great White",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 631,
+    "brand": "Wild Discs",
+    "name": "Hummingbird",
+    "speed": 5,
+    "glide": 5,
+    "turn": -1,
+    "fade": 1,
+    "category": "Midrange"
+  },
+  {
+    "id": 632,
+    "brand": "Wild Discs",
+    "name": "Hyena",
+    "speed": 8,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 634,
+    "brand": "Wild Discs",
+    "name": "Ocelot",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1.5,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 629,
+    "brand": "Wild Discs",
+    "name": "Sea Otter",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 630,
+    "brand": "Wild Discs",
+    "name": "Tasmanian Devil",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Approach"
+  },
+  {
+    "id": 633,
+    "brand": "Wild Discs",
+    "name": "Wildcat",
+    "speed": 9,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 946,
+    "brand": "Yikun",
+    "name": "Claws",
+    "speed": 4,
+    "glide": 3,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 947,
+    "brand": "Yikun",
+    "name": "Cross",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 186,
+    "brand": "Yikun",
+    "name": "Crossbow",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Midrange"
+  },
+  {
+    "id": 191,
+    "brand": "Yikun",
+    "name": "Da'E",
+    "speed": 13,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 948,
+    "brand": "Yikun",
+    "name": "Fu",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 185,
+    "brand": "Yikun",
+    "name": "Gui",
+    "speed": 3,
+    "glide": 3,
+    "turn": 0,
+    "fade": 2,
+    "category": "Putter"
+  },
+  {
+    "id": 184,
+    "brand": "Yikun",
+    "name": "Hammer",
+    "speed": 2,
+    "glide": 3,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 189,
+    "brand": "Yikun",
+    "name": "Hu",
+    "speed": 9,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 188,
+    "brand": "Yikun",
+    "name": "Jun",
+    "speed": 8,
+    "glide": 6,
+    "turn": -2,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 668,
+    "brand": "Yikun",
+    "name": "Kahu",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 949,
+    "brand": "Yikun",
+    "name": "Lian",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 3,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 950,
+    "brand": "Yikun",
+    "name": "Liu",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 951,
+    "brand": "Yikun",
+    "name": "Lu",
+    "speed": 8,
+    "glide": 5,
+    "turn": -2,
+    "fade": 1,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 667,
+    "brand": "Yikun",
+    "name": "Meteorite",
+    "speed": 5,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  },
+  {
+    "id": 952,
+    "brand": "Yikun",
+    "name": "Qi",
+    "speed": 11,
+    "glide": 5,
+    "turn": -3,
+    "fade": 1,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 953,
+    "brand": "Yikun",
+    "name": "Talon",
+    "speed": 2,
+    "glide": 2,
+    "turn": 0,
+    "fade": 1,
+    "category": "Putter"
+  },
+  {
+    "id": 954,
+    "brand": "Yikun",
+    "name": "Tomahawk",
+    "speed": 6,
+    "glide": 4,
+    "turn": 0,
+    "fade": 2,
+    "category": "Fairway Driver"
+  },
+  {
+    "id": 190,
+    "brand": "Yikun",
+    "name": "Twin Bear",
+    "speed": 10,
+    "glide": 5,
+    "turn": -1,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 955,
+    "brand": "Yikun",
+    "name": "Twin Swords",
+    "speed": 12,
+    "glide": 5,
+    "turn": -1,
+    "fade": 3,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 956,
+    "brand": "Yikun",
+    "name": "Wei",
+    "speed": 13,
+    "glide": 5,
+    "turn": -2,
+    "fade": 2,
+    "category": "Distance Driver"
+  },
+  {
+    "id": 187,
+    "brand": "Yikun",
+    "name": "Yao",
+    "speed": 5,
+    "glide": 5,
+    "turn": 0,
+    "fade": 2,
+    "category": "Midrange"
+  }
+]
