@@ -49,11 +49,11 @@
         /* ------------------------------ KORT OCH CONTAINERS ------------------------------ */
         /* Huvudcontainer för allt innehåll */
         #mainContent {
-            display: block !important; 
-            padding: 20px;
-            max-width: 1600px; 
-            margin: 0 auto;
-        }
+    padding: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+    display: block;
+}
         
         /* ------------------------------ TOPPDASBOARD - CSS GRID ------------------------------ */
         /* Wrapper för de övre elementen: Rating, Top 5, Bästa Resultat och Knappboxar */
@@ -397,6 +397,440 @@
                  grid-template-columns: 1fr;
             }
         }
+        /* =====================================================
+   DISC GOLF ID
+   ===================================================== */
+
+.disc-golf-id-container {
+    width: 100%;
+}
+
+.disc-golf-id-container * {
+    box-sizing: border-box;
+}
+
+.disc-golf-id-container .editor {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.disc-golf-id-container .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.disc-golf-id-container .field {
+    margin-bottom: 10px;
+}
+
+.disc-golf-id-container .field.full {
+    grid-column: 1 / -1;
+}
+
+.disc-golf-id-container label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.disc-golf-id-container input,
+.disc-golf-id-container select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 15px;
+}
+
+.disc-golf-id-container button {
+    margin-top: 15px;
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.disc-golf-id-container button:hover {
+    background: #1d4ed8;
+}
+
+
+/* ID-KORT */
+
+.disc-golf-id-container .card-wrapper {
+    overflow-x: auto;
+    padding: 10px 5px 25px;
+}
+
+.disc-golf-id-container .id-card {
+    width: 850px;
+    min-width: 850px;
+    height: 500px;
+    margin: auto;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f8fafc 50%,
+            #eef2f7 100%
+        );
+
+    border: 1px solid #cbd5e1;
+    border-radius: 28px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.15);
+
+    overflow: hidden;
+    position: relative;
+}
+
+
+/* KORTHUVUD */
+
+.disc-golf-id-container .card-header {
+    height: 105px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #172033,
+            #334155
+        );
+
+    color: white;
+    padding: 18px 30px;
+    position: relative;
+}
+
+.disc-golf-id-container .card-title {
+    font-size: 13px;
+    letter-spacing: 4px;
+    opacity: 0.65;
+    font-weight: bold;
+}
+
+.disc-golf-id-container .card-subtitle {
+    font-size: 9px;
+    letter-spacing: 2px;
+    opacity: 0.45;
+    margin-top: 2px;
+}
+
+.disc-golf-id-container .card-name {
+    font-size: 34px;
+    font-weight: 900;
+    margin-top: 5px;
+}
+
+.disc-golf-id-container .card-number {
+    position: absolute;
+    right: 30px;
+    top: 23px;
+    text-align: right;
+}
+
+.disc-golf-id-container .card-number small {
+    display: block;
+    opacity: 0.55;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.disc-golf-id-container .card-number strong {
+    font-size: 18px;
+}
+
+
+/* HUVUDINNEHÅLL */
+
+.disc-golf-id-container .card-body {
+    padding: 19px 30px;
+}
+
+
+/* PROFIL */
+
+.disc-golf-id-container .profile-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.disc-golf-id-container .photo {
+    width: 118px;
+    height: 118px;
+    border-radius: 17px;
+    background: #dbe2ea;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 46px;
+    font-weight: bold;
+    color: #64748b;
+
+    border: 3px solid white;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.12);
+}
+
+.disc-golf-id-container .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.disc-golf-id-container .identity {
+    flex: 1;
+    text-align: left;
+}
+
+.disc-golf-id-container .badges {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.disc-golf-id-container .badge {
+    background: #e8f0ff;
+    color: #1d4ed8;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+/* PDGA */
+
+.disc-golf-id-container .rating-box {
+    display: inline-flex;
+    gap: 16px;
+    align-items: center;
+
+    background: #172033;
+    color: white;
+
+    border-radius: 12px;
+    padding: 8px 14px;
+
+    box-shadow:
+        0 3px 8px rgba(0,0,0,0.12);
+
+    text-align: left;
+}
+
+.disc-golf-id-container .rating-box span {
+    font-size: 10px;
+    letter-spacing: 1px;
+    opacity: 0.6;
+}
+
+.disc-golf-id-container .rating-box strong {
+    font-size: 23px;
+    line-height: 1;
+}
+
+
+/* INFO */
+
+.disc-golf-id-container .info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 9px;
+    margin-top: 15px;
+}
+
+.disc-golf-id-container .info {
+    background: rgba(255,255,255,0.85);
+
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+
+    padding: 8px 11px;
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,0.03);
+}
+
+.disc-golf-id-container .info small {
+    display: block;
+    color: #64748b;
+    font-size: 9px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    letter-spacing: 0.4px;
+}
+
+.disc-golf-id-container .info strong {
+    font-size: 14px;
+}
+
+
+/* PROFILER */
+
+.disc-golf-id-container .profiles {
+    margin-top: 14px;
+}
+
+.disc-golf-id-container .profile-line {
+    display: grid;
+    grid-template-columns: 115px 1fr 115px;
+
+    align-items: center;
+    gap: 10px;
+
+    margin: 7px 0;
+
+    font-size: 10px;
+    color: #64748b;
+}
+
+.disc-golf-id-container .profile-line span:last-child {
+    text-align: right;
+}
+
+.disc-golf-id-container .slider {
+    height: 6px;
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #dbe2ea,
+            #cbd5e1
+        );
+
+    position: relative;
+}
+
+.disc-golf-id-container .slider::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 50%;
+
+    height: 2px;
+
+    transform: translateY(-50%);
+
+    background: #94a3b8;
+
+    opacity: 0.35;
+}
+
+.disc-golf-id-container .slider-dot {
+    position: absolute;
+
+    width: 15px;
+    height: 15px;
+
+    background: #2563eb;
+
+    border: 3px solid white;
+
+    border-radius: 50%;
+
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    box-shadow:
+        0 1px 5px rgba(0,0,0,0.25);
+}
+
+
+/* FAVORITKAST */
+
+.disc-golf-id-container .favorite-throw {
+    margin-top: 9px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.disc-golf-id-container .favorite-throw b {
+    color: #334155;
+}
+
+
+/* SLOGAN */
+
+.disc-golf-id-container #sloganBox {
+    position: absolute;
+
+    left: 50%;
+    bottom: 16px;
+
+    transform:
+        translateX(-50%);
+
+    width: max-content;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+.disc-golf-id-container #cardQuote {
+    margin: 0;
+    padding: 0;
+
+    font-size: 20px;
+
+    font-weight: 500;
+
+    font-style: italic;
+
+    color: #172033;
+}
+
+.disc-golf-id-container #sloganBox::before {
+    content: "";
+
+    display: block;
+
+    width: 180px;
+    height: 1px;
+
+    background: #cbd5e1;
+
+    margin:
+        0 auto 7px;
+}
+
+
+/* MOBIL */
+
+@media (max-width: 700px) {
+
+    .disc-golf-id-container .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .disc-golf-id-container .field.full {
+        grid-column: auto;
+    }
+
+}
     </style>
 </head>
 <body>
@@ -428,6 +862,751 @@
         </div>
 
     </div>
+</div>
+<!-- =====================================================
+     DISC GOLF ID POPUP
+     ===================================================== -->
+
+<div id="discGolfIdModal"
+     onclick="closeDiscGolfIdModal()"
+     style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.65);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        padding: 20px;
+        box-sizing: border-box;
+     ">
+
+    
+
+        <!-- POPUP HEADER -->
+
+        <div style="
+            display: grid;
+            grid-template-columns: 30px 1fr 30px;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        ">
+
+            <div></div>
+
+            
+
+        </div>
+
+
+        <!-- =================================================
+             ENDAST ID-KORTET VISAS I HUVUDPOPUPEN
+             ================================================= -->
+
+        <div style="
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        ">
+
+            <div class="disc-golf-id-container">
+
+                <!-- =========================
+                     ID-KORT
+                ========================= -->
+
+                <div class="card-wrapper">
+
+                    <div class="id-card">
+
+                        <!-- KORTHUVUD -->
+
+                        <div class="card-header">
+
+                            <div class="card-title">
+                                🥏 DISC GOLF ID
+                            </div>
+
+                            <div class="card-subtitle">
+                                PLAYER PROFILE
+                            </div>
+
+                            <div class="card-name"
+                                 id="cardName">
+                                JONAS
+                            </div>
+
+                            <div class="card-number">
+
+                                <small>PDGA</small>
+
+                                <strong id="cardPdgaNumber">
+                                    #123456
+                                </strong>
+
+                                
+<a href="#"
+   id="editDiscGolfIdLink"
+   onclick="event.stopPropagation(); openDiscGolfIdEditor(); return false;"
+   style="
+       display: none;
+       margin-top: 6px;
+       color: #ffffff;
+       font-size: 9px;
+       text-decoration: underline;
+       opacity: 0.85;
+       cursor: pointer;
+   ">
+    ✏️ Uppdatera mitt Disc Golf ID
+</a>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- KORTETS INNEHÅLL -->
+
+                        <div class="card-body">
+
+                            <!-- PROFIL -->
+
+                            <div class="profile-row">
+
+                                <div class="photo"
+                                     id="photoBox">
+                                    J
+                                </div>
+
+                                <div class="identity">
+
+                                    <div class="badges">
+
+                                        <div class="badge"
+                                             id="handBadge">
+                                            RHBH
+                                        </div>
+
+                                        <div class="badge"
+                                             id="forehandBadge">
+                                            FH: Tränar
+                                        </div>
+
+                                        <div class="badge"
+                                             id="sinceBadge">
+                                            Spelat sedan 2021
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- PDGA RATING -->
+
+                                    <div class="rating-box">
+
+                                        <div>
+                                            <span>PDGA RATING</span>
+                                        </div>
+
+                                        <strong id="cardRating">
+                                            825
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div style="
+                                        margin-top:7px;
+                                        color:#64748b;
+                                        font-size:11px;
+                                    ">
+
+                                        <span id="yearsPlayed">
+                                            Spelat i 5 år
+                                        </span>
+
+                                        <br>
+
+                                        <div class="favorite-throw">
+
+                                            <b>Favoritkast:</b>
+
+                                            <span id="cardThrow">
+                                                Hyzerflip
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- INFO -->
+
+                            <div class="info-grid">
+
+                                <div class="info">
+
+                                    <small>📏 MAX KAST</small>
+
+                                    <strong id="cardDistance">
+                                        90 m
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="info">
+
+                                    <small>🥏 FAVORITDISC</small>
+
+                                    <strong id="cardDisc">
+                                        River
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="info">
+
+                                    <small>🏆 FAVORITBANA</small>
+
+                                    <strong id="cardCourse">
+                                        Vilsta
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="info">
+
+                                    <small>🥏 ANTAL DISCAR</small>
+
+                                    <strong id="cardDiscs">
+                                        15
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PROFILER -->
+
+                            <div class="profiles">
+
+                                <div class="profile-line">
+
+    <span>Understable</span>
+
+    <div class="slider">
+        <div
+            class="slider-dot"
+            id="cardUnderstableOverstable"
+            style="left:50%">
+        </div>
+    </div>
+
+    <span>Overstable</span>
+
+</div>
+
+
+<div class="profile-line">
+
+    <span>Precision</span>
+
+    <div class="slider">
+        <div
+            class="slider-dot"
+            id="cardPrecisionPower"
+            style="left:50%">
+        </div>
+    </div>
+
+    <span>Power</span>
+
+</div>
+
+
+<div class="profile-line">
+
+    <span>Safe</span>
+
+    <div class="slider">
+        <div
+            class="slider-dot"
+            id="cardSafeAggressive"
+            style="left:50%">
+        </div>
+    </div>
+
+    <span>Aggressive</span>
+
+</div>
+
+
+<div class="profile-line">
+
+    <span>För få discar</span>
+
+    <div class="slider">
+        <div
+            class="slider-dot"
+            id="cardDiscCountPreference"
+            style="left:50%">
+        </div>
+    </div>
+
+    <span>För många discar</span>
+
+</div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SLOGAN -->
+
+                        <div id="sloganBox">
+
+                            <div id="cardQuote">
+                                ”Hyzerflip är livet.”
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     DISC GOLF ID – REDIGERING
+     ===================================================== -->
+
+<div id="discGolfIdEditorModal"
+     style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 1100;
+        padding: 20px;
+        box-sizing: border-box;
+     ">
+
+    <div style="
+        background: #ffffff;
+        width: 100%;
+        max-width: 900px;
+        max-height: 90vh;
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        position: relative;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+     ">
+
+        <!-- POPUP HEADER -->
+
+        <div style="
+            display: grid;
+            grid-template-columns: 30px 1fr 30px;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        ">
+
+            <div></div>
+
+            <h3 style="
+                margin: 0;
+                color: #1e293b;
+                text-align: center;
+                font-size: 20px;
+                font-weight: 700;
+            ">
+                ✏️ Uppdatera Disc Golf ID
+            </h3>
+
+            <button
+                type="button"
+                onclick="closeDiscGolfIdEditor()"
+                style="
+                    background: none;
+                    border: none;
+                    font-size: 22px;
+                    color: #64748b;
+                    cursor: pointer;
+                    justify-self: end;
+                    padding: 0;
+                    font-weight: bold;
+                "
+                title="Stäng">
+                ✕
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             REDIGERINGSFORMULÄR
+             ================================================= -->
+
+        <div style="
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        ">
+
+            <div class="disc-golf-id-container">
+
+                <div class="editor">
+
+                    <h2>Din Disc Golf-profil</h2>
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label>Namn</label>
+                            <input id="name" value="Jonas">
+                        </div>
+
+
+                        <div class="field">
+                            <label>PDGA-nummer (frivilligt)</label>
+                            <input id="pdgaNumber" value="123456">
+                        </div>
+
+
+                        <div class="field">
+                            <label>PDGA-rating</label>
+                            <input id="pdgaRating"
+                                   type="number"
+                                   value="825">
+                        </div>
+
+
+                        <div class="field">
+                            <label>Max kastlängd</label>
+                            <input id="distance"
+                                   type="number"
+                                   value="90">
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Kastarm</label>
+
+                            <select id="hand">
+
+                                <option value="RH">
+                                    Höger
+                                </option>
+
+                                <option value="LH">
+                                    Vänster
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Forehand</label>
+
+                            <select id="forehand">
+
+                                <option>
+                                    Tränar
+                                </option>
+
+                                <option>
+                                    Ja
+                                </option>
+
+                                <option>
+                                    Nej
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Började spela</label>
+
+                            <input id="startDate"
+                                   type="date"
+                                   value="2021-01-01">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Antal discar</label>
+
+                            <input id="discs"
+                                   type="number"
+                                   value="15">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Favoritdisc</label>
+
+                            <input id="favoriteDisc"
+                                   value="River">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Favoritbana</label>
+
+                            <input id="favoriteCourse"
+                                   value="Vilsta">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Favoritkast</label>
+
+                            <input id="favoriteThrow"
+                                   value="Hyzerflip">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>Profilbild</label>
+
+                            <input id="photoInput"
+                                   type="file"
+                                   accept="image/*">
+
+                        </div>
+
+
+                        <div class="field full">
+
+                            <label>Discgolf-slogan</label>
+
+                            <input id="quote"
+                                   value="Hyzerflip är livet.">
+
+                        </div>
+						<!-- =========================
+     PROFILSLIDERS
+========================= -->
+
+<div class="field full">
+
+    <label>Spelstil – Understable ↔ Overstable</label>
+
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    ">
+
+        <span style="font-size: 12px;">
+            Understable
+        </span>
+
+        <input
+            id="understableOverstable"
+            type="range"
+            min="0"
+            max="100"
+            value="50"
+            style="flex: 1;"
+        >
+
+        <span style="font-size: 12px;">
+            Overstable
+        </span>
+
+        <strong
+            id="understableOverstableValue"
+            style="min-width: 35px; text-align: right;">
+            50%
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div class="field full">
+
+    <label>Kaststil – Precision ↔ Power</label>
+
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    ">
+
+        <span style="font-size: 12px;">
+            Precision
+        </span>
+
+        <input
+            id="precisionPower"
+            type="range"
+            min="0"
+            max="100"
+            value="50"
+            style="flex: 1;"
+        >
+
+        <span style="font-size: 12px;">
+            Power
+        </span>
+
+        <strong
+            id="precisionPowerValue"
+            style="min-width: 35px; text-align: right;">
+            50%
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div class="field full">
+
+    <label>Spelstrategi – Safe ↔ Aggressive</label>
+
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    ">
+
+        <span style="font-size: 12px;">
+            Safe
+        </span>
+
+        <input
+            id="safeAggressive"
+            type="range"
+            min="0"
+            max="100"
+            value="50"
+            style="flex: 1;"
+        >
+
+        <span style="font-size: 12px;">
+            Aggressive
+        </span>
+
+        <strong
+            id="safeAggressiveValue"
+            style="min-width: 35px; text-align: right;">
+            50%
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div class="field full">
+
+    <label>Disc-samling – För få discar ↔ För många discar</label>
+
+    <div style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    ">
+
+        <span style="font-size: 12px;">
+            För få discar
+        </span>
+
+        <input
+            id="discCountPreference"
+            type="range"
+            min="0"
+            max="100"
+            value="50"
+            style="flex: 1;"
+        >
+
+        <span style="font-size: 12px;">
+            För många discar
+        </span>
+
+        <strong
+            id="discCountPreferenceValue"
+            style="min-width: 35px; text-align: right;">
+            50%
+        </strong>
+
+    </div>
+
+</div>
+                    </div>
+
+
+                    <button type="button"
+        onclick="updateCard(); saveDiscGolfIdProfile(); closeDiscGolfIdEditor()">
+    Uppdatera Disc Golf ID
+</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 <!-- Modal för Min Väska -->
@@ -560,6 +1739,130 @@
 
     <div id="mainContent" style="display: none;">
         <h1><span id="playerTitle"></span> DiscGolf Resultat</h1>
+		<div style="margin: 16px 0; text-align: center;">
+    <button
+        id="openLiveScoringButton"
+        type="button"
+        onclick="openLiveScoringView()"
+        style="
+            width: 100%;
+            max-width: 420px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            background: #176b45;
+            color: white;
+            cursor: pointer;
+        ">
+        🥏 Öppna live-poängräknaren
+</button>
+
+
+</div> <!-- Slut på mainContent -->
+
+<div id="liveScoringView"
+
+     style="display:none; padding:16px; max-width:600px; margin:0 auto;">
+	 <div id="liveRoundSetup">
+
+    
+
+    <h1>🥏 Live-poängräknare</h1>
+    <p>Välj bana och layout för rundan.</p>
+
+    <label for="liveCourseSelect"><strong>Bana</strong></label>
+    <select id="liveCourseSelect"
+            style="display:block; width:100%; padding:14px; margin:8px 0 18px;">
+        <option value="">Laddar banor...</option>
+    </select>
+
+    <label for="liveLayoutSelect"><strong>Layout</strong></label>
+    <select id="liveLayoutSelect"
+            disabled
+            style="display:block; width:100%; padding:14px; margin:8px 0 18px;">
+        <option value="">Välj först en bana</option>
+    </select>
+
+    <div id="liveLayoutInfo"
+         style="padding:12px; margin:12px 0; background:#f2f5f3; border-radius:8px;">
+        Välj en bana och layout.
+    </div>
+<div id="livePlayersSection" style="margin-top:20px;">
+    <h2>👥 Spelare</h2>
+    <p>Välj vilka som ska spela rundan.</p>
+
+    <div id="livePlayersList">
+        Laddar spelare...
+    </div>
+
+    <p id="livePlayersInfo">Inga spelare valda.</p>
+
+    <button
+        type="button"
+        id="liveStartRoundButton"
+        disabled
+        style="
+            width:100%;
+            padding:16px;
+            margin-top:12px;
+            border:0;
+            border-radius:12px;
+            background:#176b45;
+            color:white;
+            font-size:18px;
+            font-weight:bold;
+            cursor:pointer;
+        ">
+        Starta runda
+    </button>
+	
+
+    <p id="liveScoringStatus" role="status">
+        Ingen runda har startats.
+    </p>
+
+</div>
+</div>
+
+
+<div id="liveHoleSection" style="display:none; margin-top:24px;">
+
+    <div style="text-align:center; margin-bottom:20px;">
+        <div style="font-size:14px; color:#666;">AKTUELLT HÅL</div>
+        <div id="liveHoleNumber" style="font-size:56px; font-weight:bold;">1</div>
+        <div id="liveHolePar" style="font-size:20px;">Par 3</div>
+        <div id="liveHoleProgress" style="margin-top:8px;">Hål 1 av 18</div>
+    </div>
+
+    <div id="liveHoleOverview" style="margin:16px 0;"></div>
+
+    <div id="liveHolePlayers"></div>
+
+    <div style="display:flex; gap:10px; margin-top:20px;">
+        <button type="button" id="livePreviousHole"
+                style="flex:1; min-height:52px; padding:14px; border-radius:10px;">
+            ← Föregående
+        </button>
+
+        <button type="button" id="liveNextHole"
+                style="flex:1; min-height:52px; padding:14px; border-radius:10px; background:#176b45; color:white;">
+            Nästa hål →
+        </button>
+    </div>
+
+    <p id="liveHoleMessage" role="status"></p>
+
+    <button type="button"
+            onclick="closeLiveScoringView()"
+            style="width:100%; min-height:52px; padding:14px; margin-top:24px; border-radius:10px; cursor:pointer;">
+        ← Tillbaka till resultatsidan
+    </button>
+
+</div>
+
+</div>   
 
 <!-- Spelar-panel i övre högra hörnet -->
 <!-- Spelar-panel i övre högra hörnet -->
@@ -583,12 +1886,20 @@
             🎒 <span id="bagPlayerName">Spelare</span> (<span id="bag-count">0</span> discar)
             <br><br>🤖 <a href="#" onclick="openAiCaddyModal(); return false;" style="color: #2c3e50; text-decoration: none;"><strong id="caddyTitle">AI Caddy</strong></a>: 
             <span id="aiCaddyMessage">Analyserar din runda...</span>
+			<br><br>
+
+🪪
+<a href="#" onclick="openDiscGolfIdModal(); return false;"
+   style="color: #2c3e50; text-decoration: none;">
+    <strong>Disc Golf ID</strong>
+</a>
+</a>
         </a>
     </div>
 
 </div>
 
-        
+   
         
 <div class="top-grid-wrapper">
 
@@ -7597,6 +8908,7 @@ function showLoginForm() {
         precalculateHoleStats();
         displayStaticBestResults();
         updateCourseSelect();
+		loadDiscGolfIdProfile();
 
         const loginModal = document.getElementById('loginModal');
 
@@ -7672,6 +8984,11 @@ function saveActivePlayerToSQLite(name) {
     playerName = name;
 
     console.log("✅ Aktiv spelare sparad i SQLite:", name);
+
+    // Uppdatera behörigheten för Disc Golf ID-länken
+    if (typeof window.updateDiscGolfIdEditLink === 'function') {
+        window.updateDiscGolfIdEditLink();
+    }
 }
 
         function setPlayerName() {
@@ -9140,6 +10457,11 @@ function removePlayer() {
 
     console.log(`✅ Spelaren "${name}" har tagits bort från spelarlistan.`);
 }
+function updateDiscGolfIdCard() {
+    console.log("🪪 Uppdaterar Disc Golf ID för:", playerName);
+
+    // Här kommer vi först läsa spelarens ID-information
+}
 function switchPlayer() {
     const select = document.getElementById('playerSelect');
     if (!select || !select.value) {
@@ -9166,6 +10488,8 @@ function switchPlayer() {
 
     setupApp();
 	updateBagCount();
+	updateDiscGolfIdCard();
+	loadDiscGolfIdProfile();
 }
 
 
@@ -13959,14 +15283,19 @@ window.registerUser = async function() {
 
     // Logga in den nya användaren
     sqliteDb.exec(`
-        INSERT OR REPLACE INTO app_settings (key, value)
-        VALUES ('active_player_id', '${playerId}')
-    `);
+    INSERT OR REPLACE INTO app_settings (key, value)
+    VALUES ('active_player_id', '${playerId}')
+`);
 
-    sqliteDb.exec(`
-        INSERT OR REPLACE INTO app_settings (key, value)
-        VALUES ('login_state', 'logged_in')
-    `);
+sqliteDb.exec(`
+    INSERT OR REPLACE INTO app_settings (key, value)
+    VALUES ('logged_in_player_id', '${playerId}')
+`);
+
+sqliteDb.exec(`
+    INSERT OR REPLACE INTO app_settings (key, value)
+    VALUES ('login_state', 'logged_in')
+`);
 
     playerName = username;
 
@@ -14223,6 +15552,1558 @@ window.continueAsGuest = function() {
 
     // Starta appens övriga funktioner
     setupApp();
+};
+window.openDiscGolfIdModal = function() {
+    const modal = document.getElementById('discGolfIdModal');
+
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+};
+
+window.closeDiscGolfIdModal = function() {
+    const modal = document.getElementById('discGolfIdModal');
+
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
+
+function canEditActivePlayer() {
+    if (!sqliteDb) return false;
+
+    try {
+        const rows = sqliteDb.selectObjects(`
+            SELECT key, value
+            FROM app_settings
+            WHERE key IN (
+                'active_player_id',
+                'logged_in_player_id',
+                'login_state'
+            )
+        `);
+
+        const settings = Object.fromEntries(
+            rows.map(row => [row.key, row.value])
+        );
+
+        const activeId = Number(settings.active_player_id);
+        const loggedInId = Number(settings.logged_in_player_id);
+
+        return (
+            settings.login_state === 'logged_in' &&
+            activeId > 0 &&
+            loggedInId > 0 &&
+            activeId === loggedInId
+        );
+    } catch (error) {
+        console.error('Kunde inte kontrollera behörighet:', error);
+        return false;
+    }
+}
+window.updateDiscGolfIdEditLink = function () {
+    const link = document.getElementById('editDiscGolfIdLink');
+
+    if (!link) return;
+
+    link.style.display = canEditActivePlayer() ? 'block' : 'none';
+}
+
+
+window.openDiscGolfIdEditor = function () {
+    if (!canEditActivePlayer()) {
+        alert('Du kan bara ändra ditt eget Disc Golf ID.');
+        return;
+    }
+
+    const modal = document.getElementById('discGolfIdEditorModal');
+
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+};
+
+window.closeDiscGolfIdEditor = function() {
+    const modal = document.getElementById('discGolfIdEditorModal');
+
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
+/* =========================
+   UPPDATERA KORT
+========================= */
+
+window.updateCard = function () {
+
+    const name =
+        document.getElementById("name")
+        .value.trim()
+        ||
+        "Disc Golf Player";
+
+
+    const pdgaNumber =
+        document.getElementById("pdgaNumber")
+        .value.trim();
+
+
+    const rating =
+        document.getElementById("pdgaRating")
+        .value;
+
+
+    const distance =
+        document.getElementById("distance")
+        .value;
+
+
+    const hand =
+        document.getElementById("hand")
+        .value;
+
+
+    const forehand =
+        document.getElementById("forehand")
+        .value;
+
+
+    const discs =
+        document.getElementById("discs")
+        .value;
+
+
+    const favoriteDisc =
+        document.getElementById("favoriteDisc")
+        .value;
+
+
+    const favoriteCourse =
+        document.getElementById("favoriteCourse")
+        .value;
+
+
+    const favoriteThrow =
+        document.getElementById("favoriteThrow")
+        .value;
+
+
+    const quote =
+        document.getElementById("quote")
+        .value;
+
+
+    /* NAMN */
+
+    document.getElementById("cardName")
+        .textContent =
+        name.toUpperCase();
+
+
+    /* PDGA */
+
+    document.getElementById("cardPdgaNumber")
+        .textContent =
+        pdgaNumber
+            ? "#" + pdgaNumber
+            : "—";
+
+
+    document.getElementById("cardRating")
+        .textContent =
+        rating || "—";
+
+
+    /* KASTARM */
+
+    document.getElementById("handBadge")
+        .textContent =
+        hand === "RH"
+            ? "RHBH"
+            : "LHBH";
+
+
+    /* FOREHAND */
+
+    document.getElementById("forehandBadge")
+        .textContent =
+        "FH: " + forehand;
+
+
+    /* SPELAT SEDAN */
+
+    const startDate =
+        document.getElementById("startDate")
+        .value;
+
+
+    if (startDate) {
+
+        const start =
+            new Date(startDate);
+
+        const now =
+            new Date();
+
+
+        let years =
+            now.getFullYear() -
+            start.getFullYear();
+
+
+        let months =
+            now.getMonth() -
+            start.getMonth();
+
+
+        if (
+            months < 0 ||
+            (
+                months === 0 &&
+                now.getDate() < start.getDate()
+            )
+        ) {
+
+            years--;
+
+        }
+
+
+        if (years < 0) {
+            years = 0;
+        }
+
+
+        document.getElementById("sinceBadge")
+            .textContent =
+            "Spelat sedan " +
+            start.getFullYear();
+
+
+        document.getElementById("yearsPlayed")
+            .textContent =
+            years === 1
+                ? "Spelat i 1 år"
+                : "Spelat i " +
+                  years +
+                  " år";
+
+    }
+
+
+    /* ÖVRIG INFORMATION */
+
+    document.getElementById("cardDistance")
+        .textContent =
+        (distance || "—") +
+        " m";
+
+
+    document.getElementById("cardDisc")
+        .textContent =
+        favoriteDisc || "—";
+
+
+    document.getElementById("cardCourse")
+        .textContent =
+        favoriteCourse || "—";
+
+
+    document.getElementById("cardDiscs")
+        .textContent =
+        discs || "0";
+
+
+    document.getElementById("cardThrow")
+        .textContent =
+        favoriteThrow || "—";
+
+
+    document.getElementById("cardQuote")
+        .textContent =
+        quote
+            ? "”" + quote + "”"
+            : "";
+
+};
+
+
+window.saveDiscGolfIdProfile = function () {
+
+if (!canEditActivePlayer()) {
+    alert('Du kan bara ändra ditt eget Disc Golf ID.');
+    return;
+}
+
+if (!sqliteDb) {
+    console.error('SQLite är inte redo.');
+    return;
+}
+
+const ids = sqliteDb.selectObjects(`
+    SELECT key, value
+    FROM app_settings
+    WHERE key IN ('active_player_id', 'logged_in_player_id')
+`);
+
+const activePlayerId = Number(
+    ids.find(r => r.key === 'active_player_id')?.value
+);
+
+const loggedInPlayerId = Number(
+    ids.find(r => r.key === 'logged_in_player_id')?.value
+);
+
+if (
+    !activePlayerId ||
+    !loggedInPlayerId ||
+    activePlayerId !== loggedInPlayerId
+) {
+    alert('Du kan bara ändra ditt eget Disc Golf ID.');
+    return;
+}
+
+const playerId = loggedInPlayerId;
+
+    
+	
+
+const photo = window.compressedDiscGolfPhoto || "";
+
+    const profile = {
+        pdgaNumber: document.getElementById("pdgaNumber").value.trim(),
+        pdgaRating: document.getElementById("pdgaRating").value,
+        distance: document.getElementById("distance").value,
+        hand: document.getElementById("hand").value,
+        forehand: document.getElementById("forehand").value,
+        startDate: document.getElementById("startDate").value,
+        discs: document.getElementById("discs").value,
+        favoriteDisc: document.getElementById("favoriteDisc").value,
+        favoriteCourse: document.getElementById("favoriteCourse").value,
+        favoriteThrow: document.getElementById("favoriteThrow").value,
+        quote: document.getElementById("quote").value,
+		photo: photo,
+		
+        understableOverstable: Number(document.getElementById("understableOverstable").value),
+        precisionPower: Number(document.getElementById("precisionPower").value),
+        safeAggressive: Number(document.getElementById("safeAggressive").value),
+        discCountPreference: Number(document.getElementById("discCountPreference").value)
+    };
+
+    sqliteDb.exec({
+        sql: `
+            INSERT INTO player_profiles (
+                player_id,
+                pdga_number,
+                pdga_rating,
+                distance,
+                hand,
+                forehand,
+                start_date,
+                discs,
+                favorite_disc,
+                favorite_course,
+                favorite_throw,
+                quote,
+				photo,
+                understable_overstable,
+                precision_power,
+                safe_aggressive,
+                disc_count_preference
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(player_id) DO UPDATE SET
+                pdga_number = excluded.pdga_number,
+                pdga_rating = excluded.pdga_rating,
+                distance = excluded.distance,
+                hand = excluded.hand,
+                forehand = excluded.forehand,
+                start_date = excluded.start_date,
+                discs = excluded.discs,
+                favorite_disc = excluded.favorite_disc,
+                favorite_course = excluded.favorite_course,
+                favorite_throw = excluded.favorite_throw,
+                quote = excluded.quote,
+				photo = excluded.photo,
+                understable_overstable = excluded.understable_overstable,
+                precision_power = excluded.precision_power,
+                safe_aggressive = excluded.safe_aggressive,
+                disc_count_preference = excluded.disc_count_preference
+        `,
+        bind: [
+            playerId,
+            profile.pdgaNumber,
+            profile.pdgaRating,
+            profile.distance,
+            profile.hand,
+            profile.forehand,
+            profile.startDate,
+            profile.discs,
+            profile.favoriteDisc,
+            profile.favoriteCourse,
+            profile.favoriteThrow,
+            profile.quote,
+			profile.photo,
+            profile.understableOverstable,
+            profile.precisionPower,
+            profile.safeAggressive,
+            profile.discCountPreference
+        ]
+    });
+
+    console.log("✅ Disc Golf ID-profil sparad i SQLite för player_id:", playerId);
+}
+window.updateDiscGolfIdEditAccess = function () {
+    if (!sqliteDb) return;
+
+    const rows = sqliteDb.selectObjects(`
+        SELECT key, value
+        FROM app_settings
+        WHERE key IN ('active_player_id', 'logged_in_player_id')
+    `);
+
+    const activeId = Number(
+        rows.find(r => r.key === 'active_player_id')?.value
+    );
+
+    const loggedInId = Number(
+        rows.find(r => r.key === 'logged_in_player_id')?.value
+    );
+
+    const link = [...document.querySelectorAll('a')]
+        .find(a =>
+            a.textContent.includes('Uppdatera mitt Disc Golf ID')
+        );
+
+    if (!link) return;
+
+    const canEdit =
+        activeId > 0 &&
+        loggedInId > 0 &&
+        activeId === loggedInId;
+
+    link.style.display = canEdit ? 'block' : 'none';
+};
+window.loadDiscGolfIdProfile = function () {
+
+    if (!sqliteDb) {
+        console.error("❌ SQLite är inte redo.");
+        return;
+    }
+
+    const active = sqliteDb.selectObjects(`
+        SELECT value
+        FROM app_settings
+        WHERE key = 'active_player_id'
+        LIMIT 1
+    `);
+
+    if (!active.length) {
+        console.error("❌ Ingen aktiv spelare hittades.");
+        return;
+    }
+
+    const playerId = Number(active[0].value);
+
+    // Hämta spelarens namn från players
+    const playerRows = sqliteDb.selectObjects(`
+        SELECT name
+        FROM players
+        WHERE id = ${playerId}
+        LIMIT 1
+    `);
+
+    if (playerRows.length) {
+    const nameField = document.getElementById("name");
+
+    if (nameField) {
+        nameField.value = playerRows[0].name || "";
+        nameField.readOnly = true;
+    }
+}
+
+    // Hämta Disc Golf ID-profilen
+    const rows = sqliteDb.selectObjects(`
+        SELECT *
+        FROM player_profiles
+        WHERE player_id = ${playerId}
+        LIMIT 1
+    `);
+
+    if (!rows.length) {
+        console.log("ℹ️ Ingen Disc Golf ID-profil finns för player_id:", playerId);
+
+        // Uppdatera ändå kortet med rätt namn
+        if (typeof updateCard === "function") {
+            updateCard();
+        }
+
+        return;
+    }
+
+    const profile = rows[0];
+
+    document.getElementById("pdgaNumber").value = profile.pdga_number || "";
+    document.getElementById("pdgaRating").value = profile.pdga_rating || "";
+    document.getElementById("distance").value = profile.distance || "";
+    document.getElementById("hand").value = profile.hand || "RH";
+    document.getElementById("forehand").value = profile.forehand || "";
+    document.getElementById("startDate").value = profile.start_date || "";
+    document.getElementById("discs").value = profile.discs || "";
+    document.getElementById("favoriteDisc").value = profile.favorite_disc || "";
+    document.getElementById("favoriteCourse").value = profile.favorite_course || "";
+    document.getElementById("favoriteThrow").value = profile.favorite_throw || "";
+    document.getElementById("quote").value = profile.quote || "";
+	
+	if (profile.photo) {
+    const photoBox = document.getElementById("photoBox");
+
+    if (photoBox) {
+        let img = photoBox.querySelector("img");
+
+        if (!img) {
+            img = document.createElement("img");
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            photoBox.innerHTML = "";
+            photoBox.appendChild(img);
+        }
+
+        img.src = profile.photo;
+    }
+}
+
+    document.getElementById("understableOverstable").value =
+        profile.understable_overstable ?? 50;
+
+    document.getElementById("precisionPower").value =
+        profile.precision_power ?? 50;
+
+    document.getElementById("safeAggressive").value =
+        profile.safe_aggressive ?? 50;
+
+    document.getElementById("discCountPreference").value =
+        profile.disc_count_preference ?? 50;
+
+    // Uppdatera slider-visningarna
+    const sliderValues = [
+        ["understableOverstable", "understableOverstableValue", "cardUnderstableOverstable"],
+        ["precisionPower", "precisionPowerValue", "cardPrecisionPower"],
+        ["safeAggressive", "safeAggressiveValue", "cardSafeAggressive"],
+        ["discCountPreference", "discCountPreferenceValue", "cardDiscCountPreference"]
+    ];
+
+    sliderValues.forEach(([sliderId, valueId, cardDotId]) => {
+
+        const slider = document.getElementById(sliderId);
+        const value = document.getElementById(valueId);
+        const cardDot = document.getElementById(cardDotId);
+
+        if (!slider) return;
+
+        const sliderValue = slider.value;
+
+        if (value) {
+            value.textContent = sliderValue + "%";
+        }
+
+        if (cardDot) {
+            cardDot.style.left = sliderValue + "%";
+        }
+    });
+
+    // ⭐ Viktigt:
+    // Formuläret är nu laddat från SQLite.
+    // Uppdatera själva ID-kortet med de laddade uppgifterna.
+    if (typeof updateCard === "function") {
+        updateCard();
+    }
+if (typeof window.updateDiscGolfIdEditAccess === "function") {
+    window.updateDiscGolfIdEditAccess();
+}
+
+console.log(
+    "✅ Disc Golf ID-profil laddad från SQLite för player_id:",
+    playerId
+);
+};
+function setupDiscGolfIdSliders() {
+
+    const sliders = [
+        {
+            slider: "understableOverstable",
+            value: "understableOverstableValue",
+            cardDot: "cardUnderstableOverstable"
+        },
+        {
+            slider: "precisionPower",
+            value: "precisionPowerValue",
+            cardDot: "cardPrecisionPower"
+        },
+        {
+            slider: "safeAggressive",
+            value: "safeAggressiveValue",
+            cardDot: "cardSafeAggressive"
+        },
+        {
+            slider: "discCountPreference",
+            value: "discCountPreferenceValue",
+            cardDot: "cardDiscCountPreference"
+        }
+    ];
+
+    sliders.forEach(item => {
+
+        const slider = document.getElementById(item.slider);
+        const value = document.getElementById(item.value);
+        const cardDot = document.getElementById(item.cardDot);
+
+        if (!slider || !value) {
+            return;
+        }
+
+        slider.addEventListener("input", function () {
+
+            // Hämta aktuellt slider-värde
+            const sliderValue = this.value;
+
+            // ÄNDRA PROCENTSATSEN
+            value.textContent = sliderValue + "%";
+
+            // ÄNDRA PUNKTEN PÅ ID-KORTET
+            if (cardDot) {
+                cardDot.style.left = sliderValue + "%";
+            }
+
+        });
+
+    });
+}
+
+setupDiscGolfIdSliders();
+document.getElementById("photoInput")?.addEventListener("change", function (event) {
+
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        const img = new Image();
+
+        img.onload = function () {
+
+            const maxSize = 600;
+
+            let width = img.width;
+            let height = img.height;
+
+            // Behåll bildens proportioner
+            if (width > height) {
+                if (width > maxSize) {
+                    height = Math.round(height * maxSize / width);
+                    width = maxSize;
+                }
+            } else {
+                if (height > maxSize) {
+                    width = Math.round(width * maxSize / height);
+                    height = maxSize;
+                }
+            }
+
+            const canvas = document.createElement("canvas");
+
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Komprimera bilden
+            const compressedImage = canvas.toDataURL("image/jpeg", 0.75);
+
+            // Visa den komprimerade bilden
+            const photoBox = document.getElementById("photoBox");
+
+            if (photoBox) {
+
+                photoBox.innerHTML = "";
+
+                const preview = document.createElement("img");
+
+                preview.src = compressedImage;
+                preview.style.width = "100%";
+                preview.style.height = "100%";
+                preview.style.objectFit = "cover";
+
+                photoBox.appendChild(preview);
+            }
+
+            // Spara den komprimerade bilden på input-elementet
+            window.compressedDiscGolfPhoto = compressedImage;
+
+            console.log("📷 Bild komprimerad:");
+            console.log("Original:", Math.round(file.size / 1024), "KB");
+            console.log(
+                "Komprimerad:",
+                Math.round(compressedImage.length * 0.75 / 1024),
+                "KB"
+            );
+            console.log("Dimension:", width + "x" + height);
+        };
+
+        img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+});
+
+/* =========================
+   PROFILBILD
+========================= */
+
+const photoInput =
+    document.getElementById("photoInput");
+
+
+if (photoInput) {
+
+    photoInput.addEventListener(
+        "change",
+        function(event) {
+
+            const file =
+                event.target.files[0];
+
+
+            if (!file) return;
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(e) {
+
+                    const box =
+                        document.getElementById(
+                            "photoBox"
+                        );
+
+
+                    box.innerHTML =
+                        '<img src="' +
+                        e.target.result +
+                        '" alt="Profilbild">';
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+}
+
+
+/* Första uppdateringen */
+
+window.updateCard();
+
+
+
+window.openLiveScoringView = function () {
+    const main = document.getElementById("mainContent");
+    const live = document.getElementById("liveScoringView");
+
+    if (!main || !live) {
+        console.error("Live-vyn eller mainContent saknas.");
+        return;
+    }
+
+    // Spara live-vyns ursprungliga plats första gången.
+    if (!live.dataset.originalParent) {
+        live.dataset.originalParent = main.id;
+        live.dataset.originalNextSibling =
+            live.nextElementSibling?.id || "";
+    }
+
+    // Flytta live-vyn UT ur mainContent.
+    if (main.contains(live)) {
+        main.insertAdjacentElement("afterend", live);
+    }
+
+    // Dölj resultatsidan.
+    main.style.display = "none";
+
+    const backupPanel = document.getElementById("backup-panel");
+
+    if (backupPanel) {
+        backupPanel.dataset.previousDisplay =
+            backupPanel.style.display;
+        backupPanel.style.display = "none";
+    }
+
+    // Dölj eventuella andra huvudsektioner.
+    document.querySelectorAll(
+        "body > section, body > main, body > .main-container"
+    ).forEach(element => {
+        if (element !== live && !element.contains(live)) {
+            element.dataset.previousDisplay =
+                element.style.display;
+            element.style.display = "none";
+        }
+    });
+
+    // Visa live-poängräknaren.
+    live.style.display = "block";
+    live.style.width = "100%";
+    live.style.minHeight = "500px";
+
+    window.scrollTo(0, 0);
+
+    if (typeof window.initLiveCourseSelector === "function") {
+        window.initLiveCourseSelector();
+    } else {
+        console.error("initLiveCourseSelector är inte definierad.");
+    }
+
+    if (typeof window.initLivePlayers === "function") {
+        window.initLivePlayers();
+    }
+};
+
+
+
+
+window.closeLiveScoringView = function () {
+    const main = document.getElementById("mainContent");
+    const live = document.getElementById("liveScoringView");
+    const backupPanel = document.getElementById("backup-panel");
+
+    if (live) {
+        live.style.display = "none";
+    }
+
+    if (main) {
+        main.style.display = "block";
+    }
+
+    if (backupPanel) {
+        backupPanel.style.display =
+            backupPanel.dataset.previousDisplay || "flex";
+    }
+
+    window.scrollTo(0, 0);
+};
+
+
+// =====================================================
+// LIVE-POÄNGRÄKNARE: BAN- OCH LAYOUTVÄLJARE
+// Läser befintliga poster från SQLite.
+// =====================================================
+
+window.initLiveCourseSelector = function () {
+    const courseSelect = document.getElementById("liveCourseSelect");
+    const layoutSelect = document.getElementById("liveLayoutSelect");
+    const layoutInfo = document.getElementById("liveLayoutInfo");
+
+    if (!courseSelect || !layoutSelect || !layoutInfo) {
+        console.error("Live-vyns väljare saknas i HTML.");
+        return;
+    }
+
+    if (!window.sqliteDb) {
+        courseSelect.innerHTML =
+            '<option value="">SQLite är inte redo</option>';
+        return;
+    }
+
+    const courses = [];
+
+    window.sqliteDb.exec({
+        sql: `
+            SELECT
+                c.id AS course_id,
+                c.name AS course_name,
+                l.id AS layout_id,
+                l.name AS layout_name,
+                l.holes,
+                l.par
+            FROM courses c
+            JOIN layouts l ON l.course_id = c.id
+            ORDER BY c.name, l.name;
+        `,
+        rowMode: "object",
+        callback: row => courses.push(row)
+    });
+
+    const courseMap = new Map();
+
+    courses.forEach(row => {
+        if (!courseMap.has(row.course_id)) {
+            courseMap.set(row.course_id, {
+                name: row.course_name,
+                layouts: []
+            });
+        }
+
+        courseMap.get(row.course_id).layouts.push(row);
+    });
+
+    courseSelect.innerHTML =
+        '<option value="">Välj bana...</option>';
+
+    courseMap.forEach((course, id) => {
+        const option = document.createElement("option");
+        option.value = String(id);
+        option.textContent = course.name;
+        courseSelect.appendChild(option);
+    });
+
+    layoutSelect.innerHTML =
+        '<option value="">Välj först en bana</option>';
+    layoutSelect.disabled = true;
+
+    courseSelect.onchange = function () {
+        layoutSelect.innerHTML =
+            '<option value="">Välj layout...</option>';
+
+        const course = courseMap.get(Number(courseSelect.value));
+
+        if (!course) {
+            layoutSelect.disabled = true;
+            layoutInfo.textContent = "Välj en bana och layout.";
+            return;
+        }
+
+        course.layouts.forEach(layout => {
+            const option = document.createElement("option");
+            option.value = String(layout.layout_id);
+            option.textContent =
+                `${layout.layout_name} (${layout.holes} hål, par ${layout.par})`;
+            layoutSelect.appendChild(option);
+        });
+
+        layoutSelect.disabled = false;
+        layoutInfo.textContent = "Välj layout för att se informationen.";
+    };
+
+    layoutSelect.onchange = function () {
+        const layoutId = Number(layoutSelect.value);
+        const layout = courses.find(
+            row => row.layout_id === layoutId
+        );
+
+        if (!layout) {
+            layoutInfo.textContent = "Välj en layout.";
+            return;
+        }
+
+        layoutInfo.textContent =
+            `${layout.course_name} – ${layout.layout_name} · ` +
+            `${layout.holes} hål · Par ${layout.par}`;
+
+        console.log("Vald live-layout:", layout);
+    };
+
+    console.log("Live-väljaren laddade", courses.length, "layouter.");
+};
+// =====================================================
+// LIVE-POÄNGRÄKNARE: SPELARVAL
+// Läser befintliga spelare från SQLite.
+// =====================================================
+
+window.initLivePlayers = function () {
+    const list = document.getElementById("livePlayersList");
+    const info = document.getElementById("livePlayersInfo");
+    const startButton = document.getElementById("liveStartRoundButton");
+
+    if (!list || !info || !startButton || !window.sqliteDb) {
+        console.error("Spelarväljaren eller SQLite saknas.");
+        return;
+    }
+
+    const players = [];
+
+    window.sqliteDb.exec({
+        sql: "SELECT id, name FROM players ORDER BY name;",
+        rowMode: "object",
+        callback: row => players.push(row)
+    });
+
+    list.replaceChildren();
+
+    players.forEach(player => {
+        const label = document.createElement("label");
+        label.style.display = "flex";
+        label.style.alignItems = "center";
+        label.style.gap = "12px";
+        label.style.padding = "12px";
+        label.style.marginBottom = "8px";
+        label.style.border = "1px solid #ddd";
+        label.style.borderRadius = "8px";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = String(player.id);
+        checkbox.dataset.playerName = player.name;
+        checkbox.style.width = "22px";
+        checkbox.style.height = "22px";
+
+        const name = document.createElement("span");
+        name.textContent = player.name;
+
+        label.append(checkbox, name);
+        list.appendChild(label);
+    });
+
+    function updateSelection() {
+        const selected = list.querySelectorAll(
+            'input[type="checkbox"]:checked'
+        );
+
+        info.textContent = `${selected.length} spelare valda.`;
+        startButton.disabled = selected.length === 0;
+        startButton.style.opacity = selected.length ? "1" : "0.5";
+    }
+
+    list.onchange = updateSelection;
+    updateSelection();
+
+    startButton.onclick = function () {
+    const selectedPlayers = [
+        ...list.querySelectorAll('input[type="checkbox"]:checked')
+    ].map(checkbox => ({
+        id: Number(checkbox.value),
+        name: checkbox.dataset.playerName
+    }));
+
+    const layoutId = Number(
+        document.getElementById("liveLayoutSelect").value
+    );
+
+    if (!layoutId || selectedPlayers.length === 0) {
+        info.textContent = "Välj en layout och minst en spelare.";
+        return;
+    }
+
+    console.log("Förberedd live-runda:", {
+        layoutId,
+        players: selectedPlayers
+    });
+
+    window.startLiveRoundDraft(layoutId, selectedPlayers);
+
+info.textContent =
+    `${selectedPlayers.length} spelare valda. ` +
+    "Poängregistreringen startas.";
+};
+};
+// =====================================================
+// LIVE-POÄNGRÄKNARE: HÅLVY (LOKALT TEST, INGEN SPARNING)
+// =====================================================
+
+window.liveRoundDraft = null;
+
+
+window.startLiveRoundDraft = function (layoutId, players) {
+    const layouts = [];
+
+    window.sqliteDb.exec({
+        sql: `
+            SELECT
+                l.id AS layout_id,
+                l.name AS layout_name,
+                l.holes,
+                l.par,
+                l.hole_order,
+                c.name AS course_name
+            FROM layouts l
+            JOIN courses c ON c.id = l.course_id
+            WHERE l.id = ?;
+        `,
+        bind: [layoutId],
+        rowMode: "object",
+        callback: row => layouts.push(row)
+    });
+
+    const layout = layouts[0];
+
+    if (!layout || !layout.holes || !players.length) {
+        console.error("Layout eller spelare saknas.");
+        return;
+    }
+
+    const holeOrder = layout.hole_order
+        ? JSON.parse(layout.hole_order)
+        : Array.from({ length: layout.holes }, (_, i) => i + 1);
+
+    window.liveRoundDraft = {
+        layoutId,
+        layout,
+        holeOrder,
+        currentIndex: 0,
+        players: players.map(player => ({
+            ...player,
+            scores: {}
+        }))
+    };
+
+    // Dölj val av bana, layout och spelare efter rundstart.
+    document.getElementById("liveRoundSetup").style.display = "none";
+
+    // Visa scorekortet.
+    document.getElementById("liveHoleSection").style.display = "block";
+
+    // Visa banans information ovanför scorekortet.
+    let roundInfo = document.getElementById("liveRoundInfo");
+
+    if (!roundInfo) {
+        roundInfo = document.createElement("div");
+        roundInfo.id = "liveRoundInfo";
+
+        document.getElementById("liveHoleSection")
+            .insertBefore(
+                roundInfo,
+                document.getElementById("liveHoleSection").firstChild
+            );
+    }
+
+    roundInfo.style.cssText =
+        "font-size:15px;text-align:center;margin-bottom:18px;line-height:1.5;";
+
+    roundInfo.textContent =
+        `${layout.course_name} – ${layout.layout_name} · ${layout.holes} hål · Par ${layout.par}`;
+
+    window.renderLiveHole();
+};
+
+
+
+
+window.renderLiveHole = function () {
+    const round = window.liveRoundDraft;
+    if (!round) return;
+
+    const holeNumber = round.holeOrder[round.currentIndex];
+    const pars = [];
+
+    window.sqliteDb.exec({
+        sql: `
+            SELECT hs.hole_number, hs.par, COUNT(*) AS observations
+            FROM hole_scores hs
+            JOIN round_players rp ON rp.id = hs.round_player_id
+            JOIN rounds r ON r.id = rp.round_id
+            WHERE r.layout_id = ?
+              AND hs.par IS NOT NULL
+            GROUP BY hs.hole_number, hs.par
+            ORDER BY hs.hole_number, observations DESC, hs.par;
+        `,
+        bind: [round.layoutId],
+        rowMode: "object",
+        callback: row => pars.push(row)
+    });
+
+    const parByHole = {};
+    pars.forEach(row => {
+        if (parByHole[row.hole_number] === undefined) {
+            parByHole[row.hole_number] = row.par;
+        }
+    });
+
+    const currentPar = parByHole[holeNumber] ?? 3;
+	
+    // Hämta AI Caddys metadata för aktuell bana och hål.
+    const courseName = round.layout.course_name;
+    const caddyRows = [];
+
+    window.sqliteDb.exec({
+        sql: `
+            SELECT
+                h.hole,
+                h.length,
+                h.par,
+                h.global_birdie AS globalBirdie,
+                h.tip
+            FROM course_caddy_holes h
+            JOIN courses c ON c.id = h.course_id
+            WHERE c.name = ?
+              AND h.hole = ?
+            LIMIT 1;
+        `,
+        bind: [courseName, holeNumber],
+        rowMode: "object",
+        callback: row => caddyRows.push(row)
+    });
+
+    const caddyHole = caddyRows[0] || null;
+    const holeLength = caddyHole?.length || "Längd saknas";
+    const holeTip = caddyHole?.tip || "";
+    const globalBirdie = caddyHole?.globalBirdie || "";
+
+    document.getElementById("liveHoleNumber").textContent = holeNumber;
+    document.getElementById("liveHolePar").textContent =
+        `Par ${currentPar} · ${holeLength}`;
+    document.getElementById("liveHoleProgress").textContent =
+        `Hål ${round.currentIndex + 1} av ${round.holeOrder.length}`;
+		
+    
+
+    const container = document.getElementById("liveHolePlayers");
+    container.replaceChildren();
+
+    // Skapa hålöversikten automatiskt om den inte redan finns.
+    let overview = document.getElementById("liveHoleOverview");
+
+    if (!overview) {
+        overview = document.createElement("div");
+        overview.id = "liveHoleOverview";
+        overview.style.cssText = "margin:16px 0;";
+        container.parentNode.insertBefore(overview, container);
+    }
+
+    const completedHoles = round.holeOrder.filter(hole =>
+        round.players.length > 0 &&
+        round.players.every(player =>
+            player.scores[hole] !== undefined
+        )
+    );
+
+    overview.replaceChildren();
+
+    const overviewTitle = document.createElement("div");
+    overviewTitle.style.cssText =
+        "font-weight:bold;margin-bottom:10px;font-size:16px;";
+    overviewTitle.textContent =
+        `Hål klara: ${completedHoles.length} av ${round.holeOrder.length}`;
+    overview.appendChild(overviewTitle);
+
+    const holeGrid = document.createElement("div");
+    holeGrid.style.cssText =
+        "display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;";
+
+    round.holeOrder.forEach((hole, index) => {
+        const done = completedHoles.includes(hole);
+        const isCurrent = index === round.currentIndex;
+
+        const holeButton = document.createElement("button");
+        holeButton.type = "button";
+        holeButton.textContent = done ? `✓ ${hole}` : `${hole}`;
+        holeButton.setAttribute(
+            "aria-label",
+            `Hål ${hole}${done ? ", klart" : ", inte klart"}`
+        );
+
+        holeButton.style.cssText = `
+            min-height:44px;
+            border-radius:8px;
+            border:2px solid ${isCurrent ? "#2463eb" : done ? "#26834a" : "#ccc"};
+            background:${done ? "#DDF4E4" : "#fff"};
+            color:${done ? "#176534" : "#222"};
+            font-size:16px;
+            font-weight:${isCurrent || done ? "bold" : "normal"};
+            ${isCurrent ? "outline:2px solid #2463eb;outline-offset:1px;" : ""}
+        `;
+
+        // Gå bara direkt till hål som redan är färdigregistrerade.
+        holeButton.disabled = !done && !isCurrent;
+
+        holeButton.onclick = function () {
+            if (!done) return;
+            round.currentIndex = index;
+            window.renderLiveHole();
+        };
+
+        holeGrid.appendChild(holeButton);
+    });
+
+    overview.appendChild(holeGrid);
+
+    round.players.forEach(player => {
+        if (!player.scores) player.scores = {};
+
+        const card = document.createElement("div");
+        card.style.cssText =
+            "border:1px solid #ddd;border-radius:12px;padding:14px;margin-bottom:12px;";
+
+        
+        const name = document.createElement("strong");
+        name.textContent = player.name;
+        name.style.cssText =
+            "display:block;font-size:20px;margin-bottom:6px;";
+
+        // Personlig statistik för just den här spelaren och hålet.
+        let personalAverage = "–";
+        let personalBirdie = "–";
+
+        const allResults = getSavedResultsFromSQLite();
+
+        const matchingRounds = allResults.filter(r => {
+            const itemString = JSON.stringify(r).toLowerCase();
+            return itemString.includes(round.layout.course_name.toLowerCase()) &&
+                   itemString.includes(player.name.toLowerCase());
+        });
+
+        let played = 0;
+        let birdies = 0;
+        let totalScore = 0;
+
+        matchingRounds.forEach(r => {
+            const playersData =
+                r.data && Array.isArray(r.data.players)
+                    ? r.data.players
+                    : null;
+
+            const header =
+                r.data && Array.isArray(r.data.header)
+                    ? r.data.header
+                    : [];
+
+            let scoreValue;
+
+            if (playersData) {
+                const playerRow = playersData.find(p =>
+                    p && p[0] &&
+                    String(p[0]).toLowerCase() ===
+                        player.name.toLowerCase()
+                );
+
+                const holeIndex = header.findIndex(h =>
+                    h && (
+                        String(h).toLowerCase() === `hole${holeNumber}` ||
+                        String(h).toLowerCase() === `hål${holeNumber}`
+                    )
+                );
+
+                if (playerRow && holeIndex !== -1) {
+                    scoreValue = Number(playerRow[holeIndex]);
+                }
+            } else {
+                const value =
+                    r[`h${holeNumber}`] ??
+                    r[`hole${holeNumber}`] ??
+                    r[`hål${holeNumber}`] ??
+                    (r.scores && r.scores[holeNumber - 1]);
+
+                if (value !== undefined && value !== null) {
+                    scoreValue = Number(value);
+                }
+            }
+
+            if (Number.isFinite(scoreValue) && scoreValue > 0) {
+                played++;
+                totalScore += scoreValue;
+
+                if (scoreValue === currentPar - 1) {
+                    birdies++;
+                }
+            }
+        });
+
+        if (played > 0) {
+            personalAverage = (totalScore / played).toFixed(1);
+            personalBirdie = Math.round(birdies / played * 100) + "%";
+        }
+
+        const statsLine = document.createElement("div");
+        statsLine.style.cssText =
+            "font-size:13px;color:#475569;margin-bottom:12px;line-height:1.5;";
+
+        statsLine.textContent =
+            `Snitt: ${personalAverage} · Birdie: ${personalBirdie} · Fältets birdie: ${globalBirdie || "–"}`;
+
+        const row = document.createElement("div");
+        row.style.cssText =
+            "display:flex;align-items:center;justify-content:space-between;gap:12px;";
+
+        const minus = document.createElement("button");
+        minus.type = "button";
+        minus.textContent = "−";
+        minus.setAttribute("aria-label", `Minska kast för ${player.name}`);
+        minus.style.cssText =
+            "width:56px;height:52px;font-size:26px;border-radius:10px;";
+
+        const score = document.createElement("strong");
+        score.style.cssText =
+            "font-size:32px;min-width:40px;text-align:center;";
+
+        const plus = document.createElement("button");
+        plus.type = "button";
+        plus.textContent = "+";
+        plus.setAttribute("aria-label", `Öka kast för ${player.name}`);
+        plus.style.cssText =
+            "width:56px;height:52px;font-size:26px;border-radius:10px;";
+
+        const parButton = document.createElement("button");
+        parButton.type = "button";
+        parButton.textContent = `Par (${currentPar})`;
+        parButton.style.cssText =
+    "min-height:44px;padding:8px 16px;border-radius:8px;border:1px solid #aaa;background:#fff;color:#222;";
+
+        const result = document.createElement("div");
+        result.style.cssText =
+            "margin-top:12px;padding:12px;border-radius:8px;";
+
+        function updateScore(value) {
+            player.scores[holeNumber] = value;
+            window.renderLiveHole();
+        }
+
+        minus.onclick = function () {
+            const current = player.scores[holeNumber];
+            updateScore(Math.max(1, (current ?? currentPar) - 1));
+        };
+
+        plus.onclick = function () {
+            const current = player.scores[holeNumber];
+            updateScore((current ?? currentPar) + 1);
+        };
+
+        parButton.onclick = function () {
+            updateScore(currentPar);
+        };
+
+        const selectedScore = player.scores[holeNumber];
+        score.textContent = selectedScore ?? "—";
+
+        // Visa om spelaren ännu inte har valt något resultat.
+        const scoreChosen = selectedScore !== undefined;
+        parButton.style.fontWeight =
+            scoreChosen && selectedScore === currentPar ? "bold" : "normal";
+        parButton.style.border =
+            scoreChosen && selectedScore === currentPar
+                ? "2px solid #555"
+                : "1px solid #aaa";
+
+        row.append(minus, score, plus);
+		card.append(name, statsLine, row, parButton);
+
+        // Summera alla registrerade resultat.
+        let totalStrokes = 0;
+        let totalPar = 0;
+        let playedHoles = 0;
+
+        round.holeOrder.forEach(hole => {
+            const strokes = player.scores[hole];
+            const par = parByHole[hole];
+
+            if (strokes !== undefined && par !== undefined) {
+                totalStrokes += strokes;
+                totalPar += par;
+                playedHoles++;
+            }
+        });
+
+        const difference = totalStrokes - totalPar;
+        const resultText = difference === 0
+            ? "E (0)"
+            : difference > 0
+                ? `+${difference}`
+                : `${difference}`;
+
+        result.style.background =
+            playedHoles === 0 || difference === 0
+                ? "transparent"
+                : difference < 0
+                    ? "#DDF4E4"
+                    : "#FCE3E3";
+
+        result.style.border =
+            playedHoles === 0 || difference === 0
+                ? "1px solid #ddd"
+                : "1px solid transparent";
+
+        const totalLine = document.createElement("div");
+        totalLine.style.cssText =
+            `font-size:18px;font-weight:bold;color:${
+                playedHoles > 0 && difference < 0
+                    ? "#176534"
+                    : playedHoles > 0 && difference > 0
+                        ? "#A32121"
+                        : "#222"
+            };`;
+
+        totalLine.textContent = playedHoles === 0
+            ? "Totalt: Inga registrerade hål"
+            : `Totalt: ${totalStrokes} kast · ${resultText}`;
+
+        result.appendChild(totalLine);
+        card.appendChild(result);
+        container.appendChild(card);
+    });
+
+    document.getElementById("livePreviousHole").disabled =
+        round.currentIndex === 0;
+
+    const nextButton = document.getElementById("liveNextHole");
+    const allPlayersScored = round.players.length > 0 &&
+        round.players.every(player =>
+            player.scores[holeNumber] !== undefined
+        );
+
+    const isLastHole =
+        round.currentIndex === round.holeOrder.length - 1;
+
+    nextButton.textContent = isLastHole
+        ? "Avsluta test"
+        : "Nästa hål →";
+
+    nextButton.disabled = !allPlayersScored;
+
+    document.getElementById("liveHoleMessage").textContent =
+        !allPlayersScored
+            ? "Välj resultat för alla spelare innan ni går vidare."
+            : isLastHole
+                ? "Alla spelare har registrerat sista hålet. Avsluta testet när ni är klara."
+                : "Alla resultat registrerade. Ni kan gå vidare.";
+
+};
+
+// Föregående hål.
+document.getElementById("livePreviousHole").onclick = function () {
+    const round = window.liveRoundDraft;
+    if (!round || round.currentIndex <= 0) return;
+
+    round.currentIndex--;
+    window.renderLiveHole();
+};
+
+// Nästa hål – kan inte gå vidare utan resultat för alla spelare.
+document.getElementById("liveNextHole").onclick = function () {
+    const round = window.liveRoundDraft;
+    if (!round) return;
+
+    const holeNumber = round.holeOrder[round.currentIndex];
+
+    const allPlayersScored = round.players.length > 0 &&
+        round.players.every(player =>
+            player.scores[holeNumber] !== undefined
+        );
+
+    if (!allPlayersScored) {
+        document.getElementById("liveHoleMessage").textContent =
+            "Registrera resultat för alla spelare först.";
+        return;
+    }
+
+    if (round.currentIndex < round.holeOrder.length - 1) {
+        // Lås knappen omedelbart innan nästa hål visas.
+        const nextButton = document.getElementById("liveNextHole");
+        nextButton.disabled = true;
+
+        round.currentIndex++;
+        window.renderLiveHole();
+    } else {
+        document.getElementById("liveHoleMessage").textContent =
+            "Testet är klart. Ingen runda har sparats.";
+    }
 };
 </script>
 
