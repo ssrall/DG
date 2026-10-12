@@ -14927,6 +14927,78 @@ console.log(
     let sqlite3;
     let sqliteDb;
 
+async function importBaseDiscsFromJSON() {
+    if (!window.sqliteDb) {
+        throw new Error("SQLite-databasen är inte öppen.");
+    }
+
+    const response = await fetch("./discs.json");
+
+    if (!response.ok) {
+        throw new Error(
+            `Kunde inte hämta discs.json: HTTP ${response.status}`
+        );
+    }
+
+    const discs = await response.json();
+
+    if (!Array.isArray(discs)) {
+        throw new Error("discs.json innehåller inte en lista.");
+    }
+
+    let added = 0;
+    let skipped = 0;
+
+    for (const disc of discs) {
+        if (
+            !disc.brand ||
+            !disc.name
+        ) {
+            skipped++;
+            continue;
+        }
+
+        const exists = window.sqliteDb.selectValue(`
+            SELECT COUNT(*)
+            FROM discs
+            WHERE lower(brand) = lower(?)
+              AND lower(name) = lower(?)
+        `, [disc.brand, disc.name]);
+
+        if (Number(exists) > 0) {
+            skipped++;
+            continue;
+        }
+
+        window.sqliteDb.exec({
+            sql: `
+                INSERT INTO discs (
+                    brand, name, speed, glide, turn, fade, category
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `,
+            bind: [
+                disc.brand,
+                disc.name,
+                disc.speed ?? null,
+                disc.glide ?? null,
+                disc.turn ?? null,
+                disc.fade ?? null,
+                disc.category ?? null
+            ]
+        });
+
+        added++;
+    }
+
+    console.log("✅ Diskimport klar", {
+        totalt: discs.length,
+        tillagda: added,
+        redan_fanns_eller_hoppades_over: skipped
+    });
+
+    return { totalt: discs.length, tillagda: added, hoppadeOver: skipped };
+}
 async function createDatabaseSchema() {
     if (!window.sqliteDb) {
         throw new Error("SQLite-databasen är inte öppnad.");
