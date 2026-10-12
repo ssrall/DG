@@ -17313,13 +17313,14 @@ document.getElementById("liveNextHole").onclick = function () {
     font-size: 16px !important;
     border-radius: 8px !important;
 }
-	#liveHoleSection {
+#liveHoleSection {
     width: calc(100% - 32px) !important;
-    max-width: 360px !important;
+    max-width: 300px !important;
     box-sizing: border-box;
     margin-left: auto !important;
     margin-right: auto !important;
-    overflow-x: hidden;
+    overflow-x: clip;
+    touch-action: pan-y;
 }
 </style>
 </body>
