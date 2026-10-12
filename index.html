@@ -8915,6 +8915,11 @@ function showLoginForm() {
     if (loginState === 'logged_in' && playerName) {
 
     document.getElementById('mainContent').style.display = 'block';
+	const backupPanel = document.getElementById('backup-panel');
+
+if (backupPanel) {
+    backupPanel.style.display = '';
+}
 
     document.getElementById('playerTitle').textContent = playerName;
 
@@ -8957,6 +8962,11 @@ function showLoginForm() {
     } else if (loginState === 'guest') {
 
         document.getElementById('mainContent').style.display = 'block';
+		const backupPanel = document.getElementById('backup-panel');
+
+if (backupPanel) {
+    backupPanel.style.display = '';
+}
 
         const playerTitle = document.getElementById('playerTitle');
 
@@ -8978,6 +8988,11 @@ function showLoginForm() {
     } else {
 
     document.getElementById('mainContent').style.display = 'none';
+	const backupPanel = document.getElementById('backup-panel');
+
+if (backupPanel) {
+    backupPanel.style.display = 'none';
+}
 
     const bagPlayerNameEl = document.getElementById('bagPlayerName');
 
