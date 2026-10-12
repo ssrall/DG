@@ -15314,6 +15314,7 @@ async function createDatabaseSchema() {
     initPersistentSQLite;
 
 // Starta automatiskt
+
 (async function startAppWithSQLite() {
     try {
         await initPersistentSQLite();
@@ -15326,6 +15327,16 @@ async function createDatabaseSchema() {
 
         // Skapa eventuella saknade tabeller innan appen startar.
         await createDatabaseSchema();
+
+        // Hämta gemensamma diskar från discs.json.
+        try {
+            await window.importBaseDiscsFromJSON();
+        } catch (error) {
+            console.warn(
+                "⚠️ Diskregistret kunde inte uppdateras från discs.json:",
+                error
+            );
+        }
 
         console.log("✅ SQLite redo – startar appen.");
 
