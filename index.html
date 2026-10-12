@@ -14999,6 +14999,7 @@ async function importBaseDiscsFromJSON() {
 
     return { totalt: discs.length, tillagda: added, hoppadeOver: skipped };
 }
+window.importBaseDiscsFromJSON = importBaseDiscsFromJSON;
 async function createDatabaseSchema() {
     if (!window.sqliteDb) {
         throw new Error("SQLite-databasen är inte öppnad.");
