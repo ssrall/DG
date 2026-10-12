@@ -1828,7 +1828,7 @@
 
 
 <div id="liveHoleSection"
-     style="display:none; margin-top:24px; max-width:380px; width:100%; margin-left:auto; margin-right:auto;">
+     style="display:none; margin-top:24px; max-width:100px; width:100%; margin-left:auto; margin-right:auto;">
 
     <div style="text-align:center; margin-bottom:8px;">
         <div style="font-size:11px; color:#666;">AKTUELLT HÅL</div>
@@ -14912,6 +14912,242 @@ console.log(
     let sqlite3;
     let sqliteDb;
 
+async function createDatabaseSchema() {
+    if (!window.sqliteDb) {
+        throw new Error("SQLite-databasen är inte öppnad.");
+    }
+
+    const db = window.sqliteDb;
+
+    const schema = [
+        // 1. Spelare
+        `CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            is_user INTEGER NOT NULL DEFAULT 0
+        )`,
+
+        // 2. Banor
+        `CREATE TABLE IF NOT EXISTS courses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )`,
+
+        // 3. Layouts
+        `CREATE TABLE IF NOT EXISTS layouts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            holes INTEGER,
+            par INTEGER,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            hole_order TEXT,
+            UNIQUE(course_id, name),
+            FOREIGN KEY(course_id) REFERENCES courses(id)
+        )`,
+
+        // 4. Rundor
+        `CREATE TABLE IF NOT EXISTS rounds (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            layout_id INTEGER,
+            start_date TEXT,
+            end_date TEXT,
+            source TEXT,
+            file_name TEXT,
+            file_hash INTEGER,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(layout_id) REFERENCES layouts(id)
+        )`,
+
+        // 5. Diskar
+        `CREATE TABLE IF NOT EXISTS discs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            brand TEXT NOT NULL,
+            name TEXT NOT NULL,
+            speed REAL,
+            glide REAL,
+            turn REAL,
+            fade REAL,
+            category TEXT
+        )`,
+
+        // 6. Konton
+        `CREATE TABLE IF NOT EXISTS accounts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_id INTEGER NOT NULL UNIQUE,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            password_salt TEXT,
+            password_hash TEXT,
+            FOREIGN KEY(player_id) REFERENCES players(id)
+        )`,
+
+        // 7. Inställningar
+        `CREATE TABLE IF NOT EXISTS app_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )`,
+
+        // 8. Caddy-information per hål
+        `CREATE TABLE IF NOT EXISTS course_caddy_holes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id INTEGER NOT NULL,
+            hole INTEGER NOT NULL,
+            length TEXT,
+            par INTEGER,
+            global_birdie TEXT,
+            tip TEXT,
+            UNIQUE(course_id, hole),
+            FOREIGN KEY(course_id) REFERENCES courses(id)
+        )`,
+
+        // 9. Egna bananteckningar
+        `CREATE TABLE IF NOT EXISTS course_notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_id INTEGER NOT NULL,
+            course_id INTEGER NOT NULL,
+            notes TEXT DEFAULT '',
+            UNIQUE(player_id, course_id),
+            FOREIGN KEY(player_id) REFERENCES players(id),
+            FOREIGN KEY(course_id) REFERENCES courses(id)
+        )`,
+
+        // 10. Spelare i rundor
+        `CREATE TABLE IF NOT EXISTS round_players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            round_id INTEGER NOT NULL,
+            player_id INTEGER NOT NULL,
+            score INTEGER,
+            plus_minus INTEGER,
+            round_rating REAL,
+            UNIQUE(round_id, player_id),
+            FOREIGN KEY(round_id) REFERENCES rounds(id),
+            FOREIGN KEY(player_id) REFERENCES players(id)
+        )`,
+
+        // 11. Hålresultat
+        `CREATE TABLE IF NOT EXISTS hole_scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            round_player_id INTEGER NOT NULL,
+            hole_number INTEGER NOT NULL,
+            par INTEGER,
+            strokes INTEGER,
+            UNIQUE(round_player_id, hole_number),
+            FOREIGN KEY(round_player_id)
+                REFERENCES round_players(id)
+        )`,
+
+        // 12. Spelarnas diskar
+        `CREATE TABLE IF NOT EXISTS player_discs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_id INTEGER NOT NULL,
+            disc_id INTEGER NOT NULL,
+            FOREIGN KEY(player_id) REFERENCES players(id),
+            FOREIGN KEY(disc_id) REFERENCES discs(id)
+        )`,
+
+        // 13. Spelarprofiler
+        `CREATE TABLE IF NOT EXISTS player_profiles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_id INTEGER NOT NULL UNIQUE,
+            pdga_number TEXT DEFAULT '',
+            pdga_rating TEXT DEFAULT '',
+            distance TEXT DEFAULT '',
+            hand TEXT DEFAULT 'RH',
+            forehand TEXT DEFAULT '',
+            start_date TEXT DEFAULT '',
+            discs TEXT DEFAULT '',
+            favorite_disc TEXT DEFAULT '',
+            favorite_course TEXT DEFAULT '',
+            favorite_throw TEXT DEFAULT '',
+            quote TEXT DEFAULT '',
+            photo TEXT DEFAULT '',
+            understable_overstable INTEGER DEFAULT 50,
+            precision_power INTEGER DEFAULT 50,
+            safe_aggressive INTEGER DEFAULT 50,
+            disc_count_preference INTEGER DEFAULT 50,
+            FOREIGN KEY(player_id) REFERENCES players(id)
+        )`,
+
+        // 14. Pågående rundor
+        `CREATE TABLE IF NOT EXISTS live_rounds (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            layout_id INTEGER NOT NULL,
+            started_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            current_hole INTEGER NOT NULL DEFAULT 1,
+            status TEXT NOT NULL DEFAULT 'in_progress',
+            players_json TEXT NOT NULL DEFAULT '[]',
+            scores_json TEXT NOT NULL DEFAULT '{}'
+        )`,
+
+        // 15. Ratingdatabas
+        `CREATE TABLE IF NOT EXISTS rating_database (
+            id TEXT PRIMARY KEY,
+            source TEXT,
+            course TEXT,
+            layout TEXT,
+            holes INTEGER,
+            score INTEGER,
+            rating REAL,
+            date TEXT,
+            name TEXT,
+            pdga_number TEXT,
+            division TEXT,
+            round INTEGER,
+            event TEXT
+        )`
+    ];
+
+    for (const sql of schema) {
+        db.exec(sql);
+    }
+
+    // Kontrollera att alla 15 tabeller finns.
+    const tables = db.selectObjects(`
+        SELECT name
+        FROM sqlite_master
+        WHERE type = 'table'
+          AND name NOT LIKE 'sqlite_%'
+    `);
+
+    const tableNames = new Set(tables.map(row => row.name));
+    const expectedTables = [
+        "accounts",
+        "app_settings",
+        "course_caddy_holes",
+        "course_notes",
+        "courses",
+        "discs",
+        "hole_scores",
+        "layouts",
+        "live_rounds",
+        "player_discs",
+        "player_profiles",
+        "players",
+        "rating_database",
+        "round_players",
+        "rounds"
+    ];
+
+    const missing = expectedTables.filter(name => !tableNames.has(name));
+
+    if (missing.length > 0) {
+        throw new Error(
+            "Tabeller saknas efter initiering: " + missing.join(", ")
+        );
+    }
+
+    console.log(
+        "✅ SQLite-schema klart. Kontrollerade " +
+        expectedTables.length + " tabeller."
+    );
+
+    return true;
+}
     async function initPersistentSQLite() {
 
         try {
@@ -14990,15 +15226,34 @@ console.log(
     initPersistentSQLite;
 
 // Starta automatiskt
-initPersistentSQLite().then(() => {
-    console.log("✅ SQLite redo – startar appen.");
+(async function startAppWithSQLite() {
+    try {
+        await initPersistentSQLite();
 
-    loadRatingDatabaseFromSQLite();
+        if (!window.sqliteDb) {
+            throw new Error(
+                "SQLite kunde inte öppnas. Appen startas inte."
+            );
+        }
 
-    setupApp();
-	updateBagCount();
-	updateBackupStatus();
-});
+        // Skapa eventuella saknade tabeller innan appen startar.
+        await createDatabaseSchema();
+
+        console.log("✅ SQLite redo – startar appen.");
+
+        await loadRatingDatabaseFromSQLite();
+
+        setupApp();
+        updateBagCount();
+        updateBackupStatus();
+
+    } catch (error) {
+        console.error(
+            "❌ Appen kunde inte startas korrekt:",
+            error
+        );
+    }
+})();
 window.showLoginForm = function() {
     const content = document.getElementById('loginModalContent');
 
@@ -17322,15 +17577,13 @@ document.getElementById("liveNextHole").onclick = function () {
     overflow-x: clip;
     touch-action: pan-y;
 }
-	#liveRoundSetup {
+#liveRoundSetup {
     width: calc(100% - 24px) !important;
     max-width: 320px !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
     margin-left: auto !important;
     margin-right: auto !important;
-	overflow-x: clip;
-    touch-action: pan-y;
 }
 </style>
 </body>
