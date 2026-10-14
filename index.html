@@ -1703,9 +1703,11 @@
 </div>
 <!-- Backup-panel i övre vänstra hörnet -->
 <!-- Backup-panel i övre vänstra hörnet -->
-<div id="backup-panel" style="position: absolute; top: 10px; left: 10px; z-index: 9999; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-family: sans-serif; font-size: 12px; display: flex; flex-direction: column; gap: 5px;">
+
+<div id="backup-panel" style="position: absolute; top: 10px; left: 10px; z-index: 9999; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-family: sans-serif; font-size: 12px; display: none; flex-direction: column; gap: 5px;">
 
     <div style="display: flex; gap: 6px;">
+
         <button onclick="createBackup()" style="cursor: pointer; padding: 4px 8px; border: none; background: #2ecc71; color: white; border-radius: 4px; font-weight: bold;">
             💾 Spara SQLite-backup
         </button>
@@ -1822,6 +1824,11 @@
     <p id="liveScoringStatus" role="status">
         Ingen runda har startats.
     </p>
+	<button type="button"
+            onclick="closeLiveScoringView()"
+            style="width:100%; min-height:52px; padding:14px; margin-top:24px; border-radius:10px; cursor:pointer;">
+        ← Tillbaka till resultatsidan
+    </button>
 
 </div>
 </div>
@@ -1952,7 +1959,8 @@
             <div class="top-container">
             
                 <div class="top-box" id="fileInputContainer">
-                    <h2>Ladda upp resultat (CSV-fil)</h2> 
+                    <h2>Ladda upp resultat (CSV-fil).</h2>
+					   Du kan spara en csv från udisc-appen .
                     <input type="file" id="csvFile" accept=".csv" multiple>
                     <button onclick="readCSV()">Läs CSV</button>
                     <p id="message"></p>
@@ -14591,23 +14599,32 @@ window.getSavedResultsFromSQLite =
             ? parseInt(parRow[5], 10)
             : null;
 
+    
     // =====================================================
-    // 2. Hitta hålordningen från headern
+    // 2. Hitta faktiskt använda hål från header + parrad
     // =====================================================
 
     const holeOrder = [];
 
     for (let i = 0; i < header.length; i++) {
+        const match = String(header[i]).match(/^Hole(\d+)$/);
 
-        const match =
-            String(header[i]).match(/^Hole(\d+)$/);
-
-        if (match) {
-            holeOrder.push(
-                parseInt(match[1], 10)
-            );
+        if (
+            match &&
+            parRow[i] !== undefined &&
+            parRow[i] !== null &&
+            String(parRow[i]).trim() !== ""
+        ) {
+            holeOrder.push(parseInt(match[1], 10));
         }
     }
+
+    if (holeOrder.length === 0) {
+        throw new Error(
+            "Inga hål med angivet par hittades. Rundan sparades inte."
+        );
+    }
+
 
     // =====================================================
     // 3. Course
@@ -14926,6 +14943,7 @@ console.log(
 
     let sqlite3;
     let sqliteDb;
+
 
 async function importBaseDiscsFromJSON() {
     if (!window.sqliteDb) {
@@ -16804,6 +16822,7 @@ window.openLiveScoringView = function () {
 
 
 
+
 window.closeLiveScoringView = function () {
     const main = document.getElementById("mainContent");
     const live = document.getElementById("liveScoringView");
@@ -16822,8 +16841,14 @@ window.closeLiveScoringView = function () {
             backupPanel.dataset.previousDisplay || "flex";
     }
 
+    // Uppdatera resultatlistan från SQLite
+    if (typeof window.updateSavedResults === "function") {
+        window.updateSavedResults();
+    }
+
     window.scrollTo(0, 0);
 };
+
 
 
 // =====================================================
@@ -17173,16 +17198,148 @@ window.startLiveRoundDraft = function (layoutId, players) {
         ? JSON.parse(layout.hole_order)
         : Array.from({ length: layout.holes }, (_, i) => i + 1);
 
-    window.liveRoundDraft = {
-        layoutId,
-        layout,
-        holeOrder,
-        currentIndex: 0,
-        players: players.map(player => ({
-            ...player,
-            scores: {}
-        }))
+    
+window.liveRoundDraft = {
+    layoutId,
+    layout,
+    holeOrder,
+    currentIndex: 0,
+    startedAt: new Date(),
+    players: players.map(player => ({
+        ...player,
+        scores: {}
+    }))
+};
+
+
+window.buildLiveRoundCsvData = function (round, endTime = new Date()) {
+    if (!round || !round.layout || !round.players?.length) {
+        throw new Error("Rundan eller spelarna saknas.");
+    }
+
+    const formatDate = date => {
+        const pad = n => String(n).padStart(2, "0");
+        const offset = -date.getTimezoneOffset();
+        const sign = offset >= 0 ? "+" : "-";
+
+        return (
+            `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+            `${pad(date.getHours())}${pad(date.getMinutes())}` +
+            `${sign}${pad(Math.floor(Math.abs(offset) / 60))}` +
+            `${pad(Math.abs(offset) % 60)}`
+        );
     };
+
+    const holeOrder = round.holeOrder;
+    const parRows = [];
+
+    window.sqliteDb.exec({
+        sql: `
+            SELECT hs.hole_number, hs.par, COUNT(*) AS observations
+            FROM hole_scores hs
+            JOIN round_players rp ON rp.id = hs.round_player_id
+            JOIN rounds r ON r.id = rp.round_id
+            WHERE r.layout_id = ?
+              AND hs.par IS NOT NULL
+            GROUP BY hs.hole_number, hs.par
+            ORDER BY hs.hole_number, observations DESC, hs.par;
+        `,
+        bind: [round.layoutId],
+        rowMode: "object",
+        callback: row => parRows.push(row)
+    });
+
+    const parByHole = {};
+
+    for (const row of parRows) {
+        if (parByHole[row.hole_number] === undefined) {
+            parByHole[row.hole_number] = row.par;
+        }
+    }
+
+    const missingPars = holeOrder.filter(
+        hole => parByHole[hole] === undefined
+    );
+
+    if (missingPars.length) {
+        throw new Error(
+            `Par saknas för hål: ${missingPars.join(", ")}. Ingen runda sparad.`
+        );
+    }
+
+    const missingScores = round.players.flatMap(player =>
+        holeOrder
+            .filter(hole => player.scores[hole] === undefined)
+            .map(hole => `${player.name}, hål ${hole}`)
+    );
+
+    if (missingScores.length) {
+        throw new Error(
+            `Resultat saknas: ${missingScores.join("; ")}`
+        );
+    }
+
+    const header = [
+        "PlayerName", "CourseName", "LayoutName",
+        "StartDate", "EndDate", "Total", "+/-", "RoundRating",
+        ...Array.from({ length: 18 }, (_, i) => `Hole${i + 1}`)
+    ];
+
+    const startDate = formatDate(round.startedAt);
+    const endDateString = formatDate(endTime);
+
+    const par = [
+        "Par",
+        round.layout.course_name,
+        round.layout.layout_name,
+        startDate,
+        endDateString,
+        round.layout.par,
+        "",
+        "",
+        ...Array.from({ length: 18 }, (_, i) => {
+            const hole = i + 1;
+            return holeOrder.includes(hole) ? parByHole[hole] : "";
+        })
+    ];
+
+    const players = round.players.map(player => {
+        const total = holeOrder.reduce(
+            (sum, hole) => sum + Number(player.scores[hole]), 0
+        );
+
+        const totalPar = holeOrder.reduce(
+            (sum, hole) => sum + Number(parByHole[hole]), 0
+        );
+
+        return [
+            player.name,
+            round.layout.course_name,
+            round.layout.layout_name,
+            startDate,
+            endDateString,
+            total,
+            total - totalPar,
+            "",
+            ...Array.from({ length: 18 }, (_, i) => {
+                const hole = i + 1;
+                return holeOrder.includes(hole) ? player.scores[hole] : "";
+            })
+        ];
+    });
+
+    return {
+        header,
+        par,
+        players,
+        fileName: `Min Score - ${round.layout.course_name} - ${startDate.split(" ")[0]}`,
+        fileHash: null
+    };
+};
+
+console.log("Adaptern är installerad:", typeof window.buildLiveRoundCsvData);
+
+
 
     // Dölj val av bana, layout och spelare efter rundstart.
     document.getElementById("liveRoundSetup").style.display = "none";
@@ -17601,35 +17758,37 @@ container.appendChild(card);
     const isLastHole =
         round.currentIndex === round.holeOrder.length - 1;
 
+    
     nextButton.textContent = isLastHole
-        ? "Avsluta test"
+        ? "Spara runda"
         : "Nästa hål →";
 
     nextButton.disabled = !allPlayersScored;
+
+    nextButton.style.backgroundColor = allPlayersScored
+        ? "#176b45"
+        : "#b42323";
+
+    nextButton.style.color = "#ffffff";
 
     document.getElementById("liveHoleMessage").textContent =
         !allPlayersScored
             ? "Välj resultat för alla spelare innan ni går vidare."
             : isLastHole
-                ? "Alla spelare har registrerat sista hålet. Avsluta testet när ni är klara."
+                ? "Alla spelare har registrerat sista hålet. Spara rundan när ni är klara."
                 : "Alla resultat registrerade. Ni kan gå vidare.";
+
 
 };
 
 // Föregående hål.
-document.getElementById("livePreviousHole").onclick = function () {
-    const round = window.liveRoundDraft;
-    if (!round || round.currentIndex <= 0) return;
 
-    round.currentIndex--;
-    window.renderLiveHole();
-};
-
-// Nästa hål – kan inte gå vidare utan resultat för alla spelare.
 document.getElementById("liveNextHole").onclick = function () {
     const round = window.liveRoundDraft;
     if (!round) return;
 
+    const nextButton = document.getElementById("liveNextHole");
+    const message = document.getElementById("liveHoleMessage");
     const holeNumber = round.holeOrder[round.currentIndex];
 
     const allPlayersScored = round.players.length > 0 &&
@@ -17638,23 +17797,79 @@ document.getElementById("liveNextHole").onclick = function () {
         );
 
     if (!allPlayersScored) {
-        document.getElementById("liveHoleMessage").textContent =
+        message.textContent =
             "Registrera resultat för alla spelare först.";
         return;
     }
 
     if (round.currentIndex < round.holeOrder.length - 1) {
-        // Lås knappen omedelbart innan nästa hål visas.
-        const nextButton = document.getElementById("liveNextHole");
         nextButton.disabled = true;
-
         round.currentIndex++;
         window.renderLiveHole();
-    } else {
-        document.getElementById("liveHoleMessage").textContent =
-            "Testet är klart. Ingen runda har sparats.";
+        return;
+    }
+
+    // Sista hålet: kontrollera och spara rundan.
+    nextButton.disabled = true;
+    nextButton.textContent = "Sparar...";
+
+    try {
+        const testCsv = window.buildLiveRoundCsvData(round);
+
+        // Kontrollera att banan och layouten fortfarande finns
+        // och att layout-ID matchar rundans valda layout.
+        const layoutRows = [];
+
+        window.sqliteDb.exec({
+            sql: `
+                SELECT l.id, l.name, l.par, l.holes,
+                       c.name AS course_name
+                FROM layouts l
+                JOIN courses c ON c.id = l.course_id
+                WHERE l.id = ?;
+            `,
+            bind: [round.layoutId],
+            rowMode: "object",
+            resultRows: layoutRows
+        });
+
+        if (layoutRows.length !== 1) {
+            throw new Error(
+                "Den valda layouten kunde inte hittas i SQLite."
+            );
+        }
+
+        const layout = layoutRows[0];
+
+        if (
+            layout.name !== round.layout.layout_name ||
+            layout.course_name !== round.layout.course_name ||
+            Number(layout.holes) !== round.holeOrder.length
+        ) {
+            throw new Error(
+                "Rundans layout stämmer inte med den sparade layouten. Ingen runda sparades."
+            );
+        }
+
+        const roundId = window.saveRoundToSQLite(testCsv);
+
+        message.textContent =
+            `Rundan sparades! (SQLite-ID: ${roundId})`;
+
+        nextButton.textContent = "Runda sparad";
+        window.liveRoundDraft = null;
+
+    } catch (error) {
+        console.error("Kunde inte spara live-rundan:", error);
+
+        message.textContent =
+            `Kunde inte spara rundan: ${error.message}`;
+
+        nextButton.disabled = false;
+        nextButton.textContent = "Försök spara igen";
     }
 };
+
 </script>
 <style>
 #liveScoringView {
@@ -17716,6 +17931,14 @@ document.getElementById("liveNextHole").onclick = function () {
     box-sizing: border-box !important;
     margin-left: auto !important;
     margin-right: auto !important;
+}
+/* Dölj spelarväljare och backup-panel på mobil och surfplatta */
+@media screen and (max-width: 1024px) {
+    #playerSwitcher,
+    #playerSwitch,
+    #backup-panel {
+        display: none !important;
+    }
 }
 </style>
 </body>
