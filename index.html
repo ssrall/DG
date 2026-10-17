@@ -849,11 +849,29 @@
         <!-- Banväljare -->
         <div style="margin-bottom: 20px; flex-shrink: 0;">
             <label for="aiCaddyCourseSelect" style="font-size: 13px; font-weight: 700; display: block; margin-bottom: 6px; color: #475569;">Välj bana för analys:</label>
-            <select id="aiCaddyCourseSelect" onchange="updateAiCaddyAnalysis()" style="width: 100%; padding: 12px 14px; box-sizing: border-box; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; background: #f8fafc; color: #1e293b; outline: none;">
+            <select id="aiCaddyCourseSelect" onchange="loadAiCaddyLayouts()" style="width: 100%; padding: 12px 14px; box-sizing: border-box; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; background: #f8fafc; color: #1e293b; outline: none;">
                 <option value="">Välj bana...</option>
             </select>
         </div>
+<!-- Layoutväljare -->
+<div id="aiCaddyLayoutSelectContainer"
+     style="margin-bottom: 20px; flex-shrink: 0; display: none;">
 
+    <label for="aiCaddyLayoutSelect"
+           style="font-size: 13px; font-weight: 700;
+                  display: block; margin-bottom: 6px; color: #475569;">
+        Välj layout:
+    </label>
+
+    <select id="aiCaddyLayoutSelect"
+            onchange="updateAiCaddyAnalysis()"
+            style="width: 100%; padding: 12px 14px;
+                   box-sizing: border-box; border-radius: 8px;
+                   border: 1px solid #cbd5e1; font-size: 14px;
+                   background: #f8fafc; color: #1e293b;">
+        <option value="">Välj layout...</option>
+    </select>
+</div>
         <!-- Innehåll / Analysyta (Scrollbar om det blir mycket text/statistik) -->
         <div style="flex-grow: 1; overflow-y: auto; padding-right: 4px;">
             <div id="aiCaddyModalContent" style="color: #334155; font-size: 14px; line-height: 1.6;">
@@ -863,6 +881,9 @@
 
     </div>
 </div>
+
+
+
 <!-- =====================================================
      DISC GOLF ID POPUP
      ===================================================== -->
@@ -2116,14 +2137,40 @@
     </details>
 
 
-    <!-- 3. VISA SPARAD RATINGDATABAS -->
-    <details style="text-align: left;">
-        <summary style="cursor:pointer; font-size:18px; font-weight:bold; text-align: left;">
-            📂 Visa sparad rating
-        </summary>
+<!-- 3. VISA SPARAD RATINGDATABAS -->
+<details style="text-align: left;">
+    <summary style="cursor:pointer; font-size:18px; font-weight:bold; text-align:left;">
+        📂 Visa sparad rating
+    </summary>
 
-        <div id="ratingDatabaseDisplay" style="margin-top:15px; padding: 10px 5px; text-align: left;"></div>
-    </details>
+    <div id="ratingDatabaseDisplay"
+         style="margin-top:15px; padding:10px 5px; text-align:left;">
+    </div>
+</details>
+
+<!-- BANLAYOUT-IMPORT – UTANFÖR MENYN -->
+<div id="courseLayoutImportSection"
+     style="margin-top:20px; padding:15px 5px; text-align:left;">
+
+    <h3 style="margin-top:0;">🗺️ Banlayouter och AI-caddydata</h3>
+
+    <p>
+        Lägg till en banlayout med hålens längd, par,
+        global birdieprocent och tips.
+    </p>
+
+    <button type="button"
+            onclick="openMainCourseLayoutImport('')"
+            style="padding:10px 16px; border:0; border-radius:6px;
+                   background:#2563eb; color:white; cursor:pointer;
+                   font-weight:bold;">
+        ➕ Lägg till banlayout
+    </button>
+
+    <div id="courseLayoutImportContainer"
+         style="margin-top:15px;">
+    </div>
+</div>
 
 </div>
 				<!-- =========================================================
@@ -13805,188 +13852,830 @@ function getRandomPhrase(arr) {
 }
 
 
+
 function updateAiCaddyAnalysis() {
     const courseSelect = document.getElementById('aiCaddyCourseSelect');
+    const layoutSelect = document.getElementById('aiCaddyLayoutSelect');
     const contentArea = document.getElementById('aiCaddyModalContent');
-    
+
     if (!courseSelect || !contentArea) return;
-    
+
     const selectedCourse = courseSelect.value;
+
     if (!selectedCourse) {
-        contentArea.innerHTML = `<p style="font-style: italic; color: #64748b; text-align: center; margin-top: 20px;">Välj en bana ovan för att låta caddyn analysera dina tidigare rundor och ge dig hålspecifika tips!</p>`;
+        contentArea.innerHTML = `
+            <p style="font-style: italic; color: #64748b; text-align: center; margin-top: 20px;">
+                Välj en bana ovan för att låta caddyn analysera dina tidigare rundor och ge dig hålspecifika tips!
+            </p>`;
+        return;
+    }
+
+    const layoutId = Number(layoutSelect?.value);
+
+    if (!Number.isInteger(layoutId) || layoutId <= 0) {
+        contentArea.innerHTML = `
+            <p style="text-align:center; color:#64748b;">
+                Välj en layout för att visa analysen.
+            </p>`;
         return;
     }
 
     const activeName = playerName || 'Jonas';
-    const possessiveName = activeName.endsWith('s') || activeName.endsWith('S') ? `${activeName} AI Caddy` : `${activeName}s AI Caddy`;
+    const possessiveName =
+        activeName.endsWith('s') || activeName.endsWith('S')
+            ? `${activeName} AI Caddy`
+            : `${activeName}s AI Caddy`;
 
-    // =====================================================
-    // HÄMTA RUNDOR FRÅN SQLITE
-    // =====================================================
+    const escapedCourse = selectedCourse.replace(/'/g, "''");
+
+    // Kontrollera att den valda layouten tillhör vald bana.
+    const layoutRows = sqliteDb.selectObjects(`
+        SELECT l.id, l.name
+        FROM layouts l
+        JOIN courses c ON c.id = l.course_id
+        WHERE l.id = ${layoutId}
+          AND c.name = '${escapedCourse}'
+    `);
+
+    if (layoutRows.length === 0) {
+        contentArea.innerHTML = `
+            <p style="color:#b91c1c;">
+                Den valda layouten tillhör inte den valda banan.
+            </p>`;
+        return;
+    }
+
+    // Hämta endast hålinformation för vald layout.
+    const courseMeta = sqliteDb.selectObjects(`
+        SELECT
+            h.hole,
+            h.length,
+            h.par,
+            h.global_birdie AS globalBirdie,
+            h.tip
+        FROM course_caddy_holes h
+        WHERE h.layout_id = ${layoutId}
+        ORDER BY h.hole
+    `);
+
+    if (courseMeta.length === 0) {
+        contentArea.innerHTML = `
+            <div style="background:#f8fafc; padding:20px; border-radius:8px; text-align:center;">
+                <h4>Ingen baninfo sparad för ${layoutRows[0].name}</h4>
+                <p>Spara baninformationen för den här layouten först.</p>
+                <button onclick="openSaveCourseModal('${selectedCourse.replace(/'/g, "\\'")}')">
+                    Lägg till baninfo
+                </button>
+            </div>`;
+        return;
+    }
+
+    // Hämta rundor och behåll endast rundor för rätt bana,
+    // spelare och layout när layout-ID finns på rundan.
     const allResults = getSavedResultsFromSQLite();
 
     const validRounds = allResults.filter(r => {
         const itemString = JSON.stringify(r).toLowerCase();
-        return itemString.includes(selectedCourse.toLowerCase()) && itemString.includes(activeName.toLowerCase());
+
+        if (
+            !itemString.includes(selectedCourse.toLowerCase()) ||
+            !itemString.includes(activeName.toLowerCase())
+        ) {
+            return false;
+        }
+
+        // Om rundan har ett layout-ID måste det matcha.
+        const roundLayoutId =
+            r.layout_id ??
+            r.layoutId ??
+            r.data?.layout_id ??
+            r.data?.layoutId;
+
+        return roundLayoutId == null || Number(roundLayoutId) === layoutId;
     });
 
-    // --- KONTROLLERA SPARAD BAN-DATA (COURSE METADATA) ---
-    const courseMeta = sqliteDb.selectObjects(`
-    SELECT
-        h.hole,
-        h.length,
-        h.par,
-        h.global_birdie AS globalBirdie,
-        h.tip
-    FROM course_caddy_holes h
-    JOIN courses c ON c.id = h.course_id
-    WHERE c.name = '${selectedCourse.replace(/'/g, "''")}'
-    ORDER BY h.hole
-`);
-
-    if (!courseMeta) {
-        contentArea.innerHTML = `
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center;">
-                <h4 style="margin-top: 0; color: #1e293b;">Ingen baninfo sparad för ${selectedCourse}</h4>
-                <p style="color: #64748b; font-size: 13px; margin-bottom: 15px;">För att caddyn ska kunna ge dig längder, par och tips för denna bana behöver informationen sparas en gång.</p>
-                <button onclick="openSaveCourseModal('${selectedCourse}')" style="background: #2563eb; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">
-                    + Lägg till baninfo för ${selectedCourse}
-                </button>
-            </div>
-        `;
-        return;
-    }
-
     if (validRounds.length === 0) {
-        contentArea.innerHTML = `<div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center;"><h4 style="margin-top: 0; color: #1e293b;">Inga sparade rundor</h4><p style="color: #64748b; font-size: 13px; margin-bottom: 0;">Hittade inga sparade rundor för <strong>${activeName}</strong> på <strong>${selectedCourse}</strong>.</p></div>`;
+        contentArea.innerHTML = `
+            <div style="background:#f8fafc; padding:20px; border-radius:8px; text-align:center;">
+                <h4>Inga sparade rundor</h4>
+                <p>Hittade inga sparade rundor för <strong>${activeName}</strong>
+                på <strong>${selectedCourse}</strong>.</p>
+            </div>`;
         return;
     }
 
-    // Samla ihop din personliga statistik per hål
-    const numHoles = courseMeta.length;
+    // Statistik indexeras med faktiska hålnummer.
     const holeStats = {};
-    for (let i = 1; i <= numHoles; i++) {
-        holeStats[i] = { played: 0, birdies: 0, totalScore: 0 };
+
+    for (const h of courseMeta) {
+        holeStats[Number(h.hole)] = {
+            played: 0,
+            birdies: 0,
+            totalScore: 0
+        };
     }
 
     validRounds.forEach(r => {
-        const playersData = r.data && Array.isArray(r.data.players) ? r.data.players : null;
-        const header = r.data && Array.isArray(r.data.header) ? r.data.header : [];
+        const playersData =
+            r.data && Array.isArray(r.data.players) ? r.data.players : null;
+        const header =
+            r.data && Array.isArray(r.data.header) ? r.data.header : [];
 
-        for (let i = 1; i <= numHoles; i++) {
+        const playerRow = playersData?.find(
+            p => p && p[0] &&
+                String(p[0]).toLowerCase() === activeName.toLowerCase()
+        );
+
+        for (const h of courseMeta) {
+            const holeNumber = Number(h.hole);
             let numScore = NaN;
 
-            if (playersData) {
-                const playerRow = playersData.find(p => p && p[0] && p[0].toLowerCase() === activeName.toLowerCase());
-                if (playerRow) {
-                    const holeIndex = header.findIndex(h => h && (h.toLowerCase() === `hole${i}` || h.toLowerCase() === `hål${i}`));
-                    if (holeIndex !== -1) {
-                        numScore = Number(playerRow[holeIndex]);
-                    }
+            if (playerRow) {
+                const holeIndex = header.findIndex(col => {
+                    const value = String(col ?? '').toLowerCase();
+                    return value === `hole${holeNumber}` ||
+                           value === `hål${holeNumber}`;
+                });
+
+                if (holeIndex !== -1) {
+                    numScore = Number(playerRow[holeIndex]);
                 }
             } else {
-                let score = r[`h${i}`] || r[`hole${i}`] || r[`hål${i}`] || (r.scores && r.scores[i-1]);
+                const score =
+                    r[`h${holeNumber}`] ??
+                    r[`hole${holeNumber}`] ??
+                    r[`hål${holeNumber}`] ??
+                    r.scores?.[holeNumber - 1];
+
                 if (score !== undefined && score !== null) {
                     numScore = Number(score);
                 }
             }
 
-            const currentPar = courseMeta[i - 1] ? courseMeta[i - 1].par : 3;
+            if (Number.isFinite(numScore) && numScore > 0) {
+                const stats = holeStats[holeNumber];
+                stats.played++;
+                stats.totalScore += numScore;
 
-            if (!isNaN(numScore) && numScore > 0) {
-                holeStats[i].played++;
-                holeStats[i].totalScore += numScore;
-                if (numScore === currentPar - 1) {
-                    holeStats[i].birdies++;
+                if (numScore === Number(h.par) - 1) {
+                    stats.birdies++;
                 }
             }
         }
     });
 
-    // Bygg HTML-strukturen med dynamiska och slumpade caddy-svar
     let comparisonHTML = `
-        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 15px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h4 style="margin: 0; color: #1e293b; font-size: 15px;">📊 Din statistik vs Fältet (${selectedCourse})</h4>
-                <button onclick="openSaveCourseModal('${selectedCourse}')" style="background: #e2e8f0; color: #334155; border: none; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;">Redigera baninfo</button>
+        <div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0; margin-top:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h4 style="margin:0; color:#1e293b; font-size:15px;">
+                    📊 Din statistik vs Fältet (${selectedCourse} – ${layoutRows[0].name})
+                </h4>
+                <button onclick="openSaveCourseModal('${selectedCourse.replace(/'/g, "\\'")}')"
+                    style="background:#e2e8f0; color:#334155; border:none; padding:5px 10px; border-radius:4px; font-size:11px; cursor:pointer;">
+                    Redigera baninfo
+                </button>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display:flex; flex-direction:column; gap:10px;">
                 ${courseMeta.map(h => {
-                    const stats = holeStats[h.hole] || { played: 0, birdies: 0, totalScore: 0 };
-                    const avgScoreNum = stats.played > 0 ? (stats.totalScore / stats.played) : null;
-                    const birdiePctNum = stats.played > 0 ? (stats.birdies / stats.played) : 0;
-                    
-                    const avgScore = stats.played > 0 ? avgScoreNum.toFixed(1) : '-';
-                    const birdiePct = stats.played > 0 ? Math.round(birdiePctNum * 100) + '%' : '0%';
-                    
-                    // -- VÄLJ DYNAMISKT CADDY-SVAR --
-                    let caddyFeedback = "";
-                    if (stats.played === 0) {
-                        caddyFeedback = `💡 <strong>Caddy-tips:</strong> ${h.tip}`;
-                    } else if (avgScoreNum < h.par && birdiePctNum >= 0.3) {
-                        const phrase = getRandomPhrase(caddyPhrases.strongHole);
-                        const birdPhrase = getRandomPhrase(caddyPhrases.birdieMachine);
-                        caddyFeedback = `${phrase} ${birdPhrase} <em>(Ditt snitt:${avgScore})</em>`;
-                    } else if (avgScoreNum > h.par) {
-                        const phrase = getRandomPhrase(caddyPhrases.toughHole);
-                        caddyFeedback = `${phrase} <em>(Ditt snitt:${avgScore})</em>`;
+                    const stats = holeStats[Number(h.hole)];
+                    const avgScoreNum = stats.played
+                        ? stats.totalScore / stats.played
+                        : null;
+                    const birdiePctNum = stats.played
+                        ? stats.birdies / stats.played
+                        : 0;
+
+                    const avgScore = stats.played
+                        ? avgScoreNum.toFixed(1)
+                        : '-';
+                    const birdiePct = stats.played
+                        ? Math.round(birdiePctNum * 100) + '%'
+                        : '0%';
+
+                    let caddyFeedback = '';
+
+                    if (!stats.played) {
+                        caddyFeedback = `💡 <strong>Caddy-tips:</strong> ${h.tip || ''}`;
+                    } else if (avgScoreNum < Number(h.par) && birdiePctNum >= 0.3) {
+                        caddyFeedback =
+                            `${getRandomPhrase(caddyPhrases.strongHole)} ` +
+                            `${getRandomPhrase(caddyPhrases.birdieMachine)} ` +
+                            `<em>(Ditt snitt: ${avgScore})</em>`;
+                    } else if (avgScoreNum > Number(h.par)) {
+                        caddyFeedback =
+                            `${getRandomPhrase(caddyPhrases.toughHole)} ` +
+                            `<em>(Ditt snitt: ${avgScore})</em>`;
                     } else {
-                        const prefix = getRandomPhrase(caddyPhrases.standard);
-                        caddyFeedback = `${prefix}${h.tip} <em>(Snitt:${avgScore})</em>`;
+                        caddyFeedback =
+                            `${getRandomPhrase(caddyPhrases.standard)} ` +
+                            `${h.tip || ''} <em>(Snitt: ${avgScore})</em>`;
                     }
 
                     return `
-                        <div style="background: #ffffff; padding: 10px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; color: #1e293b; margin-bottom: 4px;">
-                               <span>Hål ${h.hole}${h.length && h.length !== '-' ? `(${h.length} • ` : '('}Par ${h.par})</span>
-                               <div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
-                                   <span style="color: #334155; font-size: 11px; background: #f1f5f9; padding: 2px 5px; border-radius: 4px;">Snitt: ${avgScore}</span>
-                                   <span style="color: #15803d; font-size: 11px; background: #f0fdf4; padding: 2px 5px; border-radius: 4px; border: 1px solid #bbf7d0;">Birdie: ${birdiePct}</span>${h.globalBirdie && h.globalBirdie !== '-' ? `<span style="color: #0284c7; font-size: 11px; background: #e0f2fe; padding: 2px 5px; border-radius: 4px;">Fältets birdie: ${h.globalBirdie}</span>` : ''}
-                               </div>
+                        <div style="background:#fff; padding:10px 12px; border-radius:6px; border:1px solid #e2e8f0;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; font-size:14px; color:#1e293b; margin-bottom:4px;">
+                                <span>Hål ${h.hole} (${h.length || '-'} • Par ${h.par})</span>
+                                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+                                    <span style="color:#334155; font-size:11px; background:#f1f5f9; padding:2px 5px; border-radius:4px;">Snitt: ${avgScore}</span>
+                                    <span style="color:#15803d; font-size:11px; background:#f0fdf4; padding:2px 5px; border-radius:4px; border:1px solid #bbf7d0;">Birdie: ${birdiePct}</span>
+                                    ${h.globalBirdie && h.globalBirdie !== '-'
+                                        ? `<span style="color:#0284c7; font-size:11px; background:#e0f2fe; padding:2px 5px; border-radius:4px;">Fältets birdie: ${h.globalBirdie}</span>`
+                                        : ''}
+                                </div>
                             </div>
-                            <p style="margin: 0; font-size: 13px; color: #475569; line-height: 1.4;">${caddyFeedback}</p>
-                        </div>
-                    `;
+                            <p style="margin:0; font-size:13px; color:#475569; line-height:1.4;">${caddyFeedback}</p>
+                        </div>`;
                 }).join('')}
+            </div>
+        </div>`;
+
+    contentArea.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:15px;">
+            <div style="background:#f0fdf4; padding:15px; border-radius:8px; border-left:4px solid #22c55e;">
+                <h3 style="margin-top:0; color:#15803d; font-size:16px;">
+                    🤖 ${possessiveName} – Hålanalys
+                </h3>
+                <p style="margin:5px 0 0; color:#166534; font-size:14px;">
+                    Caddyn har sammanställt dina <strong>${validRounds.length} st</strong>
+                    sparade rundor på <strong>${selectedCourse}</strong>.
+                </p>
+            </div>
+            ${comparisonHTML}
+        </div>`;
+}
+
+
+
+
+function loadAiCaddyLayouts() {
+    const courseSelect = document.getElementById("aiCaddyCourseSelect");
+    const container = document.getElementById("aiCaddyLayoutSelectContainer");
+    const layoutSelect = document.getElementById("aiCaddyLayoutSelect");
+
+    if (!courseSelect || !container || !layoutSelect || !sqliteDb) {
+        console.error("AI Caddy: väljare eller SQLite saknas.");
+        return;
+    }
+
+    const courseName = courseSelect.value;
+
+    layoutSelect.innerHTML = '<option value="">Välj layout...</option>';
+    container.style.display = "none";
+
+    if (!courseName) {
+        updateAiCaddyAnalysis();
+        return;
+    }
+
+    const escapedName = courseName.replace(/'/g, "''");
+
+    const layouts = sqliteDb.selectObjects(`
+        SELECT l.id, l.name, l.holes, l.par
+        FROM layouts l
+        JOIN courses c ON c.id = l.course_id
+        WHERE c.name = '${escapedName}'
+        ORDER BY l.name
+    `);
+
+    if (layouts.length === 0) {
+        updateAiCaddyAnalysis();
+        return;
+    }
+
+    layouts.forEach(layout => {
+        const option = document.createElement("option");
+        option.value = String(layout.id);
+
+        const details = [];
+        if (layout.holes != null) details.push(`${layout.holes} hål`);
+        if (layout.par != null) details.push(`par ${layout.par}`);
+
+        option.textContent =
+            layout.name + (details.length ? ` (${details.join(", ")})` : "");
+
+        layoutSelect.appendChild(option);
+    });
+
+    container.style.display = "block";
+    layoutSelect.selectedIndex = 1;
+
+    updateAiCaddyAnalysis();
+}
+
+
+
+function openMainCourseLayoutImport(courseName) {
+    const contentArea = document.getElementById("courseLayoutImportContainer");
+    const db = window.sqliteDb;
+
+    if (!contentArea || !db) {
+        console.error("Importområdet eller SQLite-databasen hittades inte.");
+        return;
+    }
+
+    const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+
+    const normalizeName = value =>
+        String(value ?? "").trim().replace(/\s+/g, " ").toLocaleLowerCase("sv-SE");
+
+    // Lägg till statuskolumnen om den inte redan finns.
+    // Befintliga layouter får automatiskt is_active = 1.
+    try {
+        const columns = db.selectObjects("PRAGMA table_info(layouts)");
+        if (!columns.some(column => column.name === "is_active")) {
+            db.exec(`
+                ALTER TABLE layouts
+                ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1
+            `);
+        }
+    } catch (error) {
+        console.error("Kunde inte kontrollera layoutstatus:", error);
+        alert("Kunde inte förbereda layoutdatabasen. Ingen layout har ändrats.");
+        return;
+    }
+
+    const courses = db.selectObjects(
+        "SELECT id, name FROM courses ORDER BY name"
+    );
+
+    const matchedCourse = courses.find(
+        course => normalizeName(course.name) === normalizeName(courseName)
+    );
+
+    const initialCourseName = matchedCourse
+        ? matchedCourse.name
+        : String(courseName ?? "");
+
+    contentArea.innerHTML = `
+        <div style="background:#f8fafc;padding:20px;border-radius:8px;
+                    border:1px solid #e2e8f0;color:#0f172a;">
+            <h4 style="margin-top:0;">Importera banlayout och AI-caddydata</h4>
+
+            <p style="font-size:13px;color:#475569;">
+                Välj en befintlig layout för att läsa in håldata.
+                Inaktiva layouter visas här så att du kan återaktivera dem.
+            </p>
+
+            <label for="caddyImportCourseName"
+                   style="display:block;margin:12px 0 5px;font-weight:600;">Bana</label>
+            <input id="caddyImportCourseName"
+                   list="caddyImportCourseSuggestions"
+                   value="${escapeHtml(initialCourseName)}"
+                   style="width:100%;box-sizing:border-box;padding:9px;
+                          border:1px solid #cbd5e1;border-radius:6px;">
+
+            <datalist id="caddyImportCourseSuggestions">
+                ${courses.map(course =>
+                    `<option value="${escapeHtml(course.name)}"></option>`
+                ).join("")}
+            </datalist>
+
+            <label for="caddyImportExistingLayout"
+                   style="display:block;margin:12px 0 5px;font-weight:600;">
+                Befintlig layout
+            </label>
+            <select id="caddyImportExistingLayout"
+                    style="width:100%;box-sizing:border-box;padding:9px;
+                           border:1px solid #cbd5e1;border-radius:6px;">
+                <option value="">Skapa en ny layout i stället</option>
+            </select>
+
+            <div id="layoutManagementActions"
+     style="display:none;margin-top:10px;padding:12px;
+            border:1px solid #cbd5e1;border-radius:6px;background:white;">
+    <p id="layoutStatusText" style="margin:0 0 10px;font-size:13px;"></p>
+
+    <button type="button" id="toggleLayoutActive"
+            style="padding:8px 12px;border:0;border-radius:6px;
+                   cursor:pointer;background:#475569;color:white;">
+        Ändra banstatus
+    </button>
+
+    <button type="button" id="deleteLayoutButton"
+            style="padding:8px 12px;border:0;border-radius:6px;
+                   cursor:pointer;background:#b91c1c;color:white;">
+        Ta bort hela banan
+    </button>
+</div>
+
+            <label for="caddyImportLayoutName"
+                   style="display:block;margin:12px 0 5px;font-weight:600;">
+                Layoutnamn
+            </label>
+            <input id="caddyImportLayoutName"
+                   placeholder="Exempel: Vinterslinga"
+                   style="width:100%;box-sizing:border-box;padding:9px;
+                          border:1px solid #cbd5e1;border-radius:6px;">
+
+            <label for="courseJsonInput"
+                   style="display:block;margin:12px 0 5px;font-weight:600;">
+                JSON med håldata
+            </label>
+            <textarea id="courseJsonInput"
+                      placeholder="Välj en layout ovan för att ladda in håldata..."
+                      style="width:100%;height:260px;box-sizing:border-box;
+                             font-family:monospace;font-size:12px;padding:10px;
+                             border:1px solid #cbd5e1;border-radius:6px;
+                             background:white;color:#0f172a;"></textarea>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:15px;">
+                <button type="button" id="cancelCourseLayoutImport"
+                        style="padding:9px 14px;border:0;border-radius:6px;cursor:pointer;">
+                    Avbryt
+                </button>
+                <button type="button" id="saveCourseLayoutImport"
+                        style="background:#2563eb;color:white;padding:9px 16px;
+                               border:0;border-radius:6px;font-weight:bold;cursor:pointer;">
+                    Spara bana, layout och håldata
+                </button>
             </div>
         </div>
     `;
 
-    contentArea.innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 15px;">
-            <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; border-left: 4px solid #22c55e;">
-                <h3 style="margin-top: 0; color: #15803d; font-size: 16px;">🤖 ${possessiveName} – Hålanalys</h3>
-                <p style="margin: 5px 0 0 0; color: #166534; font-size: 14px;">
-                    Caddyn har sammanställt dina <strong>${validRounds.length} st</strong> sparade rundor på <strong>${selectedCourse}</strong>!
-                </p>
-            </div>
-            ${comparisonHTML}
-        </div>
-    `;
+    const courseInput = document.getElementById("caddyImportCourseName");
+    const layoutSelect = document.getElementById("caddyImportExistingLayout");
+    const layoutNameInput = document.getElementById("caddyImportLayoutName");
+    const jsonTextarea = document.getElementById("courseJsonInput");
+    const managementActions = document.getElementById("layoutManagementActions");
+    const statusText = document.getElementById("layoutStatusText");
+    const toggleButton = document.getElementById("toggleLayoutActive");
+    const deleteButton = document.getElementById("deleteLayoutButton");
+
+    function getSelectedLayout() {
+        const id = Number(layoutSelect.value);
+        if (!Number.isInteger(id) || id <= 0) return null;
+
+        return db.selectObjects(
+            "SELECT id, course_id, name, is_active FROM layouts WHERE id = ?",
+            [id]
+        )[0] ?? null;
+    }
+
+    
+function loadLayoutHolesIntoJson() {
+    const layout = getSelectedLayout();
+
+    if (!layout) {
+        jsonTextarea.value = "";
+        layoutNameInput.value = "";
+        managementActions.style.display = "none";
+        return;
+    }
+
+    const course = db.selectObjects(
+        `SELECT id, name, is_active
+         FROM courses
+         WHERE id = ${Number(layout.course_id)}`
+    )[0];
+
+    if (!course) {
+        alert("Banan kunde inte hittas.");
+        return;
+    }
+
+    layoutNameInput.value = layout.name;
+    managementActions.style.display = "block";
+
+    const courseActive = Number(course.is_active) === 1;
+
+    statusText.textContent = courseActive
+        ? `Bana: ${course.name} – AKTIV`
+        : `Bana: ${course.name} – INAKTIV. Kan återaktiveras här.`;
+
+    toggleButton.textContent = courseActive
+        ? "Inaktivera hela banan"
+        : "Återaktivera hela banan";
+
+    const holesData = db.selectObjects(`
+        SELECT hole, length, par,
+               global_birdie AS globalBirdie, tip
+        FROM course_caddy_holes
+        WHERE layout_id = ${Number(layout.id)}
+        ORDER BY hole
+    `);
+
+    jsonTextarea.value = JSON.stringify(
+        (holesData || []).map(h => ({
+            hole: Number(h.hole),
+            length: h.length || "",
+            par: Number(h.par) || 3,
+            globalBirdie: h.globalBirdie || "-",
+            tip: h.tip || ""
+        })),
+        null,
+        2
+    );
 }
+
+
+    function refreshLayouts() {
+        const typedName = courseInput.value.trim();
+        const course = courses.find(
+            item => normalizeName(item.name) === normalizeName(typedName)
+        );
+
+        const previousLayoutId = layoutSelect.value;
+
+        layoutSelect.innerHTML =
+            '<option value="">Skapa en ny layout i stället</option>';
+
+        jsonTextarea.value = "";
+        layoutNameInput.value = "";
+        managementActions.style.display = "none";
+
+        if (!course) return;
+
+        const layouts = db.selectObjects(`
+            SELECT id, name, holes, par, is_active
+            FROM layouts
+            WHERE course_id = ?
+            ORDER BY name
+        `, [course.id]);
+
+        for (const layout of layouts) {
+            const option = document.createElement("option");
+            option.value = String(layout.id);
+
+            const inactive = Number(layout.is_active) !== 1;
+            option.textContent =
+                `${layout.name}${inactive ? " [INAKTIV]" : ""} ` +
+                `(${layout.holes ?? "?"} hål, par ${layout.par ?? "?"})`;
+
+            layoutSelect.appendChild(option);
+        }
+
+        if ([...layoutSelect.options].some(
+            option => option.value === previousLayoutId && previousLayoutId !== ""
+        )) {
+            layoutSelect.value = previousLayoutId;
+            loadLayoutHolesIntoJson();
+        }
+    }
+
+    // Inaktivera eller återaktivera layouten.
+    
+
+toggleButton.addEventListener("click", () => {
+    const layout = getSelectedLayout();
+
+    if (!layout) {
+        alert("Välj en layout på banan först.");
+        return;
+    }
+
+    const courseId = Number(layout.course_id);
+
+    const course = db.selectObjects(
+        `SELECT id, name, is_active
+         FROM courses
+         WHERE id = ${courseId}`
+    )[0];
+
+    if (!course) {
+        alert("Banan kunde inte hittas.");
+        return;
+    }
+
+    const currentlyActive = Number(course.is_active) === 1;
+    const newStatus = currentlyActive ? 0 : 1;
+
+    const action = currentlyActive
+        ? "inaktivera"
+        : "återaktivera";
+
+    const message = currentlyActive
+        ? `Vill du inaktivera hela banan "${course.name}"?\n\n`
+          + "Alla layouter och sparade rundor behålls. "
+          + "Banan kan återaktiveras senare."
+        : `Vill du återaktivera hela banan "${course.name}"?\n\n`
+          + "Dess layouter och historik behålls.";
+
+    if (!confirm(message)) return;
+
+    try {
+        db.exec(
+            `UPDATE courses
+             SET is_active = ${newStatus}
+             WHERE id = ${courseId}`
+        );
+
+        const updated = db.selectObjects(
+            `SELECT is_active
+             FROM courses
+             WHERE id = ${courseId}`
+        )[0];
+
+        if (!updated || Number(updated.is_active) !== newStatus) {
+            throw new Error("Banans status kunde inte verifieras.");
+        }
+
+        refreshLayouts();
+        layoutSelect.value = String(layout.id);
+        loadLayoutHolesIntoJson();
+
+        alert(newStatus === 0
+            ? "Hela banan är nu inaktiv. Alla sparade rundor har behållits."
+            : "Hela banan är nu aktiv igen.");
+
+    } catch (error) {
+        console.error("Kunde inte ändra banstatus:", error);
+        alert("Kunde inte ändra banstatus. Kontrollera konsolen.");
+    }
+});
+
+
+
+    // Ta bort layout endast när inga sparade rundor använder den.
+    
+
+deleteButton.addEventListener("click", () => {
+    const layout = getSelectedLayout();
+
+    if (!layout) {
+        alert("Välj en layout på banan först.");
+        return;
+    }
+
+    const courseId = Number(layout.course_id);
+
+    const course = db.selectObjects(
+        `SELECT id, name
+         FROM courses
+         WHERE id = ${courseId}`
+    )[0];
+
+    if (!course) {
+        alert("Banan kunde inte hittas.");
+        return;
+    }
+
+    // Kontrollera rundor på ALLA banans layouter.
+    const result = db.selectObjects(`
+        SELECT COUNT(*) AS count
+        FROM rounds r
+        JOIN layouts l ON l.id = r.layout_id
+        WHERE l.course_id = ${courseId}
+    `);
+
+    const roundCount = Number(result?.[0]?.count ?? 0);
+
+    // Finns rundor: erbjud endast inaktivering.
+    if (roundCount > 0) {
+        const deactivate = confirm(
+            `Banan "${course.name}" har ${roundCount} sparade rundor ` +
+            `fördelade över sina layouter.\n\n` +
+            "Banan får inte tas bort eftersom rundhistoriken ska behållas.\n\n" +
+            "Vill du i stället inaktivera hela banan?"
+        );
+
+        if (!deactivate) return;
+
+        try {
+            db.exec(
+                `UPDATE courses
+                 SET is_active = 0
+                 WHERE id = ${courseId}`
+            );
+
+            refreshLayouts();
+            layoutSelect.value = String(layout.id);
+            loadLayoutHolesIntoJson();
+
+            alert(
+                "Banan har inaktiverats. Alla layouter och sparade rundor finns kvar."
+            );
+        } catch (error) {
+            console.error("Kunde inte inaktivera banan:", error);
+            alert("Kunde inte inaktivera banan. Kontrollera konsolen.");
+        }
+
+        return;
+    }
+
+    // Inga rundor: fråga om permanent borttagning av hela banan.
+    if (!confirm(
+        `Banan "${course.name}" har inga sparade rundor.\n\n` +
+        "Vill du permanent ta bort hela banan, alla dess layouter " +
+        "och tillhörande håldata?\n\n" +
+        "Detta går inte att ångra."
+    )) {
+        return;
+    }
+
+    try {
+        db.exec("BEGIN IMMEDIATE");
+
+        // Kontrollera igen innan vi tar bort någonting.
+        const check = db.selectObjects(`
+            SELECT COUNT(*) AS count
+            FROM rounds r
+            JOIN layouts l ON l.id = r.layout_id
+            WHERE l.course_id = ${courseId}
+        `);
+
+        if (Number(check?.[0]?.count ?? 0) > 0) {
+            throw new Error(
+                "Banan har nu sparade rundor och får inte tas bort."
+            );
+        }
+
+        // Ta bort håldata för samtliga layouter på banan.
+        db.exec(`
+            DELETE FROM course_caddy_holes
+            WHERE layout_id IN (
+                SELECT id
+                FROM layouts
+                WHERE course_id = ${courseId}
+            )
+        `);
+
+        // Ta bort alla layouter på banan.
+        db.exec(
+            `DELETE FROM layouts WHERE course_id = ${courseId}`
+        );
+
+        // Ta bort själva banan sist.
+        db.exec(
+            `DELETE FROM courses WHERE id = ${courseId}`
+        );
+
+        db.exec("COMMIT");
+
+        refreshLayouts();
+
+        alert(`Banan "${course.name}" har tagits bort permanent.`);
+
+    } catch (error) {
+        try {
+            db.exec("ROLLBACK");
+        } catch (_) {}
+
+        console.error("Kunde inte ta bort hela banan:", error);
+
+        alert(
+            "Banan kunde inte tas bort. Inga ofullständiga ändringar ska behållas.\n\n" +
+            "Kontrollera konsolen för att se om någon annan tabell refererar till banan."
+        );
+    }
+});
+
+
+
+    courseInput.addEventListener("input", refreshLayouts);
+    courseInput.addEventListener("change", refreshLayouts);
+    layoutSelect.addEventListener("change", loadLayoutHolesIntoJson);
+
+    document.getElementById("cancelCourseLayoutImport")
+        .addEventListener("click", () => {
+            contentArea.innerHTML = "";
+        });
+
+    document.getElementById("saveCourseLayoutImport")
+        .addEventListener("click", () => {
+            saveCourseJsonFromTextarea();
+        });
+
+    refreshLayouts();
+}
+
 
 
 function openSaveCourseModal(courseName) {
     const contentArea = document.getElementById('aiCaddyModalContent');
     if (!contentArea) return;
 
-    // Kolla om det redan finns sparad data för banan, annars ta förslag beroende på bana
-    let currentData = sqliteDb.selectObjects(`
-    SELECT
-        h.hole,
-        h.length,
-        h.par,
-        h.global_birdie AS globalBirdie,
-        h.tip
-    FROM course_caddy_holes h
-    JOIN courses c ON c.id = h.course_id
-    WHERE c.name = '${courseName.replace(/'/g, "''")}'
-    ORDER BY h.hole
-`);
+    const layoutSelect = document.getElementById('aiCaddyLayoutSelect');
+    const layoutId = Number(layoutSelect?.value);
 
-if (currentData.length === 0) {
-    currentData = null;
-}
+    if (!Number.isInteger(layoutId) || layoutId <= 0) {
+        alert("Välj en layout innan du redigerar baninformationen.");
+        return;
+    }
+
+    let currentData = sqliteDb.selectObjects(`
+        SELECT
+            h.hole,
+            h.length,
+            h.par,
+            h.global_birdie AS globalBirdie,
+            h.tip
+        FROM course_caddy_holes h
+        JOIN courses c ON c.id = h.course_id
+        WHERE c.name = '${courseName.replace(/'/g, "''")}'
+          AND h.layout_id = ${layoutId}
+        ORDER BY h.hole
+    `);
+
+    if (currentData.length === 0) {
+        currentData = null;
+    }
+
 
     if (!currentData) {
         if (courseName.toLowerCase().includes('hällby')) {
@@ -14047,69 +14736,394 @@ Svara enbart med den rena JSON-koden i ett kodblock så att jag kan klistra in d
             
             <div style="display: flex; gap: 10px; margin-top: 15px; justify-content: flex-end;">
                 <button onclick="updateAiCaddyAnalysis()" style="background: #e2e8f0; color: #334155; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Avbryt</button>
-                <button onclick="saveCourseJsonFromTextarea('${courseName}')" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px;">Spara baninfo</button>
+                <button onclick="saveAiCaddyCourseJsonFromTextarea('${courseName}')" ...>
+    Spara baninfo
+</button>
             </div>
         </div>
     `;
 }
-function saveCourseJsonFromTextarea(courseName) {
-    const textarea = document.getElementById('courseJsonInput');
-    if (!textarea) return;
+
+
+function saveCourseJsonFromTextarea() {
+    const db = window.sqliteDb;
+    const courseInput = document.getElementById("caddyImportCourseName");
+    const layoutSelect = document.getElementById("caddyImportExistingLayout");
+    const layoutInput = document.getElementById("caddyImportLayoutName");
+    const textarea = document.getElementById("courseJsonInput");
+
+    if (!db || !courseInput || !layoutSelect || !layoutInput || !textarea) {
+        alert("Importformuläret kunde inte hittas.");
+        return;
+    }
+
+    const normalizeName = value =>
+        String(value ?? "").trim().replace(/\s+/g, " ").toLocaleLowerCase("sv-SE");
+
+    const courseName = courseInput.value.trim();
+    const requestedLayoutName = layoutInput.value.trim();
+    const selectedLayoutId = layoutSelect.value;
+    let transactionStarted = false;
 
     try {
-        const parsedMeta = JSON.parse(textarea.value);
-        if (!Array.isArray(parsedMeta)) {
-            throw new Error("Datat måste vara en array (börja och sluta med [ ]).");
+        if (!courseName) {
+            throw new Error("Ange ett bannamn.");
         }
 
-        const course = sqliteDb.selectObjects(`
-    SELECT id
-    FROM courses
-    WHERE name = '${courseName.replace(/'/g, "''")}'
-    LIMIT 1
-`);
+        const parsedMeta = JSON.parse(textarea.value);
 
-if (!course.length) {
-    throw new Error(`Banan finns inte i SQLite: ${courseName}`);
-}
+        if (!Array.isArray(parsedMeta) || parsedMeta.length === 0) {
+            throw new Error("JSON måste vara en array med minst ett hål.");
+        }
 
-const courseId = course[0].id;
+        const seenHoles = new Set();
 
-// Ta bort gammal caddydata för banan
-sqliteDb.exec(`
-    DELETE FROM course_caddy_holes
-    WHERE course_id = ${courseId}
-`);
+        const holes = parsedMeta.map(item => {
+            const hole = Number(item.hole);
+            const par = Number(item.par);
 
-// Spara den nya caddyinformationen
-parsedMeta.forEach(hole => {
-    sqliteDb.exec(`
-        INSERT INTO course_caddy_holes (
-            course_id,
-            hole,
-            length,
-            par,
-            global_birdie,
-            tip
-        )
-        VALUES (
-            ${courseId},
-            ${Number(hole.hole)},
-            '${String(hole.length || '').replace(/'/g, "''")}',
-            ${Number(hole.par) || 0},
-            '${String(hole.globalBirdie || '').replace(/'/g, "''")}',
-            '${String(hole.tip || '').replace(/'/g, "''")}'
-        )
-    `);
-});
+            if (!Number.isInteger(hole) || hole < 1) {
+                throw new Error("Varje hål måste ha ett positivt heltalsnummer.");
+            }
 
-        alert(`Baninfo för ${courseName} har sparats utan problem!`);
-        updateAiCaddyAnalysis(); // Gå tillbaka till analysvyn
-    } catch (e) {
-        alert("Kunde inte spara. Kontrollera att JSON-formatet är giltigt (saknas ett kommatecken eller citationstecken?).\n\nFelmeddelande: " + e.message);
-        console.error(e);
+            if (seenHoles.has(hole)) {
+                throw new Error(`Hål ${hole} finns mer än en gång i JSON.`);
+            }
+            seenHoles.add(hole);
+
+            if (!Number.isInteger(par) || par < 1) {
+                throw new Error(`Par saknas eller är ogiltigt på hål ${hole}.`);
+            }
+
+            return {
+                hole,
+                length: String(item.length ?? "").trim(),
+                par,
+                globalBirdie: String(item.globalBirdie ?? "-").trim(),
+                tip: String(item.tip ?? "").trim()
+            };
+        }).sort((a, b) => a.hole - b.hole);
+
+        const holeOrder = holes.map(item => item.hole);
+        const layoutPar = holes.reduce((sum, item) => sum + item.par, 0);
+
+        db.exec("BEGIN IMMEDIATE");
+        transactionStarted = true;
+
+        // Hitta eller skapa bana. Namn jämförs utan hänsyn till
+        // stora/små bokstäver och extra blanksteg.
+        const courses = db.selectObjects(
+            "SELECT id, name FROM courses"
+        );
+
+        let course = courses.find(
+            item => normalizeName(item.name) === normalizeName(courseName)
+        );
+
+        if (!course) {
+            db.exec({
+                sql: "INSERT INTO courses (name) VALUES (?)",
+                bind: [courseName]
+            });
+
+            const created = db.selectObjects(
+                "SELECT id, name FROM courses WHERE name = ?",
+                [courseName]
+            );
+
+            if (!created.length) {
+                throw new Error("Kunde inte skapa banan.");
+            }
+
+            course = created[0];
+        }
+
+        const courseId = course.id;
+        let layoutId;
+        let layoutName;
+
+        if (selectedLayoutId) {
+            // En vald layout måste tillhöra den bana vi just hittade.
+            const selected = db.selectObjects(
+                "SELECT id, course_id, name FROM layouts WHERE id = ?",
+                [Number(selectedLayoutId)]
+            );
+
+            if (
+                !selected.length ||
+                Number(selected[0].course_id) !== Number(courseId)
+            ) {
+                throw new Error(
+                    "Den valda layouten tillhör inte den angivna banan. Välj layout igen."
+                );
+            }
+
+            if (requestedLayoutName) {
+                throw new Error(
+                    "Töm fältet 'Nytt layoutnamn' när du väljer en befintlig layout."
+                );
+            }
+
+            layoutId = selected[0].id;
+            layoutName = selected[0].name;
+
+        } else {
+            if (!requestedLayoutName) {
+                throw new Error("Välj en befintlig layout eller ange ett nytt layoutnamn.");
+            }
+
+            layoutName = requestedLayoutName;
+
+            const existingLayouts = db.selectObjects(
+                "SELECT id, name FROM layouts WHERE course_id = ?",
+                [courseId]
+            );
+
+            const existingLayout = existingLayouts.find(
+                item => normalizeName(item.name) === normalizeName(requestedLayoutName)
+            );
+
+            if (existingLayout) {
+                // Återanvänd samma layout även om stavning eller
+                // blanksteg skiljer sig. Behåll det sparade namnet.
+                layoutId = existingLayout.id;
+                layoutName = existingLayout.name;
+
+                db.exec({
+                    sql: `
+                        UPDATE layouts
+                        SET holes = ?, par = ?, hole_order = ?
+                        WHERE id = ?
+                    `,
+                    bind: [
+                        holes.length,
+                        layoutPar,
+                        JSON.stringify(holeOrder),
+                        layoutId
+                    ]
+                });
+
+            } else {
+                db.exec({
+                    sql: `
+                        INSERT INTO layouts (
+                            course_id, name, holes, par, hole_order
+                        )
+                        VALUES (?, ?, ?, ?, ?)
+                    `,
+                    bind: [
+                        courseId,
+                        layoutName,
+                        holes.length,
+                        layoutPar,
+                        JSON.stringify(holeOrder)
+                    ]
+                });
+
+                const createdLayout = db.selectObjects(
+                    "SELECT id FROM layouts WHERE course_id = ? AND name = ?",
+                    [courseId, layoutName]
+                );
+
+                if (!createdLayout.length) {
+                    throw new Error("Kunde inte skapa layouten.");
+                }
+
+                layoutId = createdLayout[0].id;
+            }
+        }
+
+        // Enbart den här layoutens caddydata tas bort.
+        // Äldre poster med layout_id = NULL påverkas inte.
+        db.exec({
+            sql: "DELETE FROM course_caddy_holes WHERE layout_id = ?",
+            bind: [layoutId]
+        });
+
+        for (const hole of holes) {
+            db.exec({
+                sql: `
+                    INSERT INTO course_caddy_holes (
+                        course_id,
+                        layout_id,
+                        hole,
+                        length,
+                        par,
+                        global_birdie,
+                        tip
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                `,
+                bind: [
+                    courseId,
+                    layoutId,
+                    hole.hole,
+                    hole.length,
+                    hole.par,
+                    hole.globalBirdie,
+                    hole.tip
+                ]
+            });
+        }
+
+        // Verifiera antalet innan transaktionen sparas.
+        const saved = db.selectObjects(
+            "SELECT COUNT(*) AS count FROM course_caddy_holes WHERE layout_id = ?",
+            [layoutId]
+        )[0].count;
+
+        if (Number(saved) !== holes.length) {
+            throw new Error(
+                `Kontroll misslyckades: förväntade ${holes.length} hål men hittade ${saved}.`
+            );
+        }
+
+        db.exec("COMMIT");
+        transactionStarted = false;
+
+        console.log("✅ Layout och caddydata sparade:", {
+            bana: course.name,
+            layout: layoutName,
+            layoutId,
+            antalHål: holes.length,
+            par: layoutPar
+        });
+
+        alert(
+            `Sparat!\n\nBana: ${course.name}\nLayout: ${layoutName}\nHål: ${holes.length}\nPar: ${layoutPar}\n\nCaddydata har sparats för just denna layout.`
+        );
+
+        // Uppdatera inte analysvyn ännu: den gamla analysfrågan
+        // filtrerar inte på layout_id. Vi anpassar den i nästa steg.
+
+    } catch (error) {
+        if (transactionStarted) {
+            try {
+                db.exec("ROLLBACK");
+            } catch (rollbackError) {
+                console.error("Rollback misslyckades:", rollbackError);
+            }
+        }
+
+        console.error("❌ Kunde inte spara layout och caddydata:", error);
+        alert("Kunde inte spara:\n" + error.message);
     }
 }
+
+
+function saveAiCaddyCourseJsonFromTextarea(courseName) {
+    const db = window.sqliteDb || sqliteDb;
+    const textarea = document.getElementById("courseJsonInput");
+    const layoutSelect = document.getElementById("aiCaddyLayoutSelect");
+
+    if (!db || !textarea || !layoutSelect) {
+        alert("AI Caddy-redigeraren eller SQLite saknas.");
+        return;
+    }
+
+    const layoutId = Number(layoutSelect.value);
+
+    if (!Number.isInteger(layoutId) || layoutId <= 0) {
+        alert("Välj en layout innan du sparar.");
+        return;
+    }
+
+    const escapeSql = value => String(value ?? "").replace(/'/g, "''");
+
+    let holes;
+
+    try {
+        holes = JSON.parse(textarea.value);
+
+        if (!Array.isArray(holes) || holes.length === 0) {
+            throw new Error("JSON måste innehålla en lista med hål.");
+        }
+
+        const seen = new Set();
+
+        for (const hole of holes) {
+            const number = Number(hole.hole);
+
+            if (!Number.isInteger(number) || number < 1) {
+                throw new Error("Varje hål måste ha ett giltigt hålnummer.");
+            }
+
+            if (seen.has(number)) {
+                throw new Error("Samma hålnummer finns flera gånger.");
+            }
+
+            seen.add(number);
+
+            if (!Number.isInteger(Number(hole.par)) || Number(hole.par) < 1) {
+                throw new Error(`Hål ${hole.hole} saknar ett giltigt par.`);
+            }
+        }
+    } catch (error) {
+        alert("Kunde inte läsa baninformationen: " + error.message);
+        return;
+    }
+
+    try {
+        const layoutRows = db.selectObjects(`
+            SELECT l.id, l.course_id, l.name, c.name AS course_name
+            FROM layouts l
+            JOIN courses c ON c.id = l.course_id
+            WHERE l.id = ${layoutId}
+        `);
+
+        if (layoutRows.length === 0) {
+            alert("Den valda layouten hittades inte i SQLite.");
+            return;
+        }
+
+        const layout = layoutRows[0];
+
+        if (layout.course_name.toLowerCase().trim() !== courseName.toLowerCase().trim()) {
+            alert("Den valda layouten tillhör inte den valda banan. Inget sparades.");
+            return;
+        }
+
+        db.exec("BEGIN IMMEDIATE");
+
+        db.exec(`
+            DELETE FROM course_caddy_holes
+            WHERE layout_id = ${layoutId}
+        `);
+
+        for (const hole of holes) {
+            db.exec(`
+                INSERT INTO course_caddy_holes
+                    (course_id, layout_id, hole, length, par,
+                     global_birdie, tip)
+                VALUES (
+                    ${Number(layout.course_id)},
+                    ${layoutId},
+                    ${Number(hole.hole)},
+                    '${escapeSql(hole.length)}',
+                    ${Number(hole.par)},
+                    '${escapeSql(hole.globalBirdie)}',
+                    '${escapeSql(hole.tip)}'
+                )
+            `);
+        }
+
+        db.exec("COMMIT");
+
+        alert(`Baninformationen sparades för ${layout.name}.`);
+
+        updateAiCaddyAnalysis();
+
+    } catch (error) {
+        try {
+            db.exec("ROLLBACK");
+        } catch (_) {}
+
+        console.error("Fel vid sparning av AI Caddy:", error);
+        alert("Kunde inte spara baninformationen: " + error.message);
+    }
+}
+
+
     </script>
 	<!-- =====================================================
      SQLITE WASM TEST
@@ -15287,6 +16301,164 @@ async function createDatabaseSchema() {
 
     return true;
 }
+
+async function migrateCaddyHolesToLayouts() {
+    const db = window.sqliteDb;
+
+    if (!db) {
+        throw new Error("SQLite är inte öppnad.");
+    }
+
+    // Gör migreringen idempotent: kör inte om den redan är gjord.
+    const columns = db.selectObjects(
+        "PRAGMA table_info(course_caddy_holes)"
+    );
+
+    if (!columns.length) {
+        throw new Error("Tabellen course_caddy_holes saknas.");
+    }
+
+    if (columns.some(column => column.name === "layout_id")) {
+        console.log("✅ Caddy-tabellen stöder redan layout_id.");
+        return;
+    }
+
+    let transactionStarted = false;
+
+    try {
+        db.exec("BEGIN IMMEDIATE");
+        transactionStarted = true;
+
+        // Spara antalet gamla poster innan tabellen byggs om.
+        const before = db.selectObjects(`
+            SELECT COUNT(*) AS count
+            FROM course_caddy_holes
+        `)[0].count;
+
+        // Skapa den nya strukturen utan den gamla begränsningen
+        // UNIQUE(course_id, hole).
+        db.exec(`
+            CREATE TABLE course_caddy_holes_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                course_id INTEGER NOT NULL,
+                layout_id INTEGER,
+                hole INTEGER NOT NULL,
+                length TEXT,
+                par INTEGER,
+                global_birdie TEXT,
+                tip TEXT,
+                UNIQUE(layout_id, hole),
+                FOREIGN KEY(course_id) REFERENCES courses(id),
+                FOREIGN KEY(layout_id) REFERENCES layouts(id)
+            )
+        `);
+
+        // Kopiera gamla poster med samma ID och innehåll.
+        // layout_id lämnas NULL eftersom vi inte ska gissa layout.
+        db.exec(`
+            INSERT INTO course_caddy_holes_new (
+                id,
+                course_id,
+                layout_id,
+                hole,
+                length,
+                par,
+                global_birdie,
+                tip
+            )
+            SELECT
+                id,
+                course_id,
+                NULL,
+                hole,
+                length,
+                par,
+                global_birdie,
+                tip
+            FROM course_caddy_holes
+        `);
+
+        // Kontrollera att antal och allt befintligt innehåll stämmer.
+        const afterCopy = db.selectObjects(`
+            SELECT COUNT(*) AS count
+            FROM course_caddy_holes_new
+        `)[0].count;
+
+        const unassigned = db.selectObjects(`
+            SELECT COUNT(*) AS count
+            FROM course_caddy_holes_new
+            WHERE layout_id IS NULL
+        `)[0].count;
+
+        const missingOrChanged = db.selectObjects(`
+            SELECT id, course_id, hole, length, par, global_birdie, tip
+            FROM course_caddy_holes
+            EXCEPT
+            SELECT id, course_id, hole, length, par, global_birdie, tip
+            FROM course_caddy_holes_new
+        `);
+
+        const unexpected = db.selectObjects(`
+            SELECT id, course_id, hole, length, par, global_birdie, tip
+            FROM course_caddy_holes_new
+            EXCEPT
+            SELECT id, course_id, hole, length, par, global_birdie, tip
+            FROM course_caddy_holes
+        `);
+
+        if (
+            before !== afterCopy ||
+            before !== unassigned ||
+            missingOrChanged.length ||
+            unexpected.length
+        ) {
+            throw new Error(
+                "Kontrollen misslyckades. Den gamla tabellen lämnas orörd."
+            );
+        }
+
+        // Ersätt den gamla tabellen först efter godkända kontroller.
+        db.exec("DROP TABLE course_caddy_holes");
+        db.exec(`
+            ALTER TABLE course_caddy_holes_new
+            RENAME TO course_caddy_holes
+        `);
+
+        // Slutkontroll före commit.
+        const finalCount = db.selectObjects(`
+            SELECT COUNT(*) AS count
+            FROM course_caddy_holes
+        `)[0].count;
+
+        if (finalCount !== before) {
+            throw new Error(
+                "Slutkontrollen misslyckades: antalet poster skiljer sig."
+            );
+        }
+
+        db.exec("COMMIT");
+        transactionStarted = false;
+
+        console.log("✅ Caddy-migrering klar:", {
+            tidigarePoster: before,
+            efterMigrering: finalCount,
+            utanTilldeladLayout: unassigned
+        });
+
+    } catch (error) {
+        if (transactionStarted) {
+            try {
+                db.exec("ROLLBACK");
+            } catch (rollbackError) {
+                console.error("Rollback misslyckades:", rollbackError);
+            }
+        }
+
+        console.error("❌ Caddy-migreringen misslyckades:", error);
+        throw error;
+    }
+}
+
     async function initPersistentSQLite() {
 
         try {
@@ -15378,6 +16550,9 @@ async function createDatabaseSchema() {
 
         // Skapa eventuella saknade tabeller innan appen startar.
         await createDatabaseSchema();
+		
+		// Migrera caddy-data till layoutbaserad struktur.
+        await migrateCaddyHolesToLayouts();
 
         // Hämta gemensamma diskar från discs.json.
         try {
@@ -16881,11 +18056,14 @@ window.initLiveCourseSelector = function () {
                 c.name AS course_name,
                 l.id AS layout_id,
                 l.name AS layout_name,
-                l.holes,
-                l.par
-            FROM courses c
-            JOIN layouts l ON l.course_id = c.id
-            ORDER BY c.name, l.name;
+l.holes,
+l.par,
+l.is_active
+FROM courses c
+JOIN layouts l ON l.course_id = c.id
+WHERE c.is_active = 1
+  AND l.is_active = 1
+ORDER BY c.name, l.name;
         `,
         rowMode: "object",
         callback: row => courses.push(row)
@@ -17212,10 +18390,14 @@ window.liveRoundDraft = {
 };
 
 
+
 window.buildLiveRoundCsvData = function (round, endTime = new Date()) {
     if (!round || !round.layout || !round.players?.length) {
         throw new Error("Rundan eller spelarna saknas.");
     }
+
+    const db = window.sqliteDb;
+    if (!db) throw new Error("SQLite-databasen saknas.");
 
     const formatDate = date => {
         const pad = n => String(n).padStart(2, "0");
@@ -17231,29 +18413,48 @@ window.buildLiveRoundCsvData = function (round, endTime = new Date()) {
     };
 
     const holeOrder = round.holeOrder;
-    const parRows = [];
-
-    window.sqliteDb.exec({
-        sql: `
-            SELECT hs.hole_number, hs.par, COUNT(*) AS observations
-            FROM hole_scores hs
-            JOIN round_players rp ON rp.id = hs.round_player_id
-            JOIN rounds r ON r.id = rp.round_id
-            WHERE r.layout_id = ?
-              AND hs.par IS NOT NULL
-            GROUP BY hs.hole_number, hs.par
-            ORDER BY hs.hole_number, observations DESC, hs.par;
-        `,
-        bind: [round.layoutId],
-        rowMode: "object",
-        callback: row => parRows.push(row)
-    });
-
     const parByHole = {};
 
+    // 1. Hämta par direkt från den valda layoutens caddydata.
+    const caddyRows = db.selectObjects(`
+        SELECT hole, par
+        FROM course_caddy_holes
+        WHERE layout_id = ?
+        ORDER BY hole
+    `, [round.layoutId]);
+
+    for (const row of caddyRows) {
+        const hole = Number(row.hole);
+        const par = Number(row.par);
+
+        if (Number.isInteger(hole) && Number.isFinite(par) && par > 0) {
+            parByHole[hole] = par;
+        }
+    }
+
+    // 2. Komplettera eventuella saknade par med tidigare rundor.
+    const parRows = db.selectObjects(`
+        SELECT hs.hole_number, hs.par, COUNT(*) AS observations
+        FROM hole_scores hs
+        JOIN round_players rp ON rp.id = hs.round_player_id
+        JOIN rounds r ON r.id = rp.round_id
+        WHERE r.layout_id = ?
+          AND hs.par IS NOT NULL
+        GROUP BY hs.hole_number, hs.par
+        ORDER BY hs.hole_number, observations DESC, hs.par
+    `, [round.layoutId]);
+
     for (const row of parRows) {
-        if (parByHole[row.hole_number] === undefined) {
-            parByHole[row.hole_number] = row.par;
+        const hole = Number(row.hole_number);
+        const par = Number(row.par);
+
+        if (
+            parByHole[hole] === undefined &&
+            Number.isInteger(hole) &&
+            Number.isFinite(par) &&
+            par > 0
+        ) {
+            parByHole[hole] = par;
         }
     }
 
@@ -17263,7 +18464,8 @@ window.buildLiveRoundCsvData = function (round, endTime = new Date()) {
 
     if (missingPars.length) {
         throw new Error(
-            `Par saknas för hål: ${missingPars.join(", ")}. Ingen runda sparad.`
+            `Par saknas för hål: ${missingPars.join(", ")}. ` +
+            `Kontrollera att par finns sparade för layouten. Ingen runda sparad.`
         );
     }
 
@@ -17274,9 +18476,7 @@ window.buildLiveRoundCsvData = function (round, endTime = new Date()) {
     );
 
     if (missingScores.length) {
-        throw new Error(
-            `Resultat saknas: ${missingScores.join("; ")}`
-        );
+        throw new Error(`Resultat saknas: ${missingScores.join("; ")}`);
     }
 
     const header = [
@@ -17336,6 +18536,7 @@ window.buildLiveRoundCsvData = function (round, endTime = new Date()) {
         fileHash: null
     };
 };
+
 
 console.log("Adaptern är installerad:", typeof window.buildLiveRoundCsvData);
 
@@ -17403,7 +18604,7 @@ window.renderLiveHole = function () {
         }
     });
 
-    const currentPar = parByHole[holeNumber] ?? 3;
+    
 	
     // Hämta AI Caddys metadata för aktuell bana och hål.
     const courseName = round.layout.course_name;
@@ -17429,6 +18630,12 @@ window.renderLiveHole = function () {
     });
 
     const caddyHole = caddyRows[0] || null;
+	const currentPar =
+    Number(caddyHole?.par) > 0
+        ? Number(caddyHole.par)
+        : (Number(parByHole[holeNumber]) > 0
+            ? Number(parByHole[holeNumber])
+            : 3);
     const holeLength = caddyHole?.length || "Längd saknas";
     const holeTip = caddyHole?.tip || "";
     const globalBirdie = caddyHole?.globalBirdie || "";
@@ -17869,6 +19076,9 @@ document.getElementById("liveNextHole").onclick = function () {
         nextButton.textContent = "Försök spara igen";
     }
 };
+
+
+
 
 </script>
 <style>
