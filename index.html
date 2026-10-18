@@ -16065,6 +16065,172 @@ async function importBaseDiscsFromJSON() {
 }
 
 window.importBaseDiscsFromJSON = importBaseDiscsFromJSON;
+async function importBaseCoursesFromJSON() {
+    if (!window.sqliteDb) {
+        throw new Error("SQLite-databasen är inte öppen.");
+    }
+
+    // JSON-import fungerar inte när sidan öppnas direkt som en lokal fil.
+    if (window.location.protocol === "file:") {
+        console.info("ℹ️ Lokal fil: banimport hoppas över.");
+        return;
+    }
+
+    // Höj versionen när courses.json ska importeras på nytt.
+    const importVersion = "1";
+
+    window.sqliteDb.exec(`
+        CREATE TABLE IF NOT EXISTS app_import_status (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        )
+    `);
+
+    const savedVersion = window.sqliteDb.selectValue(
+        `SELECT value FROM app_import_status WHERE key = ?`,
+        ["base_courses_version"]
+    );
+
+    if (savedVersion === importVersion) {
+        console.log("✅ Banregistret är redan importerat. Hoppar över.");
+        return;
+    }
+
+    const response = await fetch("./courses.json");
+
+    if (!response.ok) {
+        throw new Error(
+            `Kunde inte hämta courses.json: HTTP ${response.status}`
+        );
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data.courses)) {
+        throw new Error("courses.json saknar listan 'courses'.");
+    }
+
+    let addedCourses = 0;
+    let addedLayouts = 0;
+    let addedHoles = 0;
+
+    // Importera allt i en transaktion.
+    window.sqliteDb.exec("BEGIN TRANSACTION");
+
+    try {
+        for (const course of data.courses) {
+            if (course.id == null || !course.name || !Array.isArray(course.layouts)) {
+                throw new Error(
+                    `Ogiltig bana i courses.json: ${course.name ?? "okänt namn"}`
+                );
+            }
+
+            // Banans ID från JSON bevaras.
+            window.sqliteDb.exec({
+                sql: `
+                    INSERT INTO courses (id, name)
+                    VALUES (?, ?)
+                `,
+                bind: [course.id, course.name]
+            });
+
+            addedCourses++;
+
+            for (const layout of course.layouts) {
+                if (
+                    layout.id == null ||
+                    !layout.name ||
+                    !Array.isArray(layout.hole_order) ||
+                    !layout.hole_pars
+                ) {
+                    throw new Error(
+                        `Ogiltig layout på banan ${course.name}.`
+                    );
+                }
+
+                // Layoutens ID från JSON bevaras.
+                window.sqliteDb.exec({
+                    sql: `
+                        INSERT INTO layouts (
+                            id,
+                            course_id,
+                            name,
+                            holes,
+                            par,
+                            hole_order
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    `,
+                    bind: [
+                        layout.id,
+                        course.id,
+                        layout.name,
+                        layout.holes,
+                        layout.par,
+                        JSON.stringify(layout.hole_order)
+                    ]
+                });
+
+                addedLayouts++;
+
+                // Importera par för varje hål till rätt layout.
+                for (const hole of layout.hole_order) {
+                    const par = layout.hole_pars[String(hole)];
+
+                    if (par == null) {
+                        throw new Error(
+                            `Par saknas för hål ${hole} på ${course.name} – ${layout.name}.`
+                        );
+                    }
+
+                    window.sqliteDb.exec({
+                        sql: `
+                            INSERT INTO course_caddy_holes (
+                                course_id,
+                                layout_id,
+                                hole,
+                                par
+                            )
+                            VALUES (?, ?, ?, ?)
+                        `,
+                        bind: [
+                            course.id,
+                            layout.id,
+                            Number(hole),
+                            Number(par)
+                        ]
+                    });
+
+                    addedHoles++;
+                }
+            }
+        }
+
+        // Markera versionen som importerad först när allt lyckats.
+        window.sqliteDb.exec({
+            sql: `
+                INSERT OR REPLACE INTO app_import_status (key, value)
+                VALUES (?, ?)
+            `,
+            bind: ["base_courses_version", importVersion]
+        });
+
+        window.sqliteDb.exec("COMMIT");
+
+        console.log("✅ Banimport klar", {
+            banor: addedCourses,
+            layouter: addedLayouts,
+            hål_med_par: addedHoles,
+            version: importVersion
+        });
+
+    } catch (error) {
+        window.sqliteDb.exec("ROLLBACK");
+        throw error;
+    }
+}
+
+window.importBaseCoursesFromJSON = importBaseCoursesFromJSON;
 async function createDatabaseSchema() {
     if (!window.sqliteDb) {
         throw new Error("SQLite-databasen är inte öppnad.");
