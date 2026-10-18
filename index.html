@@ -1793,11 +1793,6 @@
     
 
     <h1>🥏 Live-poängräknare</h1>
-		 <button type="button"
-    onclick="showLiveDbDiagnostics()"
-    style="padding:10px; margin:8px 0;">
-    🔍 Kontrollera SQLite
-</button>
     <p>Välj bana och layout för rundan.</p>
 
     <label for="liveCourseSelect"><strong>Bana</strong></label>
@@ -1857,27 +1852,6 @@
     </button>
 
 </div>
-</div>
-
-<div id="liveDbDiagnostics" style="
-    display:none;
-    margin:12px;
-    padding:14px;
-    border:2px solid #d97706;
-    border-radius:8px;
-    background:#fff7ed;
-    color:#222;
-    font:14px/1.5 monospace;
-    overflow-wrap:anywhere;
-">
-    <strong>SQLite – felsökning</strong>
-    <pre id="liveDbDiagnosticsOutput" style="
-        white-space:pre-wrap;
-        overflow-wrap:anywhere;
-    ">Väntar på kontroll...</pre>
-    <button type="button" onclick="
-        document.getElementById('liveDbDiagnostics').style.display='none';
-    ">Dölj felsökningen</button>
 </div>
 
 
@@ -16281,9 +16255,43 @@ async function createDatabaseSchema() {
         )`
     ];
 
-    for (const sql of schema) {
-        db.exec(sql);
+    
+for (const sql of schema) {
+    db.exec(sql);
+}
+
+// =====================================================
+// AUTOMATISK DATABASMIGRERING
+// Uppdaterar befintliga databaser på äldre enheter.
+// =====================================================
+
+function ensureColumn(tableName, columnName, definition) {
+    // Tabell- och kolumnnamn ska vara fasta värden i koden.
+    const columns = db.selectObjects(
+        `PRAGMA table_info(${tableName})`
+    );
+
+    const exists = columns.some(
+        column => column.name === columnName
+    );
+
+    if (!exists) {
+        db.exec(
+            `ALTER TABLE ${tableName}
+             ADD COLUMN ${columnName} ${definition}`
+        );
+
+        console.log(
+            `✅ SQLite-migrering: ${tableName}.${columnName} tillagd`
+        );
     }
+}
+
+// Aktiveringsstatus för banor och layouter.
+// Befintliga poster får värdet 1 och förblir aktiva.
+ensureColumn("courses", "is_active", "INTEGER NOT NULL DEFAULT 1");
+ensureColumn("layouts", "is_active", "INTEGER NOT NULL DEFAULT 1");
+
 
     // Kontrollera att alla 15 tabeller finns.
     const tables = db.selectObjects(`
@@ -19103,92 +19111,6 @@ document.getElementById("liveNextHole").onclick = function () {
     }
 };
 
-
-window.showLiveDbDiagnostics = function () {
-    const panel = document.getElementById("liveDbDiagnostics");
-    const output = document.getElementById("liveDbDiagnosticsOutput");
-
-    if (!panel || !output) {
-        alert("Felsökningsrutan saknas i HTML.");
-        return;
-    }
-
-    panel.style.display = "block";
-    output.textContent = "Kontrollerar SQLite...\n";
-
-    const lines = [];
-    const log = message => lines.push(message);
-
-    try {
-        const db = window.sqliteDb;
-
-        if (!db) {
-            log("FEL: window.sqliteDb finns inte.");
-            output.textContent = lines.join("\n");
-            return;
-        }
-
-        log("SQLite: initierad");
-
-        for (const table of ["courses", "layouts", "players"]) {
-            try {
-                const columns = db.selectObjects(
-                    `PRAGMA table_info(${table})`
-                );
-
-                log(`\nTABELL ${table}: ${columns.length ? "OK" : "SAKNAS"}`);
-                log("Kolumner: " + columns.map(c => c.name).join(", "));
-
-                const count = db.selectObjects(
-                    `SELECT COUNT(*) AS antal FROM ${table}`
-                );
-
-                log("Antal poster: " + count[0].antal);
-            } catch (error) {
-                log(`FEL i ${table}: ${error.message}`);
-            }
-        }
-
-        try {
-            const rows = db.selectObjects(`
-                SELECT
-                    c.id AS course_id,
-                    c.name AS course_name,
-                    l.id AS layout_id,
-                    l.name AS layout_name,
-                    l.holes,
-                    l.par
-                FROM courses c
-                JOIN layouts l ON l.course_id = c.id
-                WHERE c.is_active = 1
-                  AND l.is_active = 1
-                ORDER BY c.name, l.name
-            `);
-
-            log("\nLIVE-FRÅGA: OK");
-            log("Aktiva layouter: " + rows.length);
-        } catch (error) {
-            log("\nFEL I LIVE-FRÅGAN: " + error.message);
-        }
-
-        try {
-            const players = db.selectObjects(`
-                SELECT id, name, is_user
-                FROM players
-                ORDER BY name
-            `);
-
-            log("\nSPELARFRÅGA: OK");
-            log("Spelare hittade: " + players.length);
-        } catch (error) {
-            log("\nFEL I SPELARFRÅGAN: " + error.message);
-        }
-    } catch (error) {
-        log("\nOVÄNTAT FEL: " + error.message);
-    }
-
-    output.textContent = lines.join("\n");
-};
 
 
 
