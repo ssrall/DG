@@ -16750,8 +16750,8 @@ async function migrateCaddyHolesToLayouts() {
 
         // Skapa eventuella saknade tabeller innan appen startar.
         await createDatabaseSchema();
-		
-		// Migrera caddy-data till layoutbaserad struktur.
+
+        // Migrera caddy-data till layoutbaserad struktur.
         await migrateCaddyHolesToLayouts();
 
         // Hämta gemensamma diskar från discs.json.
@@ -16760,6 +16760,16 @@ async function migrateCaddyHolesToLayouts() {
         } catch (error) {
             console.warn(
                 "⚠️ Diskregistret kunde inte uppdateras från discs.json:",
+                error
+            );
+        }
+
+        // Hämta gemensamma banor och layouter från courses.json.
+        try {
+            await window.importBaseCoursesFromJSON();
+        } catch (error) {
+            console.warn(
+                "⚠️ Banregistret kunde inte importeras från courses.json:",
                 error
             );
         }
